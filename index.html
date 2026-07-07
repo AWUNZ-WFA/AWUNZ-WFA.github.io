@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WFA Union</title>
+<style>
+  :root{
+    --teal-50:#E1F5EE; --teal-100:#9FE1CB; --teal-400:#1D9E75; --teal-600:#0F6E56; --teal-800:#085041; --teal-900:#04342C;
+    --amber-50:#FAEEDA; --amber-400:#EF9F27; --amber-600:#BA7517; --amber-800:#633806;
+    --bg:#F7F6F2; --card:#FFFFFF; --ink:#1A2421; --ink-soft:#52605C; --line:#E2E2DA;
+    --radius:14px;
+    --shadow-soft:0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;}
+
+  /* ---------- TOP NAV (Material-ish) ---------- */
+  header.topbar{
+    position:sticky; top:0; z-index:50;
+    background:var(--teal-800); color:#fff;
+    display:flex; align-items:center; gap:12px;
+    padding:14px 18px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.12);
+  }
+  .pulse-mark{width:26px;height:26px;flex-shrink:0;}
+  header.topbar h1{font-size:16px; font-weight:600; margin:0; letter-spacing:0.2px;}
+  .menu-btn{
+    margin-left:auto; background:transparent; border:none; color:#fff;
+    font-size:22px; cursor:pointer; padding:4px 8px; border-radius:8px;
+  }
+  .menu-btn:active{background:rgba(255,255,255,0.15);}
+
+  main{max-width:760px; margin:0 auto; padding:20px 16px 64px;}
+  .view{display:none; animation:fade .25s ease;}
+  .view.active{display:block;}
+  .auth-view{display:none; animation:fade .25s ease;}
+  .auth-view.active{display:block;}
+  .auth-options{display:flex; flex-direction:column; gap:10px;}
+  .auth-options .quick-card{text-align:left;}
+  @keyframes fade{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);}}
+
+  /* ---------- shared bits ---------- */
+  .section-title{font-size:20px; font-weight:700; margin:4px 0 4px;}
+  .back-btn{
+    display:inline-flex; align-items:center; gap:4px; background:transparent; border:none;
+    color:var(--teal-600); font-size:13.5px; font-weight:600; padding:6px 0 12px; cursor:pointer;
+  }
+  .section-sub{font-size:14px; color:var(--ink-soft); margin:0 0 18px; line-height:1.5;}
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    padding:16px; margin-bottom:14px; box-shadow:var(--shadow-soft);
+  }
+  .pill{
+    display:inline-block; font-size:11.5px; font-weight:600; padding:3px 10px;
+    border-radius:999px; background:var(--teal-50); color:var(--teal-800);
+  }
+  .pill.amber{background:var(--amber-50); color:var(--amber-800);}
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:6px;
+    background:var(--teal-600); color:#fff; border:none; border-radius:10px;
+    padding:12px 18px; font-size:14.5px; font-weight:600; cursor:pointer;
+    width:100%;
+  }
+  .btn:active{background:var(--teal-800);}
+  .btn.secondary{background:transparent; color:var(--teal-700,var(--teal-600)); border:1.5px solid var(--teal-600);}
+  .btn.amber{background:var(--amber-600);}
+  .btn.amber:active{background:var(--amber-800);}
+  label.field-label{display:block; font-size:12.5px; font-weight:600; color:var(--ink-soft); margin:14px 0 6px;}
+  .step-indicator{font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:var(--teal-700,var(--teal-600)); margin:0 0 14px;}
+  input[type=text], input[type=email], input[type=tel], input[type=date], input[type=password], select, textarea{
+    width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:10px;
+    font-size:15px; background:#fff; color:var(--ink); font-family:inherit;
+  }
+  textarea{resize:vertical; min-height:90px;}
+  #loginPasscode{ font-size:16px; letter-spacing:1px; }
+  .hr{height:1px; background:var(--line); margin:22px 0; border:none;}
+
+  /* heartbeat divider - signature element */
+  .pulse-divider{width:100%; height:28px; margin:18px 0;}
+
+  /* ---------- HOME ---------- */
+  .hero{
+    background:linear-gradient(180deg,var(--teal-800),var(--teal-600));
+    color:#fff; border-radius:var(--radius); padding:26px 20px; margin-bottom:18px;
+  }
+  .hero h2{font-size:22px; margin:0 0 8px; font-weight:700; line-height:1.3;}
+  .hero p{font-size:14px; opacity:0.9; margin:0 0 16px; line-height:1.55;}
+  .quick-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .quick-card{
+    background:var(--card); border:1px solid var(--line); border-radius:12px;
+    padding:14px; text-align:left; cursor:pointer;
+  }
+  .quick-card .ic{font-size:20px; margin-bottom:6px; display:block;}
+  .quick-card .t{font-size:13.5px; font-weight:600; margin:0 0 2px;}
+  .quick-card .d{font-size:11.5px; color:var(--ink-soft); margin:0;}
+
+  /* ---------- SIGN UP - Apple-style ---------- */
+  .apple-screen{background:#fff; border-radius:20px; overflow:hidden; box-shadow:0 1px 2px rgba(0,0,0,0.05);}
+  .apple-head{padding:28px 22px 18px; text-align:center;}
+  .apple-head h2{font-size:22px; font-weight:700; margin:0 0 6px; letter-spacing:-0.3px;}
+  .apple-head p{font-size:14px; color:var(--ink-soft); margin:0; line-height:1.5;}
+  .apple-body{padding:4px 22px 26px;}
+  .apple-group{background:#F2F2F4; border-radius:14px; overflow:hidden; margin-bottom:18px;}
+  .apple-row{display:flex; align-items:center; padding:12px 14px; border-bottom:1px solid #E4E4E7;}
+  .apple-row:last-child{border-bottom:none;}
+  .apple-row .lab{font-size:14.5px; width:118px; flex-shrink:0; color:var(--ink);}
+  .apple-row input, .apple-row select{
+    flex:1; border:none; background:transparent; font-size:15px; padding:4px 0;
+    text-align:right; color:var(--ink); font-family:inherit;
+  }
+  .apple-row input:focus, .apple-row select:focus{outline:none;}
+  .seg{display:flex; background:#E9E9EC; border-radius:9px; padding:2px; margin-top:6px;}
+  .seg button{flex:1; border:none; background:transparent; padding:8px 4px; font-size:13px;
+    border-radius:7px; cursor:pointer; color:var(--ink);}
+  .seg button.sel{background:#fff; box-shadow:0 1px 2px rgba(0,0,0,0.15); font-weight:600;}
+  #claims-filter-seg{flex-wrap:wrap;}
+  #claims-filter-seg button{flex:1 1 auto; white-space:nowrap;}
+  .consent-box{background:#F2F2F4; border-radius:14px; padding:14px; font-size:12.5px; color:var(--ink-soft); line-height:1.55; margin-bottom:18px;}
+  .check-row{display:flex; align-items:flex-start; gap:10px; margin-bottom:12px;}
+  .check-row input{margin-top:3px;}
+  .check-row span{font-size:13px; line-height:1.5; color:var(--ink);}
+  .apple-btn{
+    width:100%; background:var(--teal-600); color:#fff; border:none; border-radius:14px;
+    padding:15px; font-size:16px; font-weight:600; cursor:pointer;
+  }
+  .apple-btn:active{opacity:0.85;}
+  .apple-foot{text-align:center; font-size:11.5px; color:#9A9A9E; margin-top:14px;}
+
+  /* ---------- claims / contact / delegates / docs ---------- */
+  .rep-card{display:flex; gap:12px; align-items:flex-start;}
+  .avatar{
+    width:44px; height:44px; border-radius:50%; background:var(--teal-50); color:var(--teal-800);
+    display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; flex-shrink:0;
+  }
+  .rep-name{font-weight:700; font-size:15px; margin:0 0 2px;}
+  .rep-role{font-size:12.5px; color:var(--ink-soft); margin:0 0 8px;}
+  .rep-actions{display:flex; gap:8px;}
+  .rep-actions a{
+    font-size:12.5px; font-weight:600; color:var(--teal-700,var(--teal-600));
+    border:1px solid var(--teal-600); padding:6px 10px; border-radius:8px; text-decoration:none;
+  }
+  .shift-dot{
+    display:inline-block; width:10px; height:10px; border-radius:50%;
+    margin-left:6px; vertical-align:middle; border:1px solid rgba(0,0,0,0.15);
+  }
+  .doc-row{display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--line);}
+  .doc-row:last-child{border-bottom:none;}
+  .doc-ic{width:34px; height:34px; border-radius:8px; background:var(--amber-50); color:var(--amber-800);
+    display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0;}
+  .doc-name{font-size:14px; font-weight:600; margin:0;}
+  .doc-meta{font-size:11.5px; color:var(--ink-soft); margin:0;}
+  .claim-item{border:1px solid var(--line); border-left:3px solid var(--amber-400); border-radius:10px; margin-bottom:12px; overflow:hidden;}
+  .claim-item:last-child{margin-bottom:0;}
+  .claim-toggle{
+    width:100%; display:flex; align-items:center; justify-content:space-between; gap:12px;
+    background:transparent; border:none; padding:14px 14px 14px 15px; text-align:left;
+    cursor:pointer; font-family:inherit; -webkit-tap-highlight-color:transparent;
+  }
+  .claim-toggle:hover{background:rgba(0,0,0,0.025);}
+  .claim-toggle:focus-visible{outline:2px solid var(--teal-600); outline-offset:-2px;}
+  .claim-toggle-text{display:flex; flex-direction:column; align-items:flex-start; gap:6px; min-width:0;}
+  .claim-title{margin:0; font-size:14.5px; font-weight:600; color:var(--ink); line-height:1.3;}
+  .claim-chevron{flex-shrink:0; color:var(--ink-soft); transition:transform 0.2s ease;}
+  .claim-toggle[aria-expanded="true"] .claim-chevron{transform:rotate(180deg);}
+  .claim-panel-wrap{display:grid; grid-template-rows:0fr; transition:grid-template-rows 0.25s ease;}
+  .claim-panel-wrap.open{grid-template-rows:1fr;}
+  .claim-panel-inner{overflow:hidden; min-height:0;}
+  .claim-field{margin:0 0 8px; font-size:13px; color:var(--ink-soft); line-height:1.5; padding:0 15px;}
+  .claim-field:first-child{margin-top:2px;}
+  .claim-field:last-child{margin-bottom:14px;}
+  .claim-label{display:block; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; color:var(--teal-700,var(--teal-600)); margin-bottom:2px;}
+
+  .event-row{display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--line);}
+  .event-row:last-child{border-bottom:none;}
+  .event-date{
+    flex-shrink:0; width:50px; text-align:center; background:var(--teal-50); color:var(--teal-800);
+    border-radius:9px; padding:6px 2px; font-weight:700;
+  }
+  .event-date .day{font-size:16px; line-height:1.1;}
+  .event-date .mon{font-size:10px; text-transform:uppercase; letter-spacing:0.4px;}
+  .event-text{font-size:14px; color:var(--ink); line-height:1.4;}
+  .event-empty{font-size:13px; color:var(--ink-soft); padding:6px 0;}
+
+  .toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--teal-900); color:#fff; padding:12px 20px; border-radius:10px;
+    font-size:13.5px; font-weight:500; opacity:0; pointer-events:none; transition:all .25s ease;
+    z-index:100; max-width:90%; text-align:center;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+  .copy-note{margin-top:18px; padding-top:16px; border-top:1px solid var(--line);}
+  .copy-note p{font-size:12.5px; color:var(--ink-soft); line-height:1.55; margin:0 0 10px;}
+  .copy-note a{color:var(--teal-600); font-weight:600;}
+</style>
+</head>
+<body>
+
+<!-- AUTH GATE -->
+<div id="auth-screen">
+  <header class="topbar">
+    <svg class="pulse-mark" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M2 12h4l2 7 4-14 2 7h8"/>
+    </svg>
+    <h1>WFA Ambulance Union</h1>
+  </header>
+  <main>
+
+    <!-- WELCOME / OPTION PICKER -->
+    <div class="auth-view active" id="auth-welcome">
+      <div class="hero" style="margin-top:8px;">
+        <h2>Welcome to your union hub</h2>
+        <p>Enter the union passcode, or join the union to get started.</p>
+      </div>
+      <div class="auth-options">
+        <button class="quick-card" onclick="showAuth('login')">
+          <span class="ic">🔑</span>
+          <p class="t">Member login</p>
+          <p class="d">Enter the union passcode</p>
+        </button>
+        <button class="quick-card" onclick="showAuth('join')">
+          <span class="ic">🤝</span>
+          <p class="t">Join the union</p>
+          <p class="d">Not a member yet</p>
+        </button>
+      </div>
+    </div>
+
+    <!-- LOGIN (shared union passcode, no personal accounts) -->
+    <div class="auth-view" id="auth-login">
+      <button class="back-btn" onclick="showAuth('welcome')">← Back</button>
+      <p class="section-title" style="margin-top:0;">Member login</p>
+      <p class="section-sub">Enter the union passcode to get in. This is shared by all members — ask your delegate if you don't have it.</p>
+      <div class="card">
+        <form id="login-form">
+          <label class="field-label" style="margin-top:0;">Passcode</label>
+          <input type="password" id="loginPasscode" placeholder="Enter passcode" autocomplete="off">
+          <button type="submit" class="btn" style="margin-top:16px;">Log in</button>
+        </form>
+      </div>
+      <p class="section-sub" style="text-align:center;">This is a prototype — the passcode is set in the site code and can be changed there.</p>
+    </div>
+
+    <!-- JOIN THE UNION (new members, full AWUNZ form) -->
+    <div class="auth-view" id="auth-join">
+      <button class="back-btn" onclick="showAuth('welcome')">← Back</button>
+      <div class="apple-screen">
+        <div class="apple-head">
+          <h2>Join the union</h2>
+          <p>Authority for membership &amp; authority to represent.<br>Takes about 3 minutes.</p>
+        </div>
+        <div class="apple-body">
+          <form id="signup-form">
+
+            <p class="field-label" style="margin-top:0;">Title</p>
+            <div class="seg" id="title-seg">
+              <button type="button" data-val="Ms" class="sel">Ms</button>
+              <button type="button" data-val="Mrs">Mrs</button>
+              <button type="button" data-val="Miss">Miss</button>
+              <button type="button" data-val="Mr">Mr</button>
+            </div>
+
+            <div class="apple-group" style="margin-top:18px;">
+              <div class="apple-row"><span class="lab">First names</span><input type="text" id="firstNames" placeholder="Required"></div>
+              <div class="apple-row"><span class="lab">Family name</span><input type="text" id="familyName" placeholder="Required"></div>
+            <div class="apple-row"><span class="lab">Date of birth</span><input type="date" id="dob"></div>
+          </div>
+
+          <p class="field-label">Gender</p>
+          <div class="seg" id="gender-seg">
+            <button type="button" data-val="Female" class="sel">Female</button>
+            <button type="button" data-val="Male">Male</button>
+            <button type="button" data-val="Prefer not to say">Prefer not to say</button>
+          </div>
+
+          <div class="apple-group" style="margin-top:18px;">
+            <div class="apple-row"><span class="lab">Ethnicity</span><input type="text" id="ethnicity" placeholder="Optional"></div>
+            <div class="apple-row"><span class="lab">Iwi (if Māori)</span><input type="text" id="iwi" placeholder="Optional"></div>
+          </div>
+
+          <p class="field-label">Contact</p>
+          <div class="apple-group">
+            <div class="apple-row"><span class="lab">Mobile</span><input type="tel" id="mobile" placeholder="Required"></div>
+            <div class="apple-row"><span class="lab">Personal email</span><input type="email" id="emailHome" placeholder="Required"></div>
+            <div class="apple-row"><span class="lab">Work email</span><input type="email" id="emailWork" placeholder="Optional"></div>
+          </div>
+
+          <p class="field-label">Address</p>
+          <div class="apple-group">
+            <div class="apple-row"><span class="lab">Home address</span><input type="text" id="homeAddress" placeholder="Required"></div>
+            <div class="apple-row"><span class="lab">Postcode</span><input type="text" id="postcode" placeholder="Required"></div>
+          </div>
+
+          <p class="field-label">Employment</p>
+          <div class="apple-group">
+            <div class="apple-row"><span class="lab">Employer</span><input type="text" id="employer" placeholder="Wellington Free Ambulance"></div>
+            <div class="apple-row"><span class="lab">Payroll no.</span><input type="text" id="payroll" placeholder="If known"></div>
+            <div class="apple-row"><span class="lab">Business unit</span><input type="text" id="section" placeholder="Required"></div>
+            <div class="apple-row"><span class="lab">Job title</span><input type="text" id="jobTitle" placeholder="Required"></div>
+          </div>
+
+          <div class="consent-box">
+            I authorise my employer to deduct union fees from my wages for this and subsequent employment with this employer (including seasonal, temporary or casual employment). I agree to be bound by the rules of the union and authorise the union to represent me in relation to my collective and individual employment interests, consistent with the union's terms of membership.
+          </div>
+
+          <div class="check-row">
+            <input type="checkbox" id="agree1">
+            <span>I have read and agree to the terms of membership and authority to represent.</span>
+          </div>
+          <div class="check-row">
+            <input type="checkbox" id="agree2">
+            <span>I authorise wage deductions for union fees as set by the union from time to time.</span>
+          </div>
+
+          <p class="field-label">Signature (type full name)</p>
+          <div class="apple-group">
+            <div class="apple-row"><span class="lab">Signature</span><input type="text" id="signature" placeholder="Full name"></div>
+            <div class="apple-row"><span class="lab">Date</span><input type="date" id="signDate"></div>
+          </div>
+
+          <button type="submit" class="apple-btn" style="margin-top:8px;">Submit application</button>
+          <p class="apple-foot">Your details are sent securely to the union office and kept private.</p>
+        </form>
+      </div>
+    </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- APP (post-login) -->
+<div id="app-shell" style="display:none;">
+<header class="topbar">
+  <svg class="pulse-mark" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M2 12h4l2 7 4-14 2 7h8"/>
+  </svg>
+  <h1>WFA Ambulance Union</h1>
+</header>
+<main>
+
+  <!-- HOME -->
+  <section class="view active" id="view-home">
+    <div class="quick-grid">
+      <button class="quick-card" onclick="showView('claims')">
+        <span class="ic">💡</span>
+        <p class="t">Submit a claim</p>
+        <p class="d">Negotiations & feedback</p>
+      </button>
+      <button class="quick-card" onclick="openHighlights()">
+        <span class="ic">🌟</span>
+        <p class="t">Submit highlights</p>
+        <p class="d">Share what's going well</p>
+      </button>
+      <button class="quick-card" onclick="showView('contact')">
+        <span class="ic">📞</span>
+        <p class="t">Contact a rep</p>
+        <p class="d">Email or call for support</p>
+      </button>
+      <button class="quick-card" onclick="showView('delegates')">
+        <span class="ic">🧑‍🤝‍🧑</span>
+        <p class="t">Delegates</p>
+        <p class="d">Meet your reps for negotiations</p>
+      </button>
+      <button class="quick-card" onclick="showView('documents')">
+        <span class="ic">🗂️</span>
+        <p class="t">Documents</p>
+        <p class="d">Contract & resources</p>
+      </button>
+      <button class="quick-card" onclick="showView('board')">
+        <span class="ic">📌</span>
+        <p class="t">Claims board</p>
+        <p class="d">Current claims & forum items</p>
+      </button>
+      <button class="quick-card" onclick="logout()">
+        <span class="ic">🚪</span>
+        <p class="t">Log out</p>
+        <p class="d">Back to login screen</p>
+      </button>
+    </div>
+    <hr class="hr">
+    <p class="section-title" style="font-size:16px;">Upcoming union events</p>
+    <div class="card" id="home-events-list"></div>
+  </section>
+
+  <!-- CLAIMS SUBMISSION -->
+  <section class="view" id="view-claims">
+    <button class="back-btn" onclick="showView('home')">← Home</button>
+    <p class="section-title">Submit a claim or feedback</p>
+    <p class="section-sub">Naming the root cause helps us craft claims that actually fix the problem.</p>
+
+    <div class="card">
+      <form id="claims-form">
+        <label class="field-label" style="margin-top:0;">What's the problem?</label>
+        <textarea id="claimObservation" placeholder="e.g. Night shift crews are regularly running back-to-back double shifts..."></textarea>
+
+        <div class="seg" id="rootcause-seg" style="margin-top:14px;">
+          <button type="button" data-val="This is the root cause" class="sel">This is the root cause</button>
+          <button type="button" data-val="It's a symptom of something deeper">It's a symptom of something deeper</button>
+          <button type="button" data-val="Not sure">Not sure</button>
+        </div>
+        <textarea id="claimRootCause" placeholder="e.g. Roster gaps caused by understaffing on rural routes..." style="margin-top:10px;"></textarea>
+
+        <label class="field-label">Your claim or proposed solution</label>
+        <textarea id="claimSolution" placeholder="e.g. Add two additional rostered positions to rural routes to remove the need for back-to-back doubles..."></textarea>
+
+        <button type="submit" class="btn amber" style="margin-top:16px;">Submit</button>
+
+        <div class="copy-note">
+          <p>On desktop without a mail app? Copy your submission below and paste it into an email to <a href="mailto:union.wfa@gmail.com">union.wfa@gmail.com</a> — formatting will be preserved.</p>
+          <button type="button" class="btn secondary" id="copy-claim-btn" onclick="copyClaim()">📋 Copy submission</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- HIGHLIGHTS SUBMISSION (two-step) -->
+  <section class="view" id="view-highlights">
+    <button class="back-btn" onclick="showView('home')">← Home</button>
+    <p class="section-title">Submit highlights</p>
+    <p class="section-sub">Sharing what's working helps us protect it and build on it.</p>
+
+    <div class="card">
+      <p class="step-indicator" id="highlights-step-indicator">Step 1 of 2</p>
+
+      <form id="highlights-form">
+        <div id="highlights-step-1">
+          <label class="field-label" style="margin-top:0;">What's going well?</label>
+          <textarea id="highlightGood" placeholder="e.g. New defib stock arrived at Porirua ahead of schedule..."></textarea>
+          <button type="button" class="btn amber" style="margin-top:16px;" onclick="goToHighlightsStep(2)">Next</button>
+        </div>
+
+        <div id="highlights-step-2" style="display:none;">
+          <label class="field-label" style="margin-top:0;">Why do you think this makes work better?</label>
+          <textarea id="highlightWhy" placeholder="e.g. Crews can respond faster and with more confidence during cardiac events..."></textarea>
+          <div style="display:flex; gap:10px; margin-top:16px;">
+            <button type="button" class="btn secondary" onclick="goToHighlightsStep(1)">Back</button>
+            <button type="submit" class="btn amber" style="flex:1;">Submit</button>
+          </div>
+
+          <div class="copy-note">
+            <p>On desktop without a mail app? Copy your submission below and paste it into an email to <a href="mailto:union.wfa@gmail.com">union.wfa@gmail.com</a> — formatting will be preserved.</p>
+            <button type="button" class="btn secondary" id="copy-highlight-btn" onclick="copyHighlight()">📋 Copy submission</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- CONTACT REPS -->
+
+  <section class="view" id="view-contact">
+    <button class="back-btn" onclick="showView('home')">← Home</button>
+    <p class="section-title">Contact a rep</p>
+    <p class="section-sub">Reach out directly for support with an issue at work, a meeting, or general questions.</p>
+    <div id="reps-list"></div>
+  </section>
+
+  <!-- DELEGATES -->
+  <section class="view" id="view-delegates">
+    <button class="back-btn" onclick="showView('home')">← Home</button>
+    <p class="section-title">Delegates & reps</p>
+    <p class="section-sub">Full delegate directory.</p>
+    <div id="delegates-list"></div>
+  </section>
+
+  <!-- DOCUMENTS -->
+  <section class="view" id="view-documents">
+    <button class="back-btn" onclick="showView('home')">← Home</button>
+    <p class="section-title">Documents</p>
+    <p class="section-sub">The current contract, forms, and union resources.</p>
+    <div class="card" id="documents-list"></div>
+    <a class="btn secondary" style="margin-top:2px; margin-bottom:16px;" id="docs-folder-link" href="#" target="_blank" rel="noopener">Open full documents folder</a>
+    <p class="section-sub">Proof of concept — document links currently come from a personal Google Drive. This will be swapped to the union's own shared Drive once it's set up; delegates will then add or update files by editing a row in the spreadsheet, no code changes needed.</p>
+  </section>
+
+  <!-- CLAIMS BOARD (delegate-posted, free text cards) -->
+  <section class="view" id="view-board">
+    <button class="back-btn" onclick="showView('home')">← Home</button>
+    <p class="section-title">Current claims & discussion points</p>
+    <p class="section-sub">Posted by delegates ahead of the next partnership forum.</p>
+    <div class="seg" id="claims-filter-seg" style="margin-bottom:14px;">
+      <button type="button" data-val="Contract Negotiation" class="sel">Contract Negotiation</button>
+      <button type="button" data-val="Partnership Forum">Partnership Forum</button>
+      <button type="button" data-val="Highlights">Highlights</button>
+    </div>
+    <div class="card" id="claims-board-list"></div>
+  </section>
+
+</main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* =========================================================================
+   SITE CONFIG — everything below is pulled live from a Google Sheet, so
+   NOTHING in this file needs to be edited to change the passcode, the
+   documents link, the events list, the reps/delegates, or the claims
+   board. Whoever manages the union side just edits the Sheet — no code.
+
+   ONE-TIME TECHNICAL SETUP (done once by whoever deploys this site):
+   1. Create a Google Sheet with six tabs: "Config", "Events", "Documents",
+      "Reps", "Delegates", "ClaimsBoard".
+   2. Config tab: columns "key" / "value", with rows:
+        member_passcode   | <the passcode members use to log in>
+        docs_folder_url   | <link to the full shared Google Drive folder>
+   3. Events tab: columns "date" / "event", one row per event, date as
+      YYYY-MM-DD, e.g.  2026-12-28 | Contract negotiation
+   4. Documents tab: columns "name" / "link", one row per document, e.g.
+      Collective agreement 2024–2026 | <Google Drive share link for that file>
+   5. Reps tab: columns "name" / "business_unit" / "shift_colour" /
+      "email" / "phone", one row per rep. shift_colour is optional — leave
+      blank, or use a colour name/hex code (e.g. "red" or "#E23D3D") to
+      show a small coloured dot next to that person's name.
+   6. Delegates tab: same five columns as Reps, one row per delegate.
+   7. ClaimsBoard tab: columns "title" / "tag" / "problem" / "service_impact" /
+      "proposed_clause" / "implementation_considerations", one row per card.
+      tag is optional and shows as a small label. The Claims board page filters
+      by exactly three tag values — "Contract Negotiation", "Partnership
+      Forum", and "Highlights" — so a card needs its tag spelled exactly one
+      of those three ways to show up under that filter (any other tag text,
+      or a blank tag, just won't appear under any filter option). problem,
+      service_impact, proposed_clause, and implementation_considerations are
+      all optional too — fill in whichever apply, leave the rest blank, and
+      only the fields with content will show on that card.
+   8. For each of the six tabs: File > Share > Publish to web > select
+      that tab > format CSV > Publish, then paste the resulting link below.
+   9. After that, editing the Sheet is the only thing anyone needs to do —
+      a new row = a new item on the site, no code changes.
+
+   The fallback values below are only used if a Sheet link hasn't been set
+   yet, or if the Sheet is temporarily unreachable (e.g. offline).
+   ========================================================================= */
+
+const CONFIG_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vScpso7m6gy0Kn1mWRx42tN0nNK2ixMmlUukbnsbnUrCY_Qmn5F9UTdmUG5wCtUAw/pub?gid=1147758967&single=true&output=csv';
+const EVENTS_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vScpso7m6gy0Kn1mWRx42tN0nNK2ixMmlUukbnsbnUrCY_Qmn5F9UTdmUG5wCtUAw/pub?gid=1416538233&single=true&output=csv';
+const DOCUMENTS_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vScpso7m6gy0Kn1mWRx42tN0nNK2ixMmlUukbnsbnUrCY_Qmn5F9UTdmUG5wCtUAw/pub?gid=1785275254&single=true&output=csv';
+const REPS_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vScpso7m6gy0Kn1mWRx42tN0nNK2ixMmlUukbnsbnUrCY_Qmn5F9UTdmUG5wCtUAw/pub?gid=224509907&single=true&output=csv';
+const DELEGATES_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vScpso7m6gy0Kn1mWRx42tN0nNK2ixMmlUukbnsbnUrCY_Qmn5F9UTdmUG5wCtUAw/pub?gid=2002818382&single=true&output=csv';
+const CLAIMSBOARD_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vScpso7m6gy0Kn1mWRx42tN0nNK2ixMmlUukbnsbnUrCY_Qmn5F9UTdmUG5wCtUAw/pub?gid=1211805192&single=true&output=csv';
+
+let UNION_PASSCODE = 'wfa2026';
+let DOCS_FOLDER_URL = 'https://drive.google.com/drive/folders/REPLACE_WITH_YOUR_FOLDER_ID';
+let UNION_EVENTS = [
+  { date: '2026-12-28', text: 'Contract negotiation' },
+  { date: '2026-08-15', text: 'Delegate meeting — Wellington Station' },
+  { date: '2026-09-02', text: 'Partnership forum' }
+];
+let UNION_DOCS = [];
+let UNION_REPS = [
+  { name: 'Danya Klapaukh', business_unit: 'Wellington Station', shift_colour: '', email: 'danya.klapaukh@example.org', phone: '+6421000001' },
+  { name: 'Alesha Hazelwood', business_unit: 'Porirua Base', shift_colour: '', email: 'alesha.hazelwood@example.org', phone: '+6421000002' },
+  { name: 'Rodney Parnell', business_unit: 'Hutt Valley Base', shift_colour: '', email: 'rodney.parnell@example.org', phone: '+6421000003' }
+];
+let UNION_DELEGATES = [
+  { name: 'Danya Klapaukh', business_unit: 'Wellington Station', shift_colour: '', email: 'danya.klapaukh@example.org', phone: '+6421000001' },
+  { name: 'Alesha Hazelwood', business_unit: 'Porirua Base', shift_colour: '', email: 'alesha.hazelwood@example.org', phone: '+6421000002' },
+  { name: 'Rodney Parnell', business_unit: 'Hutt Valley Base', shift_colour: '', email: 'rodney.parnell@example.org', phone: '+6421000003' }
+];
+let UNION_CLAIMS = [
+  {
+    title: 'Roster fatigue review',
+    tag: 'Contract Negotiation',
+    problem: 'Roster fatigue on rural rosters',
+    service_impact: 'Increased error risk and burnout during frequent double shifts.',
+    proposed_clause: 'Cap double-shift frequency to once per fortnight on rural rosters.',
+    implementation_considerations: 'Requires a roster review with rural base leads before the next cycle.'
+  },
+  {
+    title: 'New defib stock at Porirua',
+    tag: 'Highlights',
+    problem: '',
+    service_impact: '',
+    proposed_clause: '',
+    implementation_considerations: 'Thanks to management for fast-tracking new defib stock at Porirua this quarter — going well.'
+  },
+  {
+    title: 'Uniform replacement cycle',
+    tag: 'Partnership Forum',
+    problem: 'Uniform replacement cycle is too long for high-wear items',
+    service_impact: '',
+    proposed_clause: 'Shorten the replacement cycle for boots and outerwear.',
+    implementation_considerations: ''
+  }
+];
+
+function parseCSVLine(line){
+  const result = [];
+  let cur = '', inQuotes = false;
+  for(let i=0;i<line.length;i++){
+    const c = line[i];
+    if(inQuotes){
+      if(c === '"'){
+        if(line[i+1] === '"'){ cur += '"'; i++; }
+        else inQuotes = false;
+      } else cur += c;
+    } else {
+      if(c === '"') inQuotes = true;
+      else if(c === ','){ result.push(cur); cur = ''; }
+      else cur += c;
+    }
+  }
+  result.push(cur);
+  return result.map(s => s.trim());
+}
+
+// Shared fetch+parse used by every loader below. Returns an array of parsed
+// rows (header row already stripped), or null if the URL isn't set yet or
+// the fetch failed — callers fall back to their hardcoded defaults on null.
+async function fetchSheetRows(url){
+  if(!url || url.startsWith('PASTE_')) return null;
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 6000);
+  try{
+    const res = await fetch(url, {cache:'no-store', signal: controller.signal});
+    const text = await res.text();
+    const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+    return lines.slice(1).map(parseCSVLine);
+  }catch(err){
+    return null; // network blocked, timed out, or unreachable — caller falls back to defaults
+  }finally{
+    clearTimeout(timeoutId);
+  }
+}
+
+async function loadConfig(){
+  const rows = await fetchSheetRows(CONFIG_SHEET_CSV_URL);
+  if(!rows) return;
+  rows.forEach(([key, value]) => {
+    if(!key) return;
+    const k = key.toLowerCase();
+    if(k === 'member_passcode' && value) UNION_PASSCODE = value;
+    if(k === 'docs_folder_url' && value) DOCS_FOLDER_URL = value;
+  });
+}
+
+async function loadEvents(){
+  const rows = await fetchSheetRows(EVENTS_SHEET_CSV_URL);
+  if(!rows) return;
+  const valid = rows.filter(r => r[0] && r[1]);
+  if(valid.length) UNION_EVENTS = valid.map(r => ({date: r[0], text: r[1]}));
+}
+
+async function loadDocuments(){
+  const rows = await fetchSheetRows(DOCUMENTS_SHEET_CSV_URL);
+  if(!rows) return;
+  UNION_DOCS = rows.filter(r => r[0] && r[1]).map(r => ({name: r[0], link: r[1]}));
+}
+
+async function loadPeopleSheet(url){
+  const rows = await fetchSheetRows(url);
+  if(!rows) return null;
+  const valid = rows.filter(r => r[0]);
+  if(!valid.length) return null;
+  return valid.map(r => ({
+    name: r[0] || '',
+    business_unit: r[1] || '',
+    shift_colour: r[2] || '',
+    email: r[3] || '',
+    phone: r[4] || ''
+  }));
+}
+
+async function loadReps(){
+  const rows = await loadPeopleSheet(REPS_SHEET_CSV_URL);
+  if(rows) UNION_REPS = rows;
+}
+
+async function loadDelegates(){
+  const rows = await loadPeopleSheet(DELEGATES_SHEET_CSV_URL);
+  if(rows) UNION_DELEGATES = rows;
+}
+
+async function loadClaimsBoard(){
+  const rows = await fetchSheetRows(CLAIMSBOARD_SHEET_CSV_URL);
+  if(!rows) return;
+  const valid = rows
+    .map(r => ({
+      title: r[0] || '',
+      tag: r[1] || '',
+      problem: r[2] || '',
+      service_impact: r[3] || '',
+      proposed_clause: r[4] || '',
+      implementation_considerations: r[5] || ''
+    }))
+    .filter(c => c.title || c.tag || c.problem || c.service_impact || c.proposed_clause || c.implementation_considerations);
+  if(valid.length) UNION_CLAIMS = valid;
+}
+
+const configPromise = loadConfig();
+const eventsPromise = loadEvents();
+const documentsPromise = loadDocuments();
+const repsPromise = loadReps();
+const delegatesPromise = loadDelegates();
+const claimsBoardPromise = loadClaimsBoard();
+
+/* ========================================================================= */
+
+// Every value below comes from a spreadsheet that isn't only editable by
+// developers, so it's treated as untrusted input, not trusted code. These
+// two helpers keep it that way: escapeHTML stops a stray "<" or quote in a
+// name or claim from being interpreted as markup (stored XSS), and safeURL
+// stops a link column from being anything other than a genuine http(s) link
+// (e.g. a "javascript:" URL) before it's ever placed in an href.
+function escapeHTML(str){
+  return String(str ?? '').replace(/[&<>"']/g, ch => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[ch]));
+}
+
+function safeURL(url){
+  try{
+    const parsed = new URL(String(url ?? ''), window.location.href);
+    if(parsed.protocol === 'http:' || parsed.protocol === 'https:') return parsed.href;
+  }catch(err){ /* fall through */ }
+  return '';
+}
+
+function initials(name){
+  return (name || '').split(' ').filter(Boolean).map(w => w[0]).join('').toUpperCase().slice(0,2);
+}
+
+function renderPeople(containerId, people){
+  const list = document.getElementById(containerId);
+  if(!people.length){
+    list.innerHTML = '<p class="event-empty">No one listed yet.</p>';
+    return;
+  }
+  list.innerHTML = people.map(p => `
+    <div class="card rep-card">
+      <div class="avatar">${escapeHTML(initials(p.name))}</div>
+      <div>
+        <p class="rep-name">${escapeHTML(p.name)}${p.shift_colour ? ` <span class="shift-dot" style="background:${escapeHTML(p.shift_colour)}" title="Shift colour: ${escapeHTML(p.shift_colour)}"></span>` : ''}</p>
+        <p class="rep-role">${escapeHTML(p.business_unit)}</p>
+        <div class="rep-actions">
+          ${p.email ? `<a href="mailto:${escapeHTML(p.email)}">Email</a>` : ''}
+          ${p.phone ? `<a href="tel:${escapeHTML(p.phone)}">Call</a>` : ''}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderReps(){ renderPeople('reps-list', UNION_REPS); }
+function renderDelegates(){ renderPeople('delegates-list', UNION_DELEGATES); }
+
+let claimsFilter = 'Contract Negotiation';
+
+function renderClaimsBoard(){
+  const list = document.getElementById('claims-board-list');
+  const filtered = UNION_CLAIMS.filter(c => c.tag === claimsFilter);
+  if(!filtered.length){
+    list.innerHTML = '<p class="event-empty">Nothing posted under this filter yet.</p>';
+    return;
+  }
+  const fields = [
+    ['problem', 'Problem'],
+    ['service_impact', 'Service impact'],
+    ['proposed_clause', 'Proposed clause'],
+    ['implementation_considerations', 'Implementation considerations']
+  ];
+  list.innerHTML = filtered.map((c, i) => `
+    <div class="claim-item">
+      <button type="button" class="claim-toggle" id="claim-toggle-${i}" aria-expanded="false" aria-controls="claim-panel-${i}" onclick="toggleClaim(${i})">
+        <span class="claim-toggle-text">
+          ${c.title ? `<span class="claim-title">${escapeHTML(c.title)}</span>` : ''}
+          ${c.tag ? `<span class="pill">${escapeHTML(c.tag)}</span>` : ''}
+        </span>
+        <svg class="claim-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="claim-panel-wrap" id="claim-panel-${i}" role="region" aria-labelledby="claim-toggle-${i}">
+        <div class="claim-panel-inner">
+          ${fields.map(([key, label]) => c[key]
+            ? `<p class="claim-field"><span class="claim-label">${label}</span>${escapeHTML(c[key])}</p>`
+            : ''
+          ).join('')}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleClaim(i){
+  const btn = document.getElementById('claim-toggle-'+i);
+  const panel = document.getElementById('claim-panel-'+i);
+  const isOpen = btn.getAttribute('aria-expanded') === 'true';
+  btn.setAttribute('aria-expanded', String(!isOpen));
+  panel.classList.toggle('open', !isOpen);
+}
+
+function renderDocuments(){
+  const list = document.getElementById('documents-list');
+  if(!UNION_DOCS.length){
+    list.innerHTML = '<p class="event-empty">No documents listed yet.</p>';
+    return;
+  }
+  list.innerHTML = UNION_DOCS.map(doc => {
+    const href = safeURL(doc.link);
+    if(!href) return '';
+    return `
+    <a class="doc-row" href="${escapeHTML(href)}" target="_blank" rel="noopener" style="text-decoration:none; color:inherit;">
+      <div class="doc-ic">📄</div>
+      <div><p class="doc-name">${escapeHTML(doc.name)}</p><p class="doc-meta">Opens in Google Drive</p></div>
+    </a>
+  `;
+  }).join('');
+}
+
+function renderEvents(){
+  const list = document.getElementById('home-events-list');
+  const today = new Date(); today.setHours(0,0,0,0);
+  const upcoming = UNION_EVENTS
+    .map(ev => ({...ev, d: new Date(ev.date + 'T00:00:00')}))
+    .filter(ev => ev.d >= today)
+    .sort((a,b) => a.d - b.d);
+
+  if(upcoming.length === 0){
+    list.innerHTML = '<p class="event-empty">No upcoming events posted right now.</p>';
+    return;
+  }
+
+  const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  list.innerHTML = upcoming.map(ev => `
+    <div class="event-row">
+      <div class="event-date"><div class="day">${ev.d.getDate()}</div><div class="mon">${months[ev.d.getMonth()]}</div></div>
+      <div class="event-text">${escapeHTML(ev.text)}</div>
+    </div>
+  `).join('');
+}
+
+function showView(name){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function showAuth(name){
+  document.querySelectorAll('.auth-view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('auth-'+name).classList.add('active');
+  if(name === 'login'){
+    window.scrollTo({top:0,behavior:'auto'});
+    const passcodeField = document.getElementById('loginPasscode');
+    passcodeField.focus();
+    setTimeout(() => passcodeField.focus(), 60);
+  } else {
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+}
+
+// Guards against a fetch that stalls instead of failing outright (some
+// networks/extensions leave a blocked request pending rather than erroring).
+// Without this, code awaiting that promise would hang forever with no
+// error and no way forward — this guarantees it gives up after `ms`.
+function withTimeout(promise, ms){
+  return Promise.race([
+    promise,
+    new Promise(resolve => setTimeout(resolve, ms))
+  ]);
+}
+
+async function enterApp(){
+  await withTimeout(Promise.all([eventsPromise, documentsPromise, repsPromise, delegatesPromise, claimsBoardPromise]), 5000);
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app-shell').style.display = 'block';
+  const folderLink = document.getElementById('docs-folder-link');
+  const folderHref = safeURL(DOCS_FOLDER_URL);
+  if(folderHref){
+    folderLink.href = folderHref;
+    folderLink.style.display = '';
+  } else {
+    folderLink.style.display = 'none';
+  }
+  renderEvents();
+  renderDocuments();
+  renderReps();
+  renderDelegates();
+  renderClaimsBoard();
+  showView('home');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function logout(){
+  document.getElementById('app-shell').style.display = 'none';
+  document.getElementById('auth-screen').style.display = 'block';
+  document.getElementById('loginPasscode').value = '';
+  showAuth('welcome');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+async function handleLogin(){
+  const entered = document.getElementById('loginPasscode').value.trim();
+  if(!entered){
+    showToast('Enter the union passcode to continue.');
+    return;
+  }
+  await withTimeout(configPromise, 5000);
+  if(entered !== UNION_PASSCODE){
+    showToast('Incorrect passcode. Check with your delegate if unsure.');
+    return;
+  }
+  enterApp();
+}
+
+document.getElementById('login-form').addEventListener('submit', e => {
+  e.preventDefault();
+  handleLogin();
+});
+
+document.querySelectorAll('.seg').forEach(seg=>{
+  seg.addEventListener('click', e=>{
+    const btn = e.target.closest('button');
+    if(!btn) return;
+    seg.querySelectorAll('button').forEach(b=>b.classList.remove('sel'));
+    btn.classList.add('sel');
+  });
+});
+
+document.getElementById('claims-filter-seg').addEventListener('click', e => {
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  claimsFilter = btn.dataset.val;
+  renderClaimsBoard();
+});
+
+function openHighlights(){
+  showView('highlights');
+  goToHighlightsStep(1);
+}
+
+function goToHighlightsStep(step){
+  document.getElementById('highlights-step-1').style.display = step === 1 ? '' : 'none';
+  document.getElementById('highlights-step-2').style.display = step === 2 ? '' : 'none';
+  document.getElementById('highlights-step-indicator').textContent = `Step ${step} of 2`;
+  if(step === 1){
+    document.getElementById('highlightGood').focus();
+  } else {
+    document.getElementById('highlightWhy').focus();
+  }
+}
+
+function copyClaim(){
+  const observation = document.getElementById('claimObservation').value.trim();
+  const rootCauseChoice = document.querySelector('#rootcause-seg .sel').dataset.val;
+  const rootCause = document.getElementById('claimRootCause').value.trim();
+  const solution = document.getElementById('claimSolution').value.trim();
+
+  if(!observation && !rootCause && !solution){
+    showToast('Fill in your submission first.');
+    return;
+  }
+
+  const html = `<p>A claim has been submitted via the WFA Union member portal.</p>
+<hr>
+<p><strong>What was observed</strong><br>${observation || '—'}</p>
+<p><strong>Root cause assessment</strong><br>${rootCauseChoice}</p>
+<p><strong>Underlying cause</strong><br>${rootCause || '—'}</p>
+<p><strong>Proposed claim / solution</strong><br>${solution || '—'}</p>
+<hr>
+<p><em>Submitted via the WFA Union member portal.</em></p>`;
+
+  const el = document.createElement('div');
+  el.contentEditable = true;
+  el.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;';
+  el.innerHTML = html;
+  document.body.appendChild(el);
+
+  const range = document.createRange();
+  range.selectNodeContents(el);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+
+  let success = false;
+  try {
+    success = document.execCommand('copy');
+  } catch(e){}
+
+  sel.removeAllRanges();
+  document.body.removeChild(el);
+
+  const btn = document.getElementById('copy-claim-btn');
+  if(success){
+    btn.textContent = '✅ Copied';
+    setTimeout(()=>{ btn.textContent = '📋 Copy submission'; }, 2000);
+    showToast('Copied — paste directly into your email.');
+  } else {
+    showToast('Could not copy. Try selecting and copying manually.');
+  }
+}
+
+function copyHighlight(){
+  const good = document.getElementById('highlightGood').value.trim();
+  const why = document.getElementById('highlightWhy').value.trim();
+
+  if(!good && !why){
+    showToast('Fill in your submission first.');
+    return;
+  }
+
+  const html = `<p>A highlight has been submitted via the WFA Union member portal.</p>
+<hr>
+<p><strong>What's going well</strong><br>${good || '—'}</p>
+<p><strong>Why this makes work better</strong><br>${why || '—'}</p>
+<hr>
+<p><em>Submitted via the WFA Union member portal.</em></p>`;
+
+  const el = document.createElement('div');
+  el.contentEditable = true;
+  el.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;';
+  el.innerHTML = html;
+  document.body.appendChild(el);
+
+  const range = document.createRange();
+  range.selectNodeContents(el);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+
+  let success = false;
+  try {
+    success = document.execCommand('copy');
+  } catch(e){}
+
+  sel.removeAllRanges();
+  document.body.removeChild(el);
+
+  const btn = document.getElementById('copy-highlight-btn');
+  if(success){
+    btn.textContent = '✅ Copied';
+    setTimeout(()=>{ btn.textContent = '📋 Copy submission'; }, 2000);
+    showToast('Copied — paste directly into your email.');
+  } else {
+    showToast('Could not copy. Try selecting and copying manually.');
+  }
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2600);
+}
+
+document.getElementById('signup-form').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const required = ['firstNames','familyName','mobile','emailHome','homeAddress','postcode','section','jobTitle','signature'];
+  for(const id of required){
+    if(!document.getElementById(id).value.trim()){
+      document.getElementById(id).focus();
+      showToast('Please fill in all required fields.');
+      return;
+    }
+  }
+  if(!document.getElementById('agree1').checked || !document.getElementById('agree2').checked){
+    showToast('Please agree to both authorisations to continue.');
+    return;
+  }
+
+  const g = id => document.getElementById(id).value;
+  const title = document.querySelector('#title-seg .sel').dataset.val;
+  const gender = document.querySelector('#gender-seg .sel').dataset.val;
+
+  // Application body — password deliberately excluded
+  const body =
+`New membership application received via the WFA Union website.
+
+PERSONAL DETAILS
+Title: ${title}
+First names: ${g('firstNames')}
+Family name: ${g('familyName')}
+Date of birth: ${g('dob')}
+Gender: ${gender}
+Ethnicity: ${g('ethnicity') || '—'}
+Iwi: ${g('iwi') || '—'}
+
+CONTACT
+Mobile: ${g('mobile')}
+Personal email: ${g('emailHome')}
+Work email: ${g('emailWork') || '—'}
+
+HOME ADDRESS
+${g('homeAddress')}, ${g('postcode')}
+
+EMPLOYMENT
+Employer: ${g('employer') || 'Wellington Free Ambulance'}
+Payroll no.: ${g('payroll') || '—'}
+Business unit: ${g('section')}
+Job title: ${g('jobTitle')}
+
+AUTHORISATIONS AGREED
+✓ Terms of membership and authority to represent
+✓ Wage deductions for union fees
+
+Signature: ${g('signature')}
+Date: ${g('signDate')}
+
+This application was submitted via the WFA Union member portal.`;
+
+  const subject = `New union membership application — ${g('firstNames')} ${g('familyName')}`;
+  const mailto = `mailto:union.wfa@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.location.href = mailto;
+
+  showToast('Opening your mail app…');
+  e.target.reset();
+  document.querySelectorAll('#title-seg button').forEach(b=>b.classList.remove('sel'));
+  document.querySelector('#title-seg button').classList.add('sel');
+  document.querySelectorAll('#gender-seg button').forEach(b=>b.classList.remove('sel'));
+  document.querySelector('#gender-seg button').classList.add('sel');
+  setTimeout(()=>showAuth('welcome'), 1400);
+});
+
+document.getElementById('claims-form').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const observation = document.getElementById('claimObservation').value.trim();
+  const rootCause = document.getElementById('claimRootCause').value.trim();
+  const solution = document.getElementById('claimSolution').value.trim();
+  if(!observation || !rootCause || !solution){
+    showToast('Please fill in all three fields before submitting.');
+    return;
+  }
+  const rootCauseChoice = document.querySelector('#rootcause-seg .sel').dataset.val;
+  const body =
+`A claim has been submitted via the WFA Union member portal.
+
+What was observed
+${observation}
+
+Root cause assessment
+${rootCauseChoice}
+
+Underlying cause
+${rootCause}
+
+Proposed claim / solution
+${solution}
+
+Submitted via the WFA Union member portal.`;
+
+  const mailto = `mailto:union.wfa@gmail.com?subject=${encodeURIComponent('Union claim submission')}&body=${encodeURIComponent(body)}`;
+  window.location.href = mailto;
+
+  showToast('Opening your mail app…');
+  document.getElementById('claims-form').reset();
+  document.querySelectorAll('#rootcause-seg button').forEach(b=>b.classList.remove('sel'));
+  document.querySelector('#rootcause-seg button').classList.add('sel');
+});
+
+document.getElementById('highlights-form').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const good = document.getElementById('highlightGood').value.trim();
+  const why = document.getElementById('highlightWhy').value.trim();
+  if(!good || !why){
+    showToast('Please fill in both fields before submitting.');
+    return;
+  }
+  const body =
+`A highlight has been submitted via the WFA Union member portal.
+
+What's going well
+${good}
+
+Why this makes work better
+${why}
+
+Submitted via the WFA Union member portal.`;
+
+  const mailto = `mailto:union.wfa@gmail.com?subject=${encodeURIComponent('Union highlight submission')}&body=${encodeURIComponent(body)}`;
+  window.location.href = mailto;
+
+  showToast('Opening your mail app…');
+  document.getElementById('highlights-form').reset();
+  goToHighlightsStep(1);
+});
+
+</script>
+</body>
+</html>
