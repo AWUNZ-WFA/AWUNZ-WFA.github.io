@@ -396,17 +396,17 @@
     <div class="card">
       <form id="claims-form">
         <label class="field-label" style="margin-top:0;">What's the problem?</label>
-        <textarea id="claimObservation" placeholder="e.g. Night shift crews are regularly running back-to-back double shifts..."></textarea>
+        <textarea id="claimObservation" placeholder="e.g. I don't like the fruit boxes..."></textarea>
 
         <div class="seg" id="rootcause-seg" style="margin-top:14px;">
           <button type="button" data-val="This is the root cause" class="sel">This is the root cause</button>
           <button type="button" data-val="It's a symptom of something deeper">It's a symptom of something deeper</button>
           <button type="button" data-val="Not sure">Not sure</button>
         </div>
-        <textarea id="claimRootCause" placeholder="e.g. Roster gaps caused by understaffing on rural routes..." style="margin-top:10px;"></textarea>
+        <textarea id="claimRootCause" placeholder="e.g. There's never any bananas left for me..." style="margin-top:10px;"></textarea>
 
         <label class="field-label">Your claim or proposed solution</label>
-        <textarea id="claimSolution" placeholder="e.g. Add two additional rostered positions to rural routes to remove the need for back-to-back doubles..."></textarea>
+        <textarea id="claimSolution" placeholder="e.g. Have on average more bananas delivered more frequently throughout the week..."></textarea>
 
         <button type="submit" class="btn amber" style="margin-top:16px;">Submit</button>
 
@@ -430,13 +430,13 @@
       <form id="highlights-form">
         <div id="highlights-step-1">
           <label class="field-label" style="margin-top:0;">What's going well?</label>
-          <textarea id="highlightGood" placeholder="e.g. New defib stock arrived at Porirua ahead of schedule..."></textarea>
+          <textarea id="highlightGood" placeholder="e.g. I was asked where I wanted to be moved last minute..."></textarea>
           <button type="button" class="btn amber" style="margin-top:16px;" onclick="goToHighlightsStep(2)">Next</button>
         </div>
 
         <div id="highlights-step-2" style="display:none;">
           <label class="field-label" style="margin-top:0;">Why do you think this makes work better?</label>
-          <textarea id="highlightWhy" placeholder="e.g. Crews can respond faster and with more confidence during cardiac events..."></textarea>
+          <textarea id="highlightWhy" placeholder="e.g. Being given the autonomy to make the choice was better than just being told last minute..."></textarea>
           <div style="display:flex; gap:10px; margin-top:16px;">
             <button type="button" class="btn secondary" onclick="goToHighlightsStep(1)">Back</button>
             <button type="submit" class="btn amber" style="flex:1;">Submit</button>
@@ -463,8 +463,8 @@
   <!-- DELEGATES -->
   <section class="view" id="view-delegates">
     <button class="back-btn" onclick="showView('home')">← Home</button>
-    <p class="section-title">Delegates & reps</p>
-    <p class="section-sub">Full delegate directory.</p>
+    <p class="section-title">Delegates </p>
+    <p class="section-sub">Speak to a delegate about ideas to improve the workplace</p>
     <div id="delegates-list"></div>
   </section>
 
@@ -482,7 +482,7 @@
   <section class="view" id="view-board">
     <button class="back-btn" onclick="showView('home')">← Home</button>
     <p class="section-title">Current claims & discussion points</p>
-    <p class="section-sub">Posted by delegates ahead of the next partnership forum.</p>
+    <p class="section-sub">Have questions or comments? Email a delegate or submit your own claim or highlight</p>
     <div class="seg" id="claims-filter-seg" style="margin-bottom:14px;">
       <button type="button" data-val="Contract Negotiation" class="sel">Contract Negotiation</button>
       <button type="button" data-val="Partnership Forum">Partnership Forum</button>
