@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WFA Union</title>
+<style>
+  :root{
+    --teal-50:#E1F5EE; --teal-100:#9FE1CB; --teal-400:#1D9E75; --teal-600:#0F6E56; --teal-800:#085041; --teal-900:#04342C;
+    --amber-50:#FAEEDA; --amber-400:#EF9F27; --amber-600:#BA7517; --amber-800:#633806;
+    --bg:#F7F6F2; --card:#FFFFFF; --ink:#1A2421; --ink-soft:#52605C; --line:#E2E2DA;
+    --radius:14px;
+    --shadow-soft:0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit;}
+
+  /* ---------- TOP NAV (Material-ish) ---------- */
+  header.topbar{
+    position:sticky; top:0; z-index:50;
+    background:var(--teal-800); color:#fff;
+    display:flex; align-items:center; gap:12px;
+    padding:14px 18px;
+    box-shadow:0 2px 6px rgba(0,0,0,0.12);
+  }
+  .pulse-mark{width:26px;height:26px;flex-shrink:0;}
+  header.topbar h1{font-size:16px; font-weight:600; margin:0; letter-spacing:0.2px;}
+  .menu-btn{
+    margin-left:auto; background:transparent; border:none; color:#fff;
+    font-size:22px; cursor:pointer; padding:4px 8px; border-radius:8px;
+  }
+  .menu-btn:active{background:rgba(255,255,255,0.15);}
+
+  main{max-width:760px; margin:0 auto; padding:20px 16px 64px;}
+  .view{display:none; animation:fade .25s ease;}
+  .view.active{display:block;}
+  .auth-view{display:none; animation:fade .25s ease;}
+  .auth-view.active{display:block;}
+  .auth-options{display:flex; flex-direction:column; gap:10px;}
+  .auth-options .quick-card{text-align:left;}
+  @keyframes fade{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);}}
+
+  /* ---------- shared bits ---------- */
+  .section-title{font-size:20px; font-weight:700; margin:4px 0 4px;}
+  .back-btn{
+    display:inline-flex; align-items:center; gap:4px; background:transparent; border:none;
+    color:var(--teal-600); font-size:13.5px; font-weight:600; padding:6px 0 12px; cursor:pointer;
+  }
+  .section-sub{font-size:14px; color:var(--ink-soft); margin:0 0 18px; line-height:1.5;}
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    padding:16px; margin-bottom:14px; box-shadow:var(--shadow-soft);
+  }
+  .pill{
+    display:inline-block; font-size:11.5px; font-weight:600; padding:3px 10px;
+    border-radius:999px; background:var(--teal-50); color:var(--teal-800);
+  }
+  .pill.amber{background:var(--amber-50); color:var(--amber-800);}
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:6px;
+    background:var(--teal-600); color:#fff; border:none; border-radius:10px;
+    padding:12px 18px; font-size:14.5px; font-weight:600; cursor:pointer;
+    width:100%;
+  }
+  .btn:active{background:var(--teal-800);}
+  .btn.secondary{background:transparent; color:var(--teal-700,var(--teal-600)); border:1.5px solid var(--teal-600);}
+  .btn.amber{background:var(--amber-600);}
+  .btn.amber:active{background:var(--amber-800);}
+  label.field-label{display:block; font-size:12.5px; font-weight:600; color:var(--ink-soft); margin:14px 0 6px;}
+  .step-indicator{font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:var(--teal-700,var(--teal-600)); margin:0 0 14px;}
+  input[type=text], input[type=email], input[type=tel], input[type=date], input[type=password], select, textarea{
+    width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:10px;
+    font-size:15px; background:#fff; color:var(--ink); font-family:inherit;
+  }
+  textarea{resize:vertical; min-height:90px;}
+  #loginPasscode{ font-size:16px; letter-spacing:1px; }
+  .hr{height:1px; background:var(--line); margin:22px 0; border:none;}
+
+  /* heartbeat divider - signature element */
+  .pulse-divider{width:100%; height:28px; margin:18px 0;}
+
+  /* ---------- HOME ---------- */
+  .hero{
+    background:linear-gradient(180deg,var(--teal-800),var(--teal-600));
+    color:#fff; border-radius:var(--radius); padding:26px 20px; margin-bottom:18px;
+  }
+  .hero h2{font-size:22px; margin:0 0 8px; font-weight:700; line-height:1.3;}
+  .hero p{font-size:14px; opacity:0.9; margin:0 0 16px; line-height:1.55;}
+  .quick-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .quick-card{
+    background:var(--card); border:1px solid var(--line); border-radius:12px;
+    padding:14px; text-align:left; cursor:pointer;
+  }
+  .quick-card .ic{font-size:20px; margin-bottom:6px; display:block;}
+  .quick-card .t{font-size:13.5px; font-weight:600; margin:0 0 2px;}
+  .quick-card .d{font-size:11.5px; color:var(--ink-soft); margin:0;}
+
+  /* ---------- SIGN UP - Apple-style ---------- */
+  .apple-screen{background:#fff; border-radius:20px; overflow:hidden; box-shadow:0 1px 2px rgba(0,0,0,0.05);}
+  .apple-head{padding:28px 22px 18px; text-align:center;}
+  .apple-head h2{font-size:22px; font-weight:700; margin:0 0 6px; letter-spacing:-0.3px;}
+  .apple-head p{font-size:14px; color:var(--ink-soft); margin:0; line-height:1.5;}
+  .apple-body{padding:4px 22px 26px;}
+  .apple-group{background:#F2F2F4; border-radius:14px; overflow:hidden; margin-bottom:18px;}
+  .apple-row{display:flex; align-items:center; padding:12px 14px; border-bottom:1px solid #E4E4E7;}
+  .apple-row:last-child{border-bottom:none;}
+  .apple-row .lab{font-size:14.5px; width:118px; flex-shrink:0; color:var(--ink);}
+  .apple-row input, .apple-row select{
+    flex:1; border:none; background:transparent; font-size:15px; padding:4px 0;
+    text-align:right; color:var(--ink); font-family:inherit;
+  }
+  .apple-row input:focus, .apple-row select:focus{outline:none;}
+  .seg{display:flex; background:#E9E9EC; border-radius:9px; padding:2px; margin-top:6px;}
+  .seg button{flex:1; border:none; background:transparent; padding:8px 4px; font-size:13px;
+    border-radius:7px; cursor:pointer; color:var(--ink);}
+  .seg button.sel{background:#fff; box-shadow:0 1px 2px rgba(0,0,0,0.15); font-weight:600;}
+  #claims-filter-seg{flex-wrap:wrap;}
+  #claims-filter-seg button{flex:1 1 auto; white-space:nowrap;}
+  .consent-box{background:#F2F2F4; border-radius:14px; padding:14px; font-size:12.5px; color:var(--ink-soft); line-height:1.55; margin-bottom:18px;}
+  .check-row{display:flex; align-items:flex-start; gap:10px; margin-bottom:12px;}
+  .check-row input{margin-top:3px;}
+  .check-row span{font-size:13px; line-height:1.5; color:var(--ink);}
+  .apple-btn{
+    width:100%; background:var(--teal-600); color:#fff; border:none; border-radius:14px;
+    padding:15px; font-size:16px; font-weight:600; cursor:pointer;
+  }
+  .apple-btn:active{opacity:0.85;}
+  .apple-foot{text-align:center; font-size:11.5px; color:#9A9A9E; margin-top:14px;}
+
+  /* ---------- claims / contact / delegates / docs ---------- */
+  .rep-card{display:flex; gap:12px; align-items:flex-start;}
+  .avatar{
+    width:44px; height:44px; border-radius:50%; background:var(--teal-50); color:var(--teal-800);
+    display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; flex-shrink:0;
+  }
+  .rep-name{font-weight:700; font-size:15px; margin:0 0 2px;}
+  .rep-role{font-size:12.5px; color:var(--ink-soft); margin:0 0 8px;}
+  .rep-actions{display:flex; gap:8px;}
+  .rep-actions a{
+    font-size:12.5px; font-weight:600; color:var(--teal-700,var(--teal-600));
+    border:1px solid var(--teal-600); padding:6px 10px; border-radius:8px; text-decoration:none;
+  }
+  .shift-dot{
+    display:inline-block; width:10px; height:10px; border-radius:50%;
+    margin-left:6px; vertical-align:middle; border:1px solid rgba(0,0,0,0.15);
+  }
+  .doc-row{display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--line);}
+  .doc-row:last-child{border-bottom:none;}
+  .doc-ic{width:34px; height:34px; border-radius:8px; background:var(--amber-50); color:var(--amber-800);
+    display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0;}
+  .doc-name{font-size:14px; font-weight:600; margin:0;}
+  .doc-meta{font-size:11.5px; color:var(--ink-soft); margin:0;}
+  .claim-item{border:1px solid var(--line); border-left:3px solid var(--amber-400); border-radius:10px; margin-bottom:12px; overflow:hidden;}
+  .claim-item:last-child{margin-bottom:0;}
+  .claim-toggle{
+    width:100%; display:flex; align-items:center; justify-content:space-between; gap:12px;
+    background:transparent; border:none; padding:14px 14px 14px 15px; text-align:left;
+    cursor:pointer; font-family:inherit; -webkit-tap-highlight-color:transparent;
+  }
+  .claim-toggle:hover{background:rgba(0,0,0,0.025);}
+  .claim-toggle:focus-visible{outline:2px solid var(--teal-600); outline-offset:-2px;}
+  .claim-toggle-text{display:flex; flex-direction:column; align-items:flex-start; gap:6px; min-width:0;}
+  .claim-title{margin:0; font-size:14.5px; font-weight:600; color:var(--ink); line-height:1.3;}
+  .claim-chevron{flex-shrink:0; color:var(--ink-soft); transition:transform 0.2s ease;}
+  .claim-toggle[aria-expanded="true"] .claim-chevron{transform:rotate(180deg);}
+  .claim-panel-wrap{display:grid; grid-template-rows:0fr; transition:grid-template-rows 0.25s ease;}
+  .claim-panel-wrap.open{grid-template-rows:1fr;}
+  .claim-panel-inner{overflow:hidden; min-height:0;}
+  .claim-field{margin:0 0 8px; font-size:13px; color:var(--ink-soft); line-height:1.5; padding:0 15px;}
+  .claim-field:first-child{margin-top:2px;}
+  .claim-field:last-child{margin-bottom:14px;}
+  .claim-label{display:block; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.4px; color:var(--teal-700,var(--teal-600)); margin-bottom:2px;}
+
+  .event-row{display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--line);}
+  .event-row:last-child{border-bottom:none;}
+  .event-date{
+    flex-shrink:0; width:50px; text-align:center; background:var(--teal-50); color:var(--teal-800);
+    border-radius:9px; padding:6px 2px; font-weight:700;
+  }
+  .event-date .day{font-size:16px; line-height:1.1;}
+  .event-date .mon{font-size:10px; text-transform:uppercase; letter-spacing:0.4px;}
+  .event-text{font-size:14px; color:var(--ink); line-height:1.4;}
+  .event-empty{font-size:13px; color:var(--ink-soft); padding:6px 0;}
+
+  .toast{
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--teal-900); color:#fff; padding:12px 20px; border-radius:10px;
+    font-size:13.5px; font-weight:500; opacity:0; pointer-events:none; transition:all .25s ease;
+    z-index:100; max-width:90%; text-align:center;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+  .copy-note{margin-top:18px; padding-top:16px; border-top:1px solid var(--line);}
+  .copy-note p{font-size:12.5px; color:var(--ink-soft); line-height:1.55; margin:0 0 10px;}
+  .copy-note a{color:var(--teal-600); font-weight:600;}
+</style>
+<style>
+#union-pay-cea{--pc-bg:light-dark(#f5f7fa,#18202c);--pc-paper:light-dark(#fff,#242e3b);--pc-ink:light-dark(#172b4d,#eef2f8);--pc-muted:light-dark(#526078,#b4c0d0);--pc-line:light-dark(#dce2eb,#455166);--pc-blue:light-dark(#0055cc,#90bbff);--pc-tint:light-dark(#eaf2ff,#263e5d);font:14px/1.5 Arial,sans-serif;background:var(--pc-bg);color:var(--pc-ink)}
+#union-pay-cea *{box-sizing:border-box}
+#union-pay-cea .pc-header{padding:19px 30px;display:flex;gap:15px;justify-content:space-between;flex-wrap:wrap;background:var(--pc-paper);border-bottom:1px solid var(--pc-line)}
+#union-pay-cea .pc-header span:first-child{font-family:Georgia,serif;font-size:21px}
+#union-pay-cea .pc-main{max-width:960px;padding:28px;margin:auto}
+#union-pay-cea h1,#union-pay-cea h2,#union-pay-cea h3{font-family:Georgia,serif;font-weight:400;letter-spacing:-.3px}
+#union-pay-cea h1{font-size:34px;margin:0 0 7px}
+#union-pay-cea h2{font-size:24px;margin:0 0 18px}
+#union-pay-cea h3{font-size:21px}
+#union-pay-cea .pc-source{font-size:12px;color:var(--pc-muted);margin:0 0 25px}
+#union-pay-cea .pc-comparison{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+#union-pay-cea .pc-scenario{background:var(--pc-paper);border:1px solid var(--pc-line);border-radius:6px;padding:22px;min-width:0}
+#union-pay-cea .pc-proposed{border-top:3px solid var(--pc-blue);padding-top:20px}
+#union-pay-cea .pc-fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+#union-pay-cea .pc-fields label{font-size:12px;color:var(--pc-muted);min-width:0}
+#union-pay-cea .pc-full{grid-column:1/-1}
+#union-pay-cea .pc-shifts{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:5px}
+#union-pay-cea .pc-shifts.pc-weekdays{grid-template-columns:repeat(4,minmax(0,1fr))}
+#union-pay-cea .pc-shift{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:58px;padding:6px 2px;border:1px solid var(--pc-line);border-radius:4px;background:var(--pc-paper);color:var(--pc-ink);font:13px/1.3 Arial,sans-serif}
+#union-pay-cea .pc-shift[aria-pressed=true]{background:var(--pc-tint);color:var(--pc-blue);border-color:var(--pc-blue)}
+#union-pay-cea .pc-shift:disabled{background:var(--pc-bg);color:var(--pc-muted)}
+#union-pay-cea .pc-shiftmark{font-size:17px}
+#union-pay-cea .pc-shift[data-kind="day"]{background:light-dark(#e5f3df,#b7d6ab);color:#233d27;border-color:light-dark(#bad5b0,#b7d6ab)}
+#union-pay-cea .pc-shift[data-kind="swing"]{background:light-dark(#9bc78b,#7eae6d);color:#17351f;border-color:light-dark(#7cab6a,#7eae6d)}
+#union-pay-cea .pc-shift[data-kind="night"]{background:light-dark(#245833,#326541);color:#fff;border-color:light-dark(#245833,#326541)}
+#union-pay-cea .pc-shift[data-kind="off"]{background:light-dark(#e6e8eb,#444b56);color:light-dark(#525a66,#e0e4e9);border-color:var(--pc-line)}
+#union-pay-cea .pc-shift[aria-pressed="false"]:not(:disabled){border-style:dashed}
+#union-pay-cea .pc-rate{flex-direction:row!important;align-items:center;gap:12px;margin:0!important;min-height:36px;font:14px Arial,sans-serif}
+#union-pay-cea .pc-rate>span,#union-pay-cea .pc-rate>strong{font:14px Arial,sans-serif!important;letter-spacing:normal!important;color:var(--pc-ink)}
+#union-pay-cea .pc-total{padding-top:0!important}
+#union-pay-cea .pc-results{border-top:1px solid var(--pc-line);padding-top:12px;margin-top:18px}
+#union-pay-cea .pc-results>div{display:flex;justify-content:space-between;gap:12px;padding:9px 0;font-size:13px}
+#union-pay-cea .pc-results strong{font-weight:500;white-space:nowrap;font-variant-numeric:tabular-nums}
+#union-pay-cea .pc-results .pc-weekly{color:var(--pc-blue);border-top:1px solid var(--pc-line);margin-top:5px;padding-top:14px}
+#union-pay-cea .pc-disclaimer{font-size:12px;color:var(--pc-muted);background:var(--pc-paper);border-left:3px solid var(--pc-blue);padding:14px 18px;margin-bottom:24px}
+#union-pay-cea .pc-disclaimer strong{font-weight:600;color:var(--pc-ink)}
+#union-pay-cea .pc-personal{font-size:13px;margin:0 0 22px}
+#union-pay-cea .pc-toolfields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding:12px 0}
+#union-pay-cea .pc-toolfields label,#union-pay-cea .pc-toolscenario{font-size:12px;color:var(--pc-muted);min-width:0}
+#union-pay-cea input[type=date]{font:14px Arial,sans-serif;background:var(--pc-paper);color:var(--pc-ink);border:1px solid var(--pc-line);border-radius:4px;width:100%;padding:9px 8px;margin-top:5px;min-width:0}
+#union-pay-cea .pc-tools{margin:26px 0}
+#union-pay-cea .pc-tools>h2{margin-bottom:12px}
+#union-pay-cea .pc-toolscenario{display:block;max-width:300px;margin-bottom:18px}
+#union-pay-cea .pc-tool{background:var(--pc-paper);border:1px solid var(--pc-line);padding:13px 20px;border-radius:6px;margin-bottom:12px}
+#union-pay-cea .pc-tool>summary{font-family:Georgia,serif;font-size:19px}
+#union-pay-cea .pc-toolresult{font-size:14px;padding:12px 0;color:var(--pc-ink)}
+#union-pay-cea .pc-toolresult strong{font-weight:500;color:var(--pc-blue)}
+#union-pay-cea .pc-toolresult p{margin:5px 0}
+@media(max-width:640px){#union-pay-cea .pc-toolfields{grid-template-columns:1fr 1fr}#union-pay-cea .pc-tool{padding:12px 16px}#union-pay-cea input[type=date]{font-size:16px}}
+@media(max-width:380px){#union-pay-cea .pc-toolfields{grid-template-columns:1fr}}
+#union-pay-cea{--pc-bg:light-dark(#F7F6F2,#18221e);--pc-paper:light-dark(#FFFFFF,#24302b);--pc-ink:light-dark(#1A2421,#eef4f0);--pc-muted:light-dark(#52605C,#b8c8bf);--pc-line:light-dark(#E2E2DA,#43554b);--pc-blue:light-dark(#0F6E56,#9FE1CB);--pc-tint:light-dark(#E1F5EE,#294a3d);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+#union-pay-cea .pc-header{background:#085041;color:#fff;border:0;padding:16px 22px;box-shadow:0 2px 6px #0000001f}
+#union-pay-cea .pc-header span:first-child{font-family:inherit;font-size:16px;font-weight:600;letter-spacing:.2px}
+#union-pay-cea h1,#union-pay-cea h2,#union-pay-cea h3{font-family:inherit;font-weight:600;letter-spacing:normal}
+#union-pay-cea h1{font-size:24px}
+#union-pay-cea h2{font-size:19px}
+#union-pay-cea .pc-scenario{border-radius:14px;box-shadow:0 1px 3px #0000000f,0 1px 2px #0000000a}
+#union-pay-cea .pc-proposed{border-top:1px solid var(--pc-line);padding-top:22px}
+#union-pay-cea select,#union-pay-cea input[type=number],#union-pay-cea input[type=date]{font-family:inherit;border-radius:10px;padding:11px 10px}
+#union-pay-cea .pc-manual{display:flex;align-items:center;gap:7px;font-size:12px;margin-top:8px;min-height:22px;font-weight:400}
+#union-pay-cea .pc-manual input{accent-color:var(--pc-blue);margin:0}
+#union-pay-cea input[readonly]{background:var(--pc-bg)}
+#union-pay-cea .pc-difference{border-radius:14px}
+#union-pay-cea .pc-difference strong{font-family:inherit;font-size:21px;font-weight:600}
+#union-pay-cea .pc-disclaimer{border-radius:10px;background:light-dark(#FAEEDA,#403727);border-left-color:light-dark(#EF9F27,#c99950)}
+#union-pay-cea .pc-disclaimer{font-size:14px;line-height:1.65;padding:18px 20px}
+#union-pay-cea .pc-negotiation .pc-manual{margin-top:0;min-height:38px}
+#union-pay-cea .pc-weekdays .pc-shift{min-height:76px}
+#union-pay-cea .pc-shiftname{font-size:11px;line-height:1.2}
+#union-pay-cea .pc-shift{font-family:inherit;border-radius:8px}
+@media(pointer:coarse){#union-pay-cea .pc-manual{min-height:44px}}
+#union-pay-cea .pc-weekdays .pc-shift{font-size:12px}
+#union-pay-cea select,#union-pay-cea input[type=number]{font:14px Arial,sans-serif;background:var(--pc-paper);color:var(--pc-ink);border:1px solid var(--pc-line);border-radius:4px;width:100%;padding:10px 8px;min-width:0;margin-top:5px}
+#union-pay-cea .pc-rate{display:flex;flex-direction:column;margin:22px 0 18px;font-variant-numeric:tabular-nums}
+#union-pay-cea .pc-rate span{font-size:12px;color:var(--pc-muted)}
+#union-pay-cea .pc-rate strong{font-family:Georgia,serif;font-size:30px;font-weight:400;letter-spacing:-.5px}
+#union-pay-cea summary{min-height:35px;padding:7px 0}
+#union-pay-cea .pc-allowances{border-top:1px solid var(--pc-line);font-size:13px}
+#union-pay-cea .pc-allowances summary span{color:var(--pc-muted);margin-left:8px}
+#union-pay-cea .pc-allowance{padding:10px 0;border-bottom:1px solid var(--pc-line)}
+#union-pay-cea .pc-allowance>label{display:flex;gap:8px;align-items:flex-start;font-size:13px}
+#union-pay-cea .pc-allowance input[type=checkbox]{margin:4px 0 0;accent-color:var(--pc-blue);flex-shrink:0}
+#union-pay-cea .pc-small{font-size:12px;color:var(--pc-muted);margin:6px 0}
+#union-pay-cea .pc-quantity{display:flex;gap:10px;align-items:center;margin-left:23px;font-size:12px;color:var(--pc-muted)}
+#union-pay-cea .pc-quantity input{width:90px}
+#union-pay-cea [hidden]{display:none!important}
+#union-pay-cea .pc-total{display:flex;justify-content:space-between;gap:12px;padding-top:12px;font-size:12px}
+#union-pay-cea .pc-total strong{font-weight:500;white-space:nowrap}
+#union-pay-cea .pc-difference{background:var(--pc-tint);color:var(--pc-blue);display:flex;gap:15px;flex-wrap:wrap;align-items:center;padding:16px 22px;border-radius:5px;margin:18px 0}
+#union-pay-cea .pc-difference strong{font-family:Georgia,serif;font-size:25px;font-weight:400}
+#union-pay-cea .pc-difference span{font-size:13px}
+#union-pay-cea .pc-rules,#union-pay-cea .pc-library{border-bottom:1px solid var(--pc-line);padding:5px 0;font-size:13px}
+#union-pay-cea dl{margin:12px 0}
+#union-pay-cea dt{font-weight:600;margin-top:12px}
+#union-pay-cea dd{margin:3px 0;color:var(--pc-muted)}
+#union-pay-cea .pc-table-wrap{overflow-x:auto}
+#union-pay-cea table{width:100%;border-collapse:collapse;font-size:12px;margin:12px 0}
+#union-pay-cea th,#union-pay-cea td{text-align:left;padding:9px 6px;border-bottom:1px solid var(--pc-line);font-variant-numeric:tabular-nums}
+#union-pay-cea th{font-weight:600}
+#union-pay-cea footer{padding:22px 0;font-size:12px;color:var(--pc-muted)}
+#union-pay-cea footer strong{color:var(--pc-ink);font-weight:600}
+@media(max-width:640px){#union-pay-cea .pc-main{padding:22px 16px}#union-pay-cea .pc-header{padding:16px}#union-pay-cea .pc-comparison{grid-template-columns:1fr}#union-pay-cea select,#union-pay-cea input[type=number]{font-size:16px}#union-pay-cea summary{min-height:44px}#union-pay-cea .pc-scenario{padding:18px}#union-pay-cea .pc-shifts.pc-weekdays{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+#union-pay-cea .pc-custom-row{display:grid;grid-template-columns:1fr 1.5fr;gap:8px;align-items:center;padding:12px;margin:8px 0;border-radius:8px;background:#e5f3df;color:#233d27}
+#union-pay-cea .pc-custom-row[data-kind=off]{background:#e6e8eb;color:#525a66}
+#union-pay-cea .pc-custom-row[data-kind=swing]{background:#9bc78b;color:#17351f}
+#union-pay-cea .pc-custom-row[data-kind=night]{background:#245833;color:#fff}
+#union-pay-cea .pc-custom-row label{color:inherit}
+#union-pay-cea .pc-custom input[type=time]{width:100%;min-width:0;box-sizing:border-box;font:inherit;padding:10px 6px;border:1px solid var(--pc-line);border-radius:8px;margin-top:5px;background:var(--pc-paper);color:var(--pc-ink)}
+#union-pay-cea .pc-custom-actions{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+#union-pay-cea .pc-custom button{padding:10px 12px;border:1px solid var(--pc-line);border-radius:8px;background:var(--pc-paper);color:var(--pc-blue);font:inherit}
+#union-pay-cea .pc-custom-error{font-size:12px;color:#874b00;margin:8px 0}
+
+#union-pay-cea .pc-time-control{position:relative;min-width:0;font-size:12px}
+#union-pay-cea .pc-custom .pc-time-trigger{display:block;width:100%;text-align:left;margin-top:5px;background:var(--pc-paper);color:var(--pc-ink);font-variant-numeric:tabular-nums}
+#union-pay-cea .pc-time-native{display:none}
+#union-pay-cea .pc-clock-picker{position:absolute;z-index:20;top:100%;left:0;width:200px;padding:12px;background:#fff;color:#1a2421;border:1px solid #e2e2da;border-radius:16px;box-shadow:0 8px 30px #00000026;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+#union-pay-cea .pc-clock-title{text-align:center;font-size:13px;font-weight:600;margin-bottom:8px}
+#union-pay-cea .pc-clock-wheels{display:flex;gap:8px}
+#union-pay-cea .pc-clock-column{flex:1;min-width:0;text-align:center}
+#union-pay-cea .pc-clock-caption{font-size:11px;color:#52605c}
+#union-pay-cea .pc-clock-wheel{height:180px;overflow-y:auto;padding:72px 0;scroll-snap-type:y mandatory;scrollbar-width:none;overscroll-behavior:contain;border-radius:8px}
+#union-pay-cea .pc-clock-wheel::-webkit-scrollbar{display:none}
+#union-pay-cea .pc-custom .pc-clock-number{display:block;height:36px;width:100%;padding:0;border:0;border-radius:7px;background:transparent;color:#52605c;font-size:19px;line-height:36px;font-weight:400;scroll-snap-align:center;font-variant-numeric:tabular-nums}
+#union-pay-cea .pc-custom .pc-clock-number[aria-selected=true]{background:#f0f1f0;color:#1a2421;font-weight:600}
+#union-pay-cea .pc-custom .pc-clock-done{display:block;width:100%;margin-top:8px;border:0;background:#e1f5ee;color:#0f6e56;font-weight:600}
+#union-pay-cea .pc-custom-row .pc-time-control:last-of-type .pc-clock-picker{left:auto;right:0}
+@media(pointer:coarse){#union-pay-cea .pc-time-native{display:block}#union-pay-cea .pc-custom .pc-time-trigger,#union-pay-cea .pc-clock-picker{display:none}}
+#union-pay-cea .pc-instruction{font-weight:700}
+#union-pay-cea .pc-shifts.pc-pts{grid-template-columns:repeat(7,minmax(0,1fr))}
+
+#app-shell.calculator-open>main{max-width:1120px}#union-pay-cea{--pc-bg:var(--bg);--pc-paper:var(--card);--pc-ink:var(--ink);--pc-muted:var(--ink-soft);--pc-line:var(--line);--pc-blue:#0F6E56;--pc-tint:#E4F3ED;font-family:inherit}#union-pay-cea .pc-main{padding:0;max-width:none}#union-pay-cea .pc-title{font-size:30px;margin-top:0}#union-pay-cea .pc-scenario{border-radius:14px}#union-pay-cea .pc-config-disclaimer:empty,#union-pay-cea [role=status]:empty{display:none}
+</style></head>
+<body>
+
+<!-- AUTH GATE -->
+<div id="auth-screen">
+  <header class="topbar">
+    <svg class="pulse-mark" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M2 12h4l2 7 4-14 2 7h8"/>
+    </svg>
+    <h1>WFA Ambulance Union</h1>
+  </header>
+  <main>
+
+    <!-- WELCOME / OPTION PICKER -->
+    <div class="auth-view active" id="auth-welcome">
+      <div class="hero" style="margin-top:8px;">
+        <h2>Welcome to your union hub</h2>
+        <p>Enter the union passcode, or join the union to get started.</p>
+      </div>
+      <div class="auth-options">
+        <button class="quick-card" onclick="showAuth('login')">
+          <span class="ic">🔑</span>
+          <p class="t">Member login</p>
+          <p class="d">Enter the union passcode</p>
+        </button>
+        <button class="quick-card" onclick="showAuth('join')">
+          <span class="ic">🤝</span>
+          <p class="t">Join the union</p>
+          <p class="d">Not a member yet</p>
+        </button>
+      </div>
+    </div>
+
+    <!-- LOGIN (shared union passcode, no personal accounts) -->
+    <div class="auth-view" id="auth-login">
+      <button class="back-btn" onclick="showAuth('welcome')">← Back</button>
+      <p class="section-title" style="margin-top:0;">Member login</p>
+      <p class="section-sub">Enter the union passcode to get in. This is shared by all members — ask your delegate if you don't have it.</p>
+      <div class="card">
+        <form id="login-form">
+          <label class="field-label" style="margin-top:0;">Passcode</label>
+          <input type="password" id="loginPasscode" placeholder="Enter passcode" autocomplete="off">
+          <button type="submit" class="btn" style="margin-top:16px;">Log in</button>
+        </form>
+      </div>
+      <p class="section-sub" style="text-align:center;">This is a prototype — the passcode is set in the site code and can be changed there.</p>
+    </div>
+
+    <!-- JOIN THE UNION (new members, full AWUNZ form) -->
+    <div class="auth-view" id="auth-join">
+      <button class="back-btn" onclick="showAuth('welcome')">← Back</button>
+      <div class="apple-screen">
+        <div class="apple-head">
+          <h2>Join the union</h2>
+          <p>Authority for membership &amp; authority to represent.<br>Takes about 3 minutes.</p>
+        </div>
+        <div class="apple-body">
+          <form id="signup-form">
+
+            <p class="field-label" style="margin-top:0;">Title</p>
+            <div class="seg" id="title-seg">
+              <button type="button" data-val="Ms" class="sel">Ms</button>
+              <button type="button" data-val="Mrs">Mrs</button>
+              <button type="button" data-val="Miss">Miss</button>
+              <button type="button" data-val="Mr">Mr</button>
+            </div>
+
+            <div class="apple-group" style="margin-top:18px;">
+              <div class="apple-row"><span class="lab">First names</span><input type="text" id="firstNames" placeholder="Required"></div>
+              <div class="apple-row"><span class="lab">Family name</span><input type="text" id="familyName" placeholder="Required"></div>
+            <div class="apple-row"><span class="lab">Date of birth</span><input type="date" id="dob"></div>
+          </div>
+
+          <p class="field-label">Gender</p>
+          <div class="seg" id="gender-seg">
+            <button type="button" data-val="Female" class="sel">Female</button>
+            <button type="button" data-val="Male">Male</button>
+            <button type="button" data-val="Prefer not to say">Prefer not to say</button>
+          </div>
+
+          <div class="apple-group" style="margin-top:18px;">
+            <div class="apple-row"><span class="lab">Ethnicity</span><input type="text" id="ethnicity" placeholder="Optional"></div>
+            <div class="apple-row"><span class="lab">Iwi (if Māori)</span><input type="text" id="iwi" placeholder="Optional"></div>
+          </div>
+
+          <p class="field-label">Contact</p>
+          <div class="apple-group">
+            <div class="apple-row"><span class="lab">Mobile</span><input type="tel" id="mobile" placeholder="Required"></div>
+            <div class="apple-row"><span class="lab">Personal email</span><input type="email" id="emailHome" placeholder="Required"></div>
+            <div class="apple-row"><span class="lab">Work email</span><input type="email" id="emailWork" placeholder="Optional"></div>
+          </div>
+
+          <p class="field-label">Address</p>
+          <div class="apple-group">
+            <div class="apple-row"><span class="lab">Home address</span><input type="text" id="homeAddress" placeholder="Required"></div>
+            <div class="apple-row"><span class="lab">Postcode</span><input type="text" id="postcode" placeholder="Required"></div>
+          </div>
+
+          <p class="field-label">Employment</p>
+          <div class="apple-group">
+            <div class="apple-row"><span class="lab">Employer</span><input type="text" id="employer" placeholder="Wellington Free Ambulance"></div>
+            <div class="apple-row"><span class="lab">Payroll no.</span><input type="text" id="payroll" placeholder="If known"></div>
+            <div class="apple-row"><span class="lab">Business unit</span><input type="text" id="section" placeholder="Required"></div>
+            <div class="apple-row"><span class="lab">Job title</span><input type="text" id="jobTitle" placeholder="Required"></div>
+          </div>
+
+          <div class="consent-box">
+            I authorise my employer to deduct union fees from my wages for this and subsequent employment with this employer (including seasonal, temporary or casual employment). I agree to be bound by the rules of the union and authorise the union to represent me in relation to my collective and individual employment interests, consistent with the union's terms of membership.
+          </div>
+
+          <div class="check-row">
+            <input type="checkbox" id="agree1">
+            <span>I have read and agree to the terms of membership and authority to represent.</span>
+          </div>
+          <div class="check-row">
+            <input type="checkbox" id="agree2">
+            <span>I authorise wage deductions for union fees as set by the union from time to time.</span>
+          </div>
+
+          <p class="field-label">Signature (type full name)</p>
+          <div class="apple-group">
+            <div class="apple-row"><span class="lab">Signature</span><input type="text" id="signature" placeholder="Full name"></div>
+            <div class="apple-row"><span class="lab">Date</span><input type="date" id="signDate"></div>
+          </div>
+
+          <button type="submit" class="apple-btn" style="margin-top:8px;">Submit application</button>
+          <p class="apple-foot">Your details are sent to the union office and kept private.</p>
+        </form>
+      </div>
+    </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- APP (post-login) -->
+<div id="app-shell" style="display:none;">
+<header class="topbar">
+  <svg class="pulse-mark" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M2 12h4l2 7 4-14 2 7h8"/>
+  </svg>
+  <h1>WFA Ambulance Union</h1>
+</header>
+<main>
+
+  <!-- HOME -->
+  <section class="view active" id="view-home">
+    <div class="quick-grid">
+      <button class="quick-card" id="pay-calculator-card" onclick="showView('calculator')"><span class="ic">🧮</span><p class="t">Pay calculator</p><p class="d">Compare roster pay and take-home estimates</p></button>
+      <button class="quick-card" onclick="showView('claims')">
+        <span class="ic">💡</span>
+        <p class="t">Submit a claim</p>
+        <p class="d">Negotiations & feedback</p>
+      </button>
+      <button class="quick-card" onclick="openHighlights()">
+        <span class="ic">🌟</span>
+        <p class="t">Submit highlights</p>
+        <p class="d">Share what's going well</p>
+      </button>
+      <button class="quick-card" onclick="showView('contact')">
+        <span class="ic">📞</span>
+        <p class="t">Contact a rep</p>
+        <p class="d">Email or call for support</p>
+      </button>
+      <button class="quick-card" onclick="showView('delegates')">
+        <span class="ic">🧑‍🤝‍🧑</span>
+        <p class="t">Delegates</p>
+        <p class="d">Meet your reps for negotiations</p>
+      </button>
+      <button class="quick-card" onclick="showView('documents')">
+        <span class="ic">🗂️</span>
+        <p class="t">Documents</p>
+        <p class="d">Contract & resources</p>
+      </button>
+      <button class="quick-card" onclick="showView('board')">
+        <span class="ic">📌</span>
+        <p class="t">Claims board</p>
+        <p class="d">Current claims & forum items</p>
+      </button>
+      <button class="quick-card" onclick="logout()">
+        <span class="ic">🚪</span>
+        <p class="t">Log out</p>
+        <p class="d">Back to login screen</p>
+      </button>
+    </div>
+    <hr class="hr">
+    <p class="section-title" style="font-size:16px;">Upcoming union events</p>
+    <div class="card" id="home-events-list"></div>
+  </section>
+
+  <!-- CLAIMS SUBMISSION -->
+  <section class="view" id="view-claims">
+    <button class="back-btn" onclick="showView('home')">← Home</button>
+    <p class="section-title">Submit a claim or feedback</p>
+    <p class="section-sub">Naming the root cause helps us craft claims that actually fix the problem.</p>
+
+    <div class="card">
+      <form id="claims-form">
+        <label class="field-label" style="margin-top:0;">What's the problem?</label>
+        <textarea id="claimObservation" placeholder="e.g. I don't like the fruit boxes..."></textarea>
+
+        <div class="seg" id="rootcause-seg" style="margin-top:14px;">
+          <button type="button" data-val="This is the root cause" class="sel">This is the root cause</button>
+          <button type="button" data-val="It's a symptom of something deeper">It's a symptom of something deeper</button>
+          <button type="button" data-val="Not sure">Not sure</button>
+        </div>
+        <textarea id="claimRootCause" placeholder="e.g. There's never any bananas left for me..." style="margin-top:10px;"></textarea>
+
+        <label class="field-label">Your claim or proposed solution</label>
+        <textarea id="claimSolution" placeholder="e.g. Have on average more bananas delivered more frequently throughout the week..."></textarea>
+
+        <button type="submit" class="btn amber" style="margin-top:16px;">Submit</button>
+
+        <div class="copy-note">
+          <p>On desktop without a mail app? Copy your submission below and paste it into an email to <a href="mailto:union.wfa@gmail.com">union.wfa@gmail.com</a> — formatting will be preserved.</p>
+          <button type="button" class="btn secondary" id="copy-claim-btn" onclick="copyClaim()">📋 Copy submission</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- HIGHLIGHTS SUBMISSION (two-step) -->
+  <section class="view" id="view-highlights">
+    <button class="back-btn" onclick="showView('home')">← Home</button>
+    <p class="section-title">Submit highlights</p>
+    <p class="section-sub">Sharing what's working helps us protect it and build on it.</p>
+
+    <div class="card">
+      <p class="step-indicator" id="highlights-step-indicator">Step 1 of 2</p>
+
+      <form id="highlights-form">
+        <div id="highlights-step-1">
+          <label class="field-label" style="margin-top:0;">What's going well?</label>
+          <textarea id="highlightGood" placeholder="e.g. I was asked where I wanted to be moved last minute..."></textarea>
+          <button type="button" class="btn amber" style="margin-top:16px;" onclick="goToHighlightsStep(2)">Next</button>
+        </div>
+
+        <div id="highlights-step-2" style="display:none;">
+          <label class="field-label" style="margin-top:0;">Why do you think this makes work better?</label>
+          <textarea id="highlightWhy" placeholder="e.g. Being given the autonomy to make the choice was better than just being told last minute..."></textarea>
+          <div style="display:flex; gap:10px; margin-top:16px;">
+            <button type="button" class="btn secondary" onclick="goToHighlightsStep(1)">Back</button>
+            <button type="submit" class="btn amber" style="flex:1;">Submit</button>
+          </div>
+
+          <div class="copy-note">
+            <p>On desktop without a mail app? Copy your submission below and paste it into an email to <a href="mailto:union.wfa@gmail.com">union.wfa@gmail.com</a> — formatting will be preserved.</p>
+            <button type="button" class="btn secondary" id="copy-highlight-btn" onclick="copyHighlight()">📋 Copy submission</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- CONTACT REPS -->
+
+  <section class="view" id="view-contact">
+    <button class="back-btn" onclick="showView('home')">← Home</button>
+    <p class="section-title">Contact a rep</p>
+    <p class="section-sub">Reach out directly for support with an issue at work, a meeting, or general questions.</p>
+    <div id="reps-list"></div>
+  </section>
+
+  <!-- DELEGATES -->
+  <section class="view" id="view-delegates">
+    <button class="back-btn" onclick="showView('home')">← Home</button>
+    <p class="section-title">Delegates </p>
+    <p class="section-sub">Speak to a delegate about ideas to improve the workplace</p>
+    <div id="delegates-list"></div>
+  </section>
+
+  <!-- DOCUMENTS -->
+  <section class="view" id="view-documents">
+    <button class="back-btn" onclick="showView('home')">← Home</button>
+    <p class="section-title">Documents</p>
+    <p class="section-sub">The current contract, forms, and union resources.</p>
+    <div class="card" id="documents-list"></div>
+    <a class="btn secondary" style="margin-top:2px; margin-bottom:16px;" id="docs-folder-link" href="#" target="_blank" rel="noopener">Open full documents folder</a>
+    <p class="section-sub">  </p>
+  </section>
+
+  <!-- CLAIMS BOARD (delegate-posted, free text cards) -->
+  <section class="view" id="view-board">
+    <button class="back-btn" onclick="showView('home')">← Home</button>
+    <p class="section-title">Current claims & discussion points</p>
+    <p class="section-sub">Have questions or comments? Email a delegate or submit your own claim or highlight</p>
+    <div class="seg" id="claims-filter-seg" style="margin-bottom:14px;">
+      <button type="button" data-val="Contract Negotiation" class="sel">Contract Negotiation</button>
+      <button type="button" data-val="Partnership Forum">Partnership Forum</button>
+      <button type="button" data-val="Highlights">Highlights</button>
+    </div>
+    <div class="card" id="claims-board-list"></div>
+  </section>
+
+<section class="view" id="view-calculator"><button class="back-btn" onclick="showView('home')">← Home</button><div id="union-pay-cea">
+  <div class="pc-main">
+    <h2 class="pc-title">Pay calculator</h2>
+    <p class="pc-source">CEA rates effective 7 July 2025 · Agreement to 30 June 2026</p>
+    <p class="pc-config-disclaimer"></p><div class="pc-disclaimer"><strong>Not financial advice.</strong> This calculator provides estimates and averages only. Average weekly take-home pay is rounded down to the nearest $50. Actual pay will vary with your circumstances, payroll rules and individual deductions.</div>
+    <div class="pc-comparison">
+      <article class="pc-scenario" data-scenario="current">
+        <h2>Current</h2>
+        <div class="pc-fields">
+          <label class="pc-full">Department<select class="cursor-interaction" data-field="department" aria-label="Current department"></select></label>
+          <label>Role<select class="cursor-interaction" data-field="role" aria-label="Current role"></select></label>
+          <label>Pay step<select class="cursor-interaction" data-field="step" aria-label="Current pay step"></select></label>
+          <div class="pc-full"><label>Hourly rate ($)<input data-field="manualRate" type="number" min="0" step="0.001" readonly aria-label="Current hourly rate"></label><label class="pc-manual"><input data-field="manual" type="checkbox" class="cursor-interaction"> Set manually</label></div>
+          <label>KiwiSaver<select data-field="kiwisaver" class="cursor-interaction" aria-label="Current KiwiSaver rate"><option value="0">0%</option><option value="3">3%</option><option value="3.5">3.5%</option><option value="4">4%</option><option value="6">6%</option><option value="8">8%</option><option value="10">10%</option></select></label>
+          <label>Student loan<select data-field="loan" class="cursor-interaction" aria-label="Current student loan"><option value="no">No</option><option value="yes">Yes</option></select></label>
+          <details class="pc-full pc-allowances"><summary class="cursor-interaction">Allowances <span data-output="selected">None</span></summary><div data-output="allowances"></div><p class="pc-small pc-instruction">Select allowances you are eligible to receive.</p></details>
+          <div class="pc-full pc-total"><span>Annual allowances</span><strong data-output="annual"></strong></div>
+          <label class="pc-full">Shift pattern<select class="cursor-interaction" data-field="pattern" aria-label="Current shift pattern"></select></label>
+          <div class="pc-full pc-custom" data-output="custom" hidden></div>
+          <div class="pc-full pc-shifts" data-output="shifts" role="group" aria-label="Current worked shifts"></div>
+          <p class="pc-full pc-small pc-instruction" data-output="patternNote" hidden></p>
+          <p class="pc-full pc-small pc-instruction" data-output="weekdayNote" hidden>Tap: Awatea → Ahipo → Off.</p>
+          <p class="pc-full pc-small" data-output="hours" aria-live="polite"></p>
+          <label class="pc-full" data-output="cycleDate">Cycle day 1<input data-field="cycleStart" type="date" value="2026-01-05" aria-label="Current cycle day one"></label>
+        </div>
+        <div class="pc-results" aria-live="polite"><div><span>Gross annual</span><strong data-output="gross"></strong></div><div><span>Take-home annual</span><strong data-output="net"></strong></div><div class="pc-weekly"><span>Average take-home weekly</span><strong data-output="weekly"></strong></div></div>
+      </article>
+      <article class="pc-scenario pc-proposed" data-scenario="proposed">
+        <h2>Comparison</h2>
+        <div class="pc-fields">
+          <label class="pc-full">Department<select class="cursor-interaction" data-field="department" aria-label="Comparison department"></select></label>
+          <label>Role<select class="cursor-interaction" data-field="role" aria-label="Comparison role"></select></label>
+          <label>Pay step<select class="cursor-interaction" data-field="step" aria-label="Comparison pay step"></select></label>
+          <div><label>Hourly rate ($)<input data-field="manualRate" type="number" min="0" step="0.001" readonly aria-label="Comparison hourly rate"></label><label class="pc-manual"><input data-field="manual" type="checkbox" class="cursor-interaction"> Set manually</label></div>
+          <div class="pc-negotiation"><label class="pc-manual"><input data-field="negotiation" type="checkbox" class="cursor-interaction"> Negotiation increase</label><label data-output="increaseControl" hidden>Increase (%)<input data-field="increase" type="number" min="0" step="0.1" value="0" aria-label="Comparison rate increase percent"></label></div>
+          <label>KiwiSaver<select data-field="kiwisaver" class="cursor-interaction" aria-label="Comparison KiwiSaver rate"><option value="0">0%</option><option value="3">3%</option><option value="3.5">3.5%</option><option value="4">4%</option><option value="6">6%</option><option value="8">8%</option><option value="10">10%</option></select></label>
+          <label>Student loan<select data-field="loan" class="cursor-interaction" aria-label="Comparison student loan"><option value="no">No</option><option value="yes">Yes</option></select></label>
+          <details class="pc-full pc-allowances"><summary class="cursor-interaction">Allowances <span data-output="selected">None</span></summary><div data-output="allowances"></div><p class="pc-small pc-instruction">Select allowances you are eligible to receive.</p></details>
+          <div class="pc-full pc-total"><span>Annual allowances</span><strong data-output="annual"></strong></div>
+          <label class="pc-full">Shift pattern<select class="cursor-interaction" data-field="pattern" aria-label="Comparison shift pattern"></select></label>
+          <div class="pc-full pc-custom" data-output="custom" hidden></div>
+          <div class="pc-full pc-shifts" data-output="shifts" role="group" aria-label="Comparison worked shifts"></div>
+          <p class="pc-full pc-small pc-instruction" data-output="patternNote" hidden></p>
+          <p class="pc-full pc-small pc-instruction" data-output="weekdayNote" hidden>Tap: Awatea → Ahipo → Off.</p>
+          <p class="pc-full pc-small" data-output="hours" aria-live="polite"></p>
+          <label class="pc-full" data-output="cycleDate">Cycle day 1<input data-field="cycleStart" type="date" value="2026-01-05" aria-label="Comparison cycle day one"></label>
+        </div>
+        <div class="pc-results" aria-live="polite"><div><span>Gross annual</span><strong data-output="gross"></strong></div><div><span>Take-home annual</span><strong data-output="net"></strong></div><div class="pc-weekly"><span>Average take-home weekly</span><strong data-output="weekly"></strong></div></div>
+      </article>
+    </div>
+    <div class="pc-difference" aria-live="polite"><strong id="pc-difference"></strong><span>Average take-home weekly difference</span></div>
+    <p class="pc-small">Annual estimate uses the calendar year and deductions in the control sheet. Weekly average: annual ÷ 52.</p>
+    <div class="pc-disclaimer"><strong>Estimated averages, not payslip amounts.</strong> Average weekly take-home pay is rounded down to the nearest $50. Other figures are not rounded to $50. Actual pay will vary. Tax and ACC are included. KiwiSaver and student loan are included only if selected. Other income, tax-code differences, union fees and individual deductions are excluded. Public-holiday premiums, run-on, one-off payments and leave-pay uplifts are excluded. Paid leave is estimated as if rostered work continued. <strong>Not financial advice.</strong></div>
+    <footer><strong>Not financial advice.</strong> Estimates only. Actual pay depends on your circumstances and payroll rules.</footer>
+  </div>
+</div>
+</section>
+</main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const UNION_CONTROL_FEED_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQWz984XZGd-rki6rI4axc3Ui39Yl4ADqxcvj6gkeeNAU5tc1hZq2Pf_i7KY-y9hYc9D3V3RgnXXkv3/pub?gid=273470308&single=true&output=csv"; // Connect once with connect.html.
+let unionRowsPromise;
+async function unionControlRows(){
+ if(!unionRowsPromise)unionRowsPromise=(async()=>{const u=new URL(UNION_CONTROL_FEED_URL);if(u.protocol!=='https:'||u.hostname!=='docs.google.com'||!u.pathname.startsWith('/spreadsheets/'))throw Error('Use a published Google Sheets CSV link.');const res=await fetch(u.href,{cache:'no-store',signal:AbortSignal.timeout(15000)});if(!res.ok)throw Error('Control sheet could not be loaded.');const rows=csvRows((await res.text()).replace(/^\uFEFF/,''));if(rows.shift()?.[0]!=='type')throw Error('Publish the Website feed tab as CSV.');return rows;})();return unionRowsPromise;
+}
+function csvRows(text){const rows=[];let row=[],cell='',quote=false;for(let i=0;i<text.length;i++){const c=text[i];if(c==='"'){if(quote&&text[i+1]==='"'){cell+='"';i++;}else quote=!quote;}else if(c===','&&!quote){row.push(cell);cell='';}else if((c==='\n'||c==='\r')&&!quote){if(c==='\r'&&text[i+1]==='\n')i++;row.push(cell);rows.push(row);row=[];cell='';}else cell+=c;}if(quote)throw Error('Incomplete CSV.');if(cell||row.length){row.push(cell);rows.push(row);}return rows;}
+function parseCalculatorControl(rowsInput){
+ const rows=rowsInput.map(r=>r.slice()),settings={},roles=[],allowances=[],patterns=[],tax=[],days=[];
+
+ const number=(x,name,min=0,max=Infinity)=>{
+  const shown=String(x??'').trim();let text=shown.replace(/\u2212/g,'-').replace(/\u00a0|\u202f/g,' ');const percentage=text.endsWith('%');
+  const invalid=()=>{throw Error('Invalid '+name+': '+(shown?JSON.stringify(shown):'blank')+'. Enter a number'+(max===1?' or percentage':'')+'.');};
+  if(!text)return invalid();if(percentage){if(max!==1)return invalid();text=text.slice(0,-1).trim();}
+  text=text.replace(/^(?:NZ\$|NZD\s*|\$)\s*/i,'');
+  // Commas/spaces are accepted only as complete thousands groups, never as a guessed decimal separator.
+  if(!/^[+-]?(?:\d+(?:\.\d+)?|\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d{1,3}(?: \d{3})+(?:\.\d+)?)$/.test(text))return invalid();
+  const value=Number(text.replace(/[, ]/g,''))/(percentage?100:1);if(!Number.isFinite(value)||value<min||value>max)return invalid();return value;
+ };
+ const bool=x=>{if(!/^(TRUE|FALSE|1|0)$/i.test(String(x).trim()))throw Error('Use TRUE or FALSE.');return /^(TRUE|1)$/i.test(String(x).trim());};
+ const departmentNames={EAS:'Emergency Ambulance Services',CCC:'Clinical Communications Centre',PTS:'Patient Transfer Services',EDU:'Clinical Education'};const depts=x=>String(x||'').split(';').map(v=>departmentNames[v.trim()]||v.trim()).filter(Boolean);
+ for(const [type,...r] of rows){if(!type)continue;if(type==='setting'){if(Object.hasOwn(settings,r[0]))throw Error('Duplicate setting '+r[0]);settings[r[0]]=r[1];}
+ else if(type==='role'){r[0]=depts(r[0])[0];if(!r[0]||!r[1])throw Error('Role needs a department and title.');const rates=r.slice(2,7).map(x=>x===''||x===undefined?null:number(x,'hourly rate for '+r[1],.01,1000));if(!rates.some(x=>x!==null))throw Error('Role needs a pay step.');roles.push([r[0],r[1],rates]);}
+ else if(type==='allowance'){const a=[r[0],number(r[1],'allowance amount for '+(r[0]||'unnamed row')),r[2],'',bool(r[3]),r[4]];if(a[2]!=='year')throw Error('Controlled allowances must be annual amounts.');a.departments=depts(r[5]);a.max=number(r[6],'maximum quantity for '+(r[0]||'unnamed allowance'),1,100);a.enabled=bool(r[7]);allowances.push(a);}
+ else if(type==='pattern'){if(patterns.some(p=>p.id===r[0]))throw Error('Duplicate pattern ID.');patterns.push({id:r[0],name:r[1],departments:depts(r[2]),custom:r[3]==='custom'||r[3]==='weekCustom',weekdayCustom:r[3]==='weekCustom',weekdays:r[3]==='weekdays'||r[3]==='weekCustom',pts:depts(r[2]).length===1&&depts(r[2])[0]==='Patient Transfer Services',letters:'',durations:[],starts:[]});if(!['fixed','weekdays','custom','weekCustom'].includes(r[3]))throw Error('Invalid pattern type.');}
+ else if(type==='day')days.push(r);
+ else if(type==='tax')tax.push([number(r[0],'tax threshold'),number(r[1],'tax rate',0,1)]);
+ else if(type.startsWith('site_'))continue;else throw Error('Unknown feed row '+type);}
+ for(const key of ['title','rates_label','financial_disclaimer','negotiation_enabled','year','acc_rate','acc_cap','loan_threshold','loan_rate','unsocial_premium'])if(settings[key]===undefined||settings[key]==='')throw Error('Missing setting '+key);
+ settings.year=number(settings.year,'year',2020,2100);if(!Number.isInteger(settings.year))throw Error('Year must be a whole number.');for(const key of ['acc_rate','loan_rate','unsocial_premium'])settings[key]=number(settings[key],key,0,1);for(const key of ['acc_cap','loan_threshold'])settings[key]=number(settings[key],key);settings.negotiation_enabled=bool(settings.negotiation_enabled);
+ const departments=new Set(roles.map(r=>r[0]));for(const a of allowances)for(const dep of a.departments)if(!departments.has(dep))throw Error('Unknown allowance department '+dep);for(const p of patterns)for(const d of p.departments)if(!departments.has(d))throw Error('Unknown pattern department '+d);
+ for(const r of days){const p=patterns.find(p=>p.id===r[0]);if(!p)throw Error('Unknown pattern ID in Pattern days.');const i=number(r[1],'day number',1,366)-1;if(!Number.isInteger(i)||p.durations[i]!==undefined)throw Error('Duplicate or invalid cycle day.');const duration=Math.round(number(r[4],'shift hours for '+r[0]+' day '+r[1],0,24)*1e6)/1e6;if(!/^[A-Z]$/.test(r[2])||!/^([01]\d|2[0-3]):[0-5]\d$/.test(r[3]))throw Error('Invalid shift code or time.');if((r[2]==='O')!==(duration===0))throw Error('Off days need O and zero hours.');p.names??=[];p.names[i]=r[5]||'';p.durations[i]=duration;p.starts[i]=Number(r[3].slice(0,2))*60+Number(r[3].slice(3));p.letters=p.letters.padEnd(i+1,'?');p.letters=p.letters.slice(0,i)+r[2]+p.letters.slice(i+1);}
+ for(const p of patterns){if(!p.custom&&(!p.durations.length||p.letters.includes('?')))throw Error('Complete every day of '+p.name);if(p.weekdays&&!p.custom&&(p.durations.length!==7||p.durations.some(h=>h!==8)))throw Error('Day-of-week patterns require seven 8-hour days.');}
+ if(!roles.length||!patterns.length||!tax.length||tax[0][0]!==0||tax.some((t,i)=>i&&t[0]<=tax[i-1][0]))throw Error('Missing roles, patterns or ordered tax bands.');
+ for(const d of departments)if(!patterns.some(p=>p.departments.includes(d)))throw Error('No pattern for '+d);
+ if(new Set(roles.map(r=>r[0]+'|'+r[1])).size!==roles.length)throw Error('Duplicate role.');
+ return {settings,roles,allowances,patterns,tax};
+}
+
+const CONFIG_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vScpso7m6gy0Kn1mWRx42tN0nNK2ixMmlUukbnsbnUrCY_Qmn5F9UTdmUG5wCtUAw/pub?gid=1147758967&single=true&output=csv';
+const EVENTS_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vScpso7m6gy0Kn1mWRx42tN0nNK2ixMmlUukbnsbnUrCY_Qmn5F9UTdmUG5wCtUAw/pub?gid=1416538233&single=true&output=csv';
+const DOCUMENTS_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vScpso7m6gy0Kn1mWRx42tN0nNK2ixMmlUukbnsbnUrCY_Qmn5F9UTdmUG5wCtUAw/pub?gid=1785275254&single=true&output=csv';
+const REPS_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vScpso7m6gy0Kn1mWRx42tN0nNK2ixMmlUukbnsbnUrCY_Qmn5F9UTdmUG5wCtUAw/pub?gid=224509907&single=true&output=csv';
+const DELEGATES_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vScpso7m6gy0Kn1mWRx42tN0nNK2ixMmlUukbnsbnUrCY_Qmn5F9UTdmUG5wCtUAw/pub?gid=2002818382&single=true&output=csv';
+const CLAIMSBOARD_SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vScpso7m6gy0Kn1mWRx42tN0nNK2ixMmlUukbnsbnUrCY_Qmn5F9UTdmUG5wCtUAw/pub?gid=1211805192&single=true&output=csv';
+
+let UNION_PASSCODE = 'wfa2026';
+let DOCS_FOLDER_URL = 'https://drive.google.com/drive/folders/REPLACE_WITH_YOUR_FOLDER_ID';
+let UNION_EVENTS = [
+  { date: '2026-12-28', text: 'Contract negotiation' },
+  { date: '2026-08-15', text: 'Delegate meeting — Wellington Station' },
+  { date: '2026-09-02', text: 'Partnership forum' }
+];
+let UNION_DOCS = [];
+let UNION_REPS = [
+  { name: 'Danya Klapaukh', business_unit: 'Wellington Station', shift_colour: '', email: 'danya.klapaukh@example.org', phone: '+6421000001' },
+  { name: 'Alesha Hazelwood', business_unit: 'Porirua Base', shift_colour: '', email: 'alesha.hazelwood@example.org', phone: '+6421000002' },
+  { name: 'Rodney Parnell', business_unit: 'Hutt Valley Base', shift_colour: '', email: 'rodney.parnell@example.org', phone: '+6421000003' }
+];
+let UNION_DELEGATES = [
+  { name: 'Danya Klapaukh', business_unit: 'Wellington Station', shift_colour: '', email: 'danya.klapaukh@example.org', phone: '+6421000001' },
+  { name: 'Alesha Hazelwood', business_unit: 'Porirua Base', shift_colour: '', email: 'alesha.hazelwood@example.org', phone: '+6421000002' },
+  { name: 'Rodney Parnell', business_unit: 'Hutt Valley Base', shift_colour: '', email: 'rodney.parnell@example.org', phone: '+6421000003' }
+];
+let UNION_CLAIMS = [
+  {
+    title: 'Roster fatigue review',
+    tag: 'Contract Negotiation',
+    problem: 'Roster fatigue on rural rosters',
+    service_impact: 'Increased error risk and burnout during frequent double shifts.',
+    proposed_clause: 'Cap double-shift frequency to once per fortnight on rural rosters.',
+    implementation_considerations: 'Requires a roster review with rural base leads before the next cycle.'
+  },
+  {
+    title: 'New defib stock at Porirua',
+    tag: 'Highlights',
+    problem: '',
+    service_impact: '',
+    proposed_clause: '',
+    implementation_considerations: 'Thanks to management for fast-tracking new defib stock at Porirua this quarter — going well.'
+  },
+  {
+    title: 'Uniform replacement cycle',
+    tag: 'Partnership Forum',
+    problem: 'Uniform replacement cycle is too long for high-wear items',
+    service_impact: '',
+    proposed_clause: 'Shorten the replacement cycle for boots and outerwear.',
+    implementation_considerations: ''
+  }
+];
+
+function parseCSVLine(line){
+  const result = [];
+  let cur = '', inQuotes = false;
+  for(let i=0;i<line.length;i++){
+    const c = line[i];
+    if(inQuotes){
+      if(c === '"'){
+        if(line[i+1] === '"'){ cur += '"'; i++; }
+        else inQuotes = false;
+      } else cur += c;
+    } else {
+      if(c === '"') inQuotes = true;
+      else if(c === ','){ result.push(cur); cur = ''; }
+      else cur += c;
+    }
+  }
+  result.push(cur);
+  return result.map(s => s.trim());
+}
+
+// Shared fetch+parse used by every loader below. Returns an array of parsed
+// rows (header row already stripped), or null if the URL isn't set yet or
+// the fetch failed — callers fall back to their hardcoded defaults on null.
+async function fetchSheetRows(url){
+  if(UNION_CONTROL_FEED_URL){try{const rows=await unionControlRows();const type=new Map([[CONFIG_SHEET_CSV_URL,'site_config'],[EVENTS_SHEET_CSV_URL,'site_event'],[DOCUMENTS_SHEET_CSV_URL,'site_document'],[REPS_SHEET_CSV_URL,'site_rep'],[DELEGATES_SHEET_CSV_URL,'site_delegate'],[CLAIMSBOARD_SHEET_CSV_URL,'site_claim']]).get(url);return rows.filter(r=>r[0]===type).map(r=>r.slice(1));}catch{ return null; }}
+
+  if(!url || url.startsWith('PASTE_')) return null;
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 6000);
+  try{
+    const res = await fetch(url, {cache:'no-store', signal: controller.signal});
+    const text = await res.text();
+    const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+    return lines.slice(1).map(parseCSVLine);
+  }catch(err){
+    return null; // network blocked, timed out, or unreachable — caller falls back to defaults
+  }finally{
+    clearTimeout(timeoutId);
+  }
+}
+
+async function loadConfig(){
+  const rows = await fetchSheetRows(CONFIG_SHEET_CSV_URL);
+  if(!rows) return;
+  rows.forEach(([key, value]) => {
+    if(!key) return;
+    const k = key.toLowerCase();
+    if(k === 'member_passcode' && value) UNION_PASSCODE = value;
+    if(k === 'docs_folder_url' && value) DOCS_FOLDER_URL = value;
+  });
+}
+
+async function loadEvents(){
+  const rows = await fetchSheetRows(EVENTS_SHEET_CSV_URL);
+  if(!rows) return;
+  const valid = rows.filter(r => r[0] && r[1]);
+  if(UNION_CONTROL_FEED_URL||valid.length) UNION_EVENTS = valid.map(r => ({date: r[0], text: r[1]}));
+}
+
+async function loadDocuments(){
+  const rows = await fetchSheetRows(DOCUMENTS_SHEET_CSV_URL);
+  if(!rows) return;
+  UNION_DOCS = rows.filter(r => r[0] && r[1]).map(r => ({name: r[0], link: r[1]}));
+}
+
+async function loadPeopleSheet(url){
+  const rows = await fetchSheetRows(url);
+  if(!rows) return null;
+  const valid = rows.filter(r => r[0]);
+  if(!valid.length) return UNION_CONTROL_FEED_URL?[]:null;
+  return valid.map(r => ({
+    name: r[0] || '',
+    business_unit: r[1] || '',
+    shift_colour: r[2] || '',
+    email: r[3] || '',
+    phone: r[4] || ''
+  }));
+}
+
+async function loadReps(){
+  const rows = await loadPeopleSheet(REPS_SHEET_CSV_URL);
+  if(rows) UNION_REPS = rows;
+}
+
+async function loadDelegates(){
+  const rows = await loadPeopleSheet(DELEGATES_SHEET_CSV_URL);
+  if(rows) UNION_DELEGATES = rows;
+}
+
+async function loadClaimsBoard(){
+  const rows = await fetchSheetRows(CLAIMSBOARD_SHEET_CSV_URL);
+  if(!rows) return;
+  const valid = rows
+    .map(r => ({
+      title: r[0] || '',
+      tag: r[1] || '',
+      problem: r[2] || '',
+      service_impact: r[3] || '',
+      proposed_clause: r[4] || '',
+      implementation_considerations: r[5] || ''
+    }))
+    .filter(c => c.title || c.tag || c.problem || c.service_impact || c.proposed_clause || c.implementation_considerations);
+  if(UNION_CONTROL_FEED_URL||valid.length) UNION_CLAIMS = valid;
+}
+
+const configPromise = loadConfig();
+const eventsPromise = loadEvents();
+const documentsPromise = loadDocuments();
+const repsPromise = loadReps();
+const delegatesPromise = loadDelegates();
+const claimsBoardPromise = loadClaimsBoard();
+
+/* ========================================================================= */
+
+// Every value below comes from a spreadsheet that isn't only editable by
+// developers, so it's treated as untrusted input, not trusted code. These
+// two helpers keep it that way: escapeHTML stops a stray "<" or quote in a
+// name or claim from being interpreted as markup (stored XSS), and safeURL
+// stops a link column from being anything other than a genuine http(s) link
+// (e.g. a "javascript:" URL) before it's ever placed in an href.
+function escapeHTML(str){
+  return String(str ?? '').replace(/[&<>"']/g, ch => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[ch]));
+}
+
+function safeURL(url){
+  try{
+    const parsed = new URL(String(url ?? ''), window.location.href);
+    if(parsed.protocol === 'http:' || parsed.protocol === 'https:') return parsed.href;
+  }catch(err){ /* fall through */ }
+  return '';
+}
+
+function initials(name){
+  return (name || '').split(' ').filter(Boolean).map(w => w[0]).join('').toUpperCase().slice(0,2);
+}
+
+function renderPeople(containerId, people){
+  const list = document.getElementById(containerId);
+  if(!people.length){
+    list.innerHTML = '<p class="event-empty">No one listed yet.</p>';
+    return;
+  }
+  list.innerHTML = people.map(p => `
+    <div class="card rep-card">
+      <div class="avatar">${escapeHTML(initials(p.name))}</div>
+      <div>
+        <p class="rep-name">${escapeHTML(p.name)}${p.shift_colour ? ` <span class="shift-dot" style="background:${escapeHTML(p.shift_colour)}" title="Shift colour: ${escapeHTML(p.shift_colour)}"></span>` : ''}</p>
+        <p class="rep-role">${escapeHTML(p.business_unit)}</p>
+        <div class="rep-actions">
+          ${p.email ? `<a href="mailto:${escapeHTML(p.email)}">Email</a>` : ''}
+          ${p.phone ? `<a href="tel:${escapeHTML(p.phone)}">Call</a>` : ''}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderReps(){ renderPeople('reps-list', UNION_REPS); }
+function renderDelegates(){ renderPeople('delegates-list', UNION_DELEGATES); }
+
+let claimsFilter = 'Contract Negotiation';
+
+function renderClaimsBoard(){
+  const list = document.getElementById('claims-board-list');
+  const filtered = UNION_CLAIMS.filter(c => c.tag === claimsFilter);
+  if(!filtered.length){
+    list.innerHTML = '<p class="event-empty">Nothing posted under this filter yet.</p>';
+    return;
+  }
+  const fields = [
+    ['problem', 'Problem'],
+    ['service_impact', 'Service impact'],
+    ['proposed_clause', 'Proposed clause'],
+    ['implementation_considerations', 'Implementation considerations']
+  ];
+  list.innerHTML = filtered.map((c, i) => `
+    <div class="claim-item">
+      <button type="button" class="claim-toggle" id="claim-toggle-${i}" aria-expanded="false" aria-controls="claim-panel-${i}" onclick="toggleClaim(${i})">
+        <span class="claim-toggle-text">
+          ${c.title ? `<span class="claim-title">${escapeHTML(c.title)}</span>` : ''}
+          ${c.tag ? `<span class="pill">${escapeHTML(c.tag)}</span>` : ''}
+        </span>
+        <svg class="claim-chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="claim-panel-wrap" id="claim-panel-${i}" role="region" aria-labelledby="claim-toggle-${i}">
+        <div class="claim-panel-inner">
+          ${fields.map(([key, label]) => c[key]
+            ? `<p class="claim-field"><span class="claim-label">${label}</span>${escapeHTML(c[key])}</p>`
+            : ''
+          ).join('')}
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleClaim(i){
+  const btn = document.getElementById('claim-toggle-'+i);
+  const panel = document.getElementById('claim-panel-'+i);
+  const isOpen = btn.getAttribute('aria-expanded') === 'true';
+  btn.setAttribute('aria-expanded', String(!isOpen));
+  panel.classList.toggle('open', !isOpen);
+}
+
+function renderDocuments(){
+  const list = document.getElementById('documents-list');
+  if(!UNION_DOCS.length){
+    list.innerHTML = '<p class="event-empty">No documents listed yet.</p>';
+    return;
+  }
+  list.innerHTML = UNION_DOCS.map(doc => {
+    const href = safeURL(doc.link);
+    if(!href) return '';
+    return `
+    <a class="doc-row" href="${escapeHTML(href)}" target="_blank" rel="noopener" style="text-decoration:none; color:inherit;">
+      <div class="doc-ic">📄</div>
+      <div><p class="doc-name">${escapeHTML(doc.name)}</p><p class="doc-meta">Opens in Google Drive</p></div>
+    </a>
+  `;
+  }).join('');
+}
+
+function renderEvents(){
+  const list = document.getElementById('home-events-list');
+  const today = new Date(); today.setHours(0,0,0,0);
+  const upcoming = UNION_EVENTS
+    .map(ev => ({...ev, d: new Date(ev.date + 'T00:00:00')}))
+    .filter(ev => ev.d >= today)
+    .sort((a,b) => a.d - b.d);
+
+  if(upcoming.length === 0){
+    list.innerHTML = '<p class="event-empty">No upcoming events posted right now.</p>';
+    return;
+  }
+
+  const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+  list.innerHTML = upcoming.map(ev => `
+    <div class="event-row">
+      <div class="event-date"><div class="day">${ev.d.getDate()}</div><div class="mon">${months[ev.d.getMonth()]}</div></div>
+      <div class="event-text">${escapeHTML(ev.text)}</div>
+    </div>
+  `).join('');
+}
+
+function showView(name){
+  document.getElementById('app-shell').classList.toggle('calculator-open',name==='calculator');if(name==='calculator')window.initUnionCalculator();
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('view-'+name).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function showAuth(name){
+  document.querySelectorAll('.auth-view').forEach(v=>v.classList.remove('active'));
+  document.getElementById('auth-'+name).classList.add('active');
+  if(name === 'login'){
+    window.scrollTo({top:0,behavior:'auto'});
+    const passcodeField = document.getElementById('loginPasscode');
+    passcodeField.focus();
+    setTimeout(() => passcodeField.focus(), 60);
+  } else {
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+}
+
+// Guards against a fetch that stalls instead of failing outright (some
+// networks/extensions leave a blocked request pending rather than erroring).
+// Without this, code awaiting that promise would hang forever with no
+// error and no way forward — this guarantees it gives up after `ms`.
+function withTimeout(promise, ms){
+  return Promise.race([
+    promise,
+    new Promise(resolve => setTimeout(resolve, ms))
+  ]);
+}
+
+async function enterApp(){
+  await withTimeout(Promise.all([eventsPromise, documentsPromise, repsPromise, delegatesPromise, claimsBoardPromise]), 5000);
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app-shell').style.display = 'block';
+  const folderLink = document.getElementById('docs-folder-link');
+  const folderHref = safeURL(DOCS_FOLDER_URL);
+  if(folderHref){
+    folderLink.href = folderHref;
+    folderLink.style.display = '';
+  } else {
+    folderLink.style.display = 'none';
+  }
+  renderEvents();
+  renderDocuments();
+  renderReps();
+  renderDelegates();
+  renderClaimsBoard();
+  showView('home');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function logout(){
+  document.getElementById('app-shell').style.display = 'none';
+  document.getElementById('auth-screen').style.display = 'block';
+  document.getElementById('loginPasscode').value = '';
+  showAuth('welcome');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+async function handleLogin(){
+  const entered = document.getElementById('loginPasscode').value.trim();
+  if(!entered){
+    showToast('Enter the union passcode to continue.');
+    return;
+  }
+  await withTimeout(configPromise, 5000);
+  if(entered !== UNION_PASSCODE){
+    showToast('Incorrect passcode. Check with your delegate if unsure.');
+    return;
+  }
+  enterApp();
+}
+
+document.getElementById('login-form').addEventListener('submit', e => {
+  e.preventDefault();
+  handleLogin();
+});
+
+document.querySelectorAll('.seg').forEach(seg=>{
+  seg.addEventListener('click', e=>{
+    const btn = e.target.closest('button');
+    if(!btn) return;
+    seg.querySelectorAll('button').forEach(b=>b.classList.remove('sel'));
+    btn.classList.add('sel');
+  });
+});
+
+document.getElementById('claims-filter-seg').addEventListener('click', e => {
+  const btn = e.target.closest('button');
+  if(!btn) return;
+  claimsFilter = btn.dataset.val;
+  renderClaimsBoard();
+});
+
+function openHighlights(){
+  showView('highlights');
+  goToHighlightsStep(1);
+}
+
+function goToHighlightsStep(step){
+  document.getElementById('highlights-step-1').style.display = step === 1 ? '' : 'none';
+  document.getElementById('highlights-step-2').style.display = step === 2 ? '' : 'none';
+  document.getElementById('highlights-step-indicator').textContent = `Step ${step} of 2`;
+  if(step === 1){
+    document.getElementById('highlightGood').focus();
+  } else {
+    document.getElementById('highlightWhy').focus();
+  }
+}
+
+function copyClaim(){
+  const observation = document.getElementById('claimObservation').value.trim();
+  const rootCauseChoice = document.querySelector('#rootcause-seg .sel').dataset.val;
+  const rootCause = document.getElementById('claimRootCause').value.trim();
+  const solution = document.getElementById('claimSolution').value.trim();
+
+  if(!observation && !rootCause && !solution){
+    showToast('Fill in your submission first.');
+    return;
+  }
+
+  const html = `<p>A claim has been submitted via the WFA Union member portal.</p>
+<hr>
+<p><strong>What was observed</strong><br>${observation || '—'}</p>
+<p><strong>Root cause assessment</strong><br>${rootCauseChoice}</p>
+<p><strong>Underlying cause</strong><br>${rootCause || '—'}</p>
+<p><strong>Proposed claim / solution</strong><br>${solution || '—'}</p>
+<hr>
+<p><em>Submitted via the WFA Union member portal.</em></p>`;
+
+  const el = document.createElement('div');
+  el.contentEditable = true;
+  el.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;';
+  el.innerHTML = html;
+  document.body.appendChild(el);
+
+  const range = document.createRange();
+  range.selectNodeContents(el);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+
+  let success = false;
+  try {
+    success = document.execCommand('copy');
+  } catch(e){}
+
+  sel.removeAllRanges();
+  document.body.removeChild(el);
+
+  const btn = document.getElementById('copy-claim-btn');
+  if(success){
+    btn.textContent = '✅ Copied';
+    setTimeout(()=>{ btn.textContent = '📋 Copy submission'; }, 2000);
+    showToast('Copied — paste directly into your email.');
+  } else {
+    showToast('Could not copy. Try selecting and copying manually.');
+  }
+}
+
+function copyHighlight(){
+  const good = document.getElementById('highlightGood').value.trim();
+  const why = document.getElementById('highlightWhy').value.trim();
+
+  if(!good && !why){
+    showToast('Fill in your submission first.');
+    return;
+  }
+
+  const html = `<p>A highlight has been submitted via the WFA Union member portal.</p>
+<hr>
+<p><strong>What's going well</strong><br>${good || '—'}</p>
+<p><strong>Why this makes work better</strong><br>${why || '—'}</p>
+<hr>
+<p><em>Submitted via the WFA Union member portal.</em></p>`;
+
+  const el = document.createElement('div');
+  el.contentEditable = true;
+  el.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;';
+  el.innerHTML = html;
+  document.body.appendChild(el);
+
+  const range = document.createRange();
+  range.selectNodeContents(el);
+  const sel = window.getSelection();
+  sel.removeAllRanges();
+  sel.addRange(range);
+
+  let success = false;
+  try {
+    success = document.execCommand('copy');
+  } catch(e){}
+
+  sel.removeAllRanges();
+  document.body.removeChild(el);
+
+  const btn = document.getElementById('copy-highlight-btn');
+  if(success){
+    btn.textContent = '✅ Copied';
+    setTimeout(()=>{ btn.textContent = '📋 Copy submission'; }, 2000);
+    showToast('Copied — paste directly into your email.');
+  } else {
+    showToast('Could not copy. Try selecting and copying manually.');
+  }
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2600);
+}
+
+document.getElementById('signup-form').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const required = ['firstNames','familyName','mobile','emailHome','homeAddress','postcode','section','jobTitle','signature'];
+  for(const id of required){
+    if(!document.getElementById(id).value.trim()){
+      document.getElementById(id).focus();
+      showToast('Please fill in all required fields.');
+      return;
+    }
+  }
+  if(!document.getElementById('agree1').checked || !document.getElementById('agree2').checked){
+    showToast('Please agree to both authorisations to continue.');
+    return;
+  }
+
+  const g = id => document.getElementById(id).value;
+  const title = document.querySelector('#title-seg .sel').dataset.val;
+  const gender = document.querySelector('#gender-seg .sel').dataset.val;
+
+  // Application body — password deliberately excluded
+  const body =
+`New membership application received via the WFA Union website.
+
+PERSONAL DETAILS
+Title: ${title}
+First names: ${g('firstNames')}
+Family name: ${g('familyName')}
+Date of birth: ${g('dob')}
+Gender: ${gender}
+Ethnicity: ${g('ethnicity') || '—'}
+Iwi: ${g('iwi') || '—'}
+
+CONTACT
+Mobile: ${g('mobile')}
+Personal email: ${g('emailHome')}
+Work email: ${g('emailWork') || '—'}
+
+HOME ADDRESS
+${g('homeAddress')}, ${g('postcode')}
+
+EMPLOYMENT
+Employer: ${g('employer') || 'Wellington Free Ambulance'}
+Payroll no.: ${g('payroll') || '—'}
+Business unit: ${g('section')}
+Job title: ${g('jobTitle')}
+
+AUTHORISATIONS AGREED
+✓ Terms of membership and authority to represent
+✓ Wage deductions for union fees
+
+Signature: ${g('signature')}
+Date: ${g('signDate')}
+
+This application was submitted via the WFA Union member portal.`;
+
+  const subject = `New union membership application — ${g('firstNames')} ${g('familyName')}`;
+  const mailto = `mailto:union.wfa@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.location.href = mailto;
+
+  showToast('Opening your mail app…');
+  e.target.reset();
+  document.querySelectorAll('#title-seg button').forEach(b=>b.classList.remove('sel'));
+  document.querySelector('#title-seg button').classList.add('sel');
+  document.querySelectorAll('#gender-seg button').forEach(b=>b.classList.remove('sel'));
+  document.querySelector('#gender-seg button').classList.add('sel');
+  setTimeout(()=>showAuth('welcome'), 1400);
+});
+
+document.getElementById('claims-form').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const observation = document.getElementById('claimObservation').value.trim();
+  const rootCause = document.getElementById('claimRootCause').value.trim();
+  const solution = document.getElementById('claimSolution').value.trim();
+  if(!observation || !rootCause || !solution){
+    showToast('Please fill in all three fields before submitting.');
+    return;
+  }
+  const rootCauseChoice = document.querySelector('#rootcause-seg .sel').dataset.val;
+  const body =
+`A claim has been submitted via the WFA Union member portal.
+
+What was observed
+${observation}
+
+Root cause assessment
+${rootCauseChoice}
+
+Underlying cause
+${rootCause}
+
+Proposed claim / solution
+${solution}
+
+Submitted via the WFA Union member portal.`;
+
+  const mailto = `mailto:union.wfa@gmail.com?subject=${encodeURIComponent('Union claim submission')}&body=${encodeURIComponent(body)}`;
+  window.location.href = mailto;
+
+  showToast('Opening your mail app…');
+  document.getElementById('claims-form').reset();
+  document.querySelectorAll('#rootcause-seg button').forEach(b=>b.classList.remove('sel'));
+  document.querySelector('#rootcause-seg button').classList.add('sel');
+});
+
+document.getElementById('highlights-form').addEventListener('submit', async e=>{
+  e.preventDefault();
+  const good = document.getElementById('highlightGood').value.trim();
+  const why = document.getElementById('highlightWhy').value.trim();
+  if(!good || !why){
+    showToast('Please fill in both fields before submitting.');
+    return;
+  }
+  const body =
+`A highlight has been submitted via the WFA Union member portal.
+
+What's going well
+${good}
+
+Why this makes work better
+${why}
+
+Submitted via the WFA Union member portal.`;
+
+  const mailto = `mailto:union.wfa@gmail.com?subject=${encodeURIComponent('Union highlight submission')}&body=${encodeURIComponent(body)}`;
+  window.location.href = mailto;
+
+  showToast('Opening your mail app…');
+  document.getElementById('highlights-form').reset();
+  goToHighlightsStep(1);
+});
+
+</script>
+<script>
+window.initUnionCalculator = (() => {let initialized;return ()=>initialized??=(async () => {
+const root=document.getElementById('union-pay-cea');
+const status=document.createElement('p');status.className='pc-source';status.setAttribute('role','status');root.querySelector('.pc-main').prepend(status);
+root.querySelectorAll('[data-scenario]').forEach(s=>s.hidden=true);root.querySelector('.pc-difference').hidden=true;
+let config;
+try {if(UNION_CONTROL_FEED_URL){const rows=await unionControlRows();config=parseCalculatorControl(rows);}else{config={"roles":[["Emergency Ambulance Services","Emergency Medical Technician",[31.71,32.11,32.67,33.8,34.99]],["Emergency Ambulance Services","Graduate Paramedic",[35.06]],["Emergency Ambulance Services","Emergency Medical Technician (grandparented)",[null,35.76,36.48,37.2,37.95]],["Emergency Ambulance Services","Supervised Paramedic",[39.79]],["Emergency Ambulance Services","Paramedic",[41.86,42.28,43.13,44.64,46.2]],["Emergency Ambulance Services","Clinical Paramedic Advisor",[49.047,50.46,51.46,52.49,53.55]],["Emergency Ambulance Services","Intensive Care Paramedic",[51.64,52.45,53.25,54.05,54.84]],["Emergency Ambulance Services","Extended Care Paramedic",[55.71,56.26,57.39,59.4,61.48]],["Emergency Ambulance Services","Critical Care Paramedic",[55.71,56.26,57.39,59.4,61.48]],["Clinical Communications Centre","Trainee Call Taker",[29.25]],["Clinical Communications Centre","Emergency Support Call Taker",[30.11,30.41,30.72,31.02,31.33]],["Clinical Communications Centre","Call Taker",[32.59]],["Clinical Communications Centre","Senior Call Taker",[35.06,35.76,36.48,37.2,37.95]],["Clinical Communications Centre","Call Taking Supervisor",[36.56,36.81,37.06,38.63,39.8]],["Clinical Communications Centre","Dispatcher",[36.56,36.81,37.06,38.63,39.8]],["Patient Transfer Services","PTO (First Aider)",[30.11,30.41,30.72,31.02,31.33]],["Patient Transfer Services","PTO (First Responder)",[31.19,31.43,31.67,31.91,32.23]],["Patient Transfer Services","PTO (EMT)",[31.71,32.11,32.67,33.8,34.99]],["Patient Transfer Services","PTO (EMT, grandparented)",[null,35.76,36.48,37.2,37.95]],["Clinical Education","Clinical Educator",[49.47,50.46,51.46,52.49,53.55]],["Clinical Education","Senior Clinical Educator",[53.44,54.52,55.61,56.71,57.86]]],"patterns":[{"name":"4:4 DDNN","letters":"DDNNOOOO","durations":[12,12,12,12,0,0,0,0],"id":"pattern_0","departments":["Emergency Ambulance Services","Clinical Communications Centre"],"starts":[360,360,1080,1080,0,0,0,0]},{"name":"3:3 DSN","letters":"DSNOOO","durations":[12,12,10,0,0,0],"id":"pattern_1","departments":["Emergency Ambulance Services"],"starts":[360,600,1260,0,0,0]},{"name":"6:4","hidden":true,"letters":"EELLNNOOOO","durations":[8,8,8,8,8,8,0,0,0,0],"id":"pattern_2","departments":[],"starts":[420,420,900,900,1380,1380,0,0,0,0]},{"name":"DDSN","hidden":true,"letters":"DDSNOOOO","durations":[12,12,12,6,0,0,0,0],"id":"pattern_3","departments":[],"starts":[360,360,720,1080,0,0,0,0]},{"name":"5-5 DDNN","hidden":true,"letters":"DDNNOOOO","durations":[12,12,12,12,0,0,0,0],"id":"pattern_4","departments":[],"starts":[300,300,1020,1020,0,0,0,0]},{"name":"Day of the week","weekdays":true,"durations":[8,8,8,8,8,8,8],"id":"pattern_5","departments":["Emergency Ambulance Services","Clinical Education"],"starts":[510,510,510,510,510,510,510]},{"name":"Ahipo","hidden":true,"weekdays":true,"durations":[8,8,8,8,8,8,8],"id":"pattern_6","departments":[],"starts":[990,990,990,990,990,990,990]},{"name":"4:4 DDLL","letters":"DDLLOOOO","durations":[12,12,12,12,0,0,0,0],"starts":[390,390,660,660,0,0,0,0],"id":"pattern_7","departments":["Clinical Communications Centre"]},{"name":"Custom cycle","custom":true,"id":"pattern_8","departments":["Emergency Ambulance Services","Clinical Communications Centre","Patient Transfer Services"],"starts":[]},{"name":"2-3-2 (6-6)","pts":true,"letters":"DDOOODDOODDDOO","durations":[12,12,0,0,0,12,12,0,0,12,12,12,0,0],"starts":[360,360,0,0,0,360,360,0,0,360,360,360,0,0],"id":"pattern_9","departments":["Patient Transfer Services"]},{"name":"2-3-2 (11-2300)","pts":true,"letters":"LLOOOLLOOLLLOO","durations":[12,12,0,0,0,12,12,0,0,12,12,12,0,0],"starts":[660,660,0,0,0,660,660,0,0,660,660,660,0,0],"id":"pattern_10","departments":["Patient Transfer Services"]},{"name":"2-3-2 mixed","pts":true,"letters":"DDOOODDOODDDOOLLOOOLLOOLLLOO","durations":[12,12,0,0,0,12,12,0,0,12,12,12,0,0,12,12,0,0,0,12,12,0,0,12,12,12,0,0],"starts":[360,360,0,0,0,360,360,0,0,360,360,360,0,0,660,660,0,0,0,660,660,0,0,660,660,660,0,0],"id":"pattern_11","departments":["Patient Transfer Services"]},{"name":"Monday to Friday","custom":true,"weekdayCustom":true,"weekdays":true,"id":"pattern_12","departments":["Patient Transfer Services"],"starts":[]}],"settings":{"title":"Pay calculator","rates_label":"CEA rates effective 7 July 2025 · Agreement to 30 June 2026 · Bundled calculator values","year":2026,"acc_rate":0.0175,"acc_cap":156641,"loan_threshold":24128,"loan_rate":0.12,"unsocial_premium":0.25,"negotiation_enabled":true,"financial_disclaimer":"Estimated averages only. Not financial advice."},"tax":[[0,0.105],[15600,0.175],[53500,0.3],[78100,0.33],[180000,0.39]],"allowances":[{"row":["Additional channel",5843.1,"year","Quarterly",true,"Up to two additional channels."],"enabled":true,"max":2,"departments":["Clinical Communications Centre"]},{"row":["Dispatcher call taking",5843.1,"year","Quarterly",true,"Can be paid with additional-channel allowance."],"enabled":true,"max":1,"departments":["Clinical Communications Centre"]},{"row":["Dual ATP",3546.26,"year","Each pay period",true,"ICP/ECP, CCP/ECP, ICP/CPA, ECP/CPA or CCP/CPA."],"enabled":true,"max":1,"departments":["Emergency Ambulance Services","Clinical Education"]},{"row":["Peer supporters",2399.64,"year","Quarterly",true,"Appointed peer supporter meeting requirements."],"enabled":true,"max":1,"departments":["Emergency Ambulance Services","Clinical Communications Centre","Patient Transfer Services","Clinical Education"]},{"row":["Rescue squad",1021.5,"year","Quarterly",false,"Fitness eligibility; not pro-rated for part-time hours."],"enabled":true,"max":1,"departments":["Emergency Ambulance Services","Clinical Education"]}]};config.allowances=config.allowances.map(a=>Object.assign(a.row,{enabled:a.enabled,max:a.max,departments:a.departments}));status.textContent='Using bundled calculator values. Connect the control workbook to load edits.';}}catch(error){status.textContent='Calculator unavailable: '+error.message;return;}
+const {roles,allowances,patterns,settings,tax}=config;const departments=[...new Set(roles.map(r=>r[0]))];const steps=['0','+1','+2','+3','+4'];
+root.querySelector('.pc-title').textContent=settings.title;root.querySelector('.pc-source:not([role])').textContent=settings.rates_label;
+if(UNION_CONTROL_FEED_URL)status.textContent='';root.querySelector('.pc-config-disclaimer').textContent=settings.financial_disclaimer;
+root.querySelectorAll('[data-scenario]').forEach(s=>s.hidden=false);
+const weekdays=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+const dayMs=86400000;
+const positive=(n)=>Math.max(0,Number(n)||0);
+const mod=(a,b)=>(a%b+b)%b;
+const dateNumber=(value)=>{const n=Date.parse(value+'T00:00:00Z');return Number.isFinite(n)?Math.floor(n/dayMs):null;};
+const cycleStart=(s)=>dateNumber(field(s,'cycleStart').value)??dateNumber('2026-01-05');
+const estimates=new Map();
+function incomeTax(gross){const t=tax.map(v=>v[0]),r=tax.map(v=>v[1]);return t.reduce((sum,lower,i)=>sum+Math.max(0,Math.min(gross,i===t.length-1?Infinity:t[i+1])-lower)*r[i],0);}
+function takeHome(gross,s){gross=positive(gross);const ks=positive(field(s,'kiwisaver').value)/100;const loan=field(s,'loan').value==='yes'?Math.max(0,gross-settings.loan_threshold)*settings.loan_rate:0;return gross-incomeTax(gross)-Math.min(gross,settings.acc_cap)*settings.acc_rate-gross*ks-loan;}
+function stepOnDate(pattern,day,s){return pattern.weekdays?mod(day+3,7):mod(day-cycleStart(s),pattern.durations.length);}
+function unsocialMinutes(day,start,end){const weekday=new Date(day*dayMs).getUTCDay();if(weekday===0||weekday===6)return end-start;return Math.max(0,Math.min(end,360)-start)+Math.max(0,end-Math.max(start,1200));}
+function rosterYear(s,rate){const pi=Number(field(s,'pattern').value)||0,pattern=getPattern(s),states=selections.get(s)||[];const first=dateNumber(settings.year+'-01-01'),last=dateNumber((settings.year+1)+'-01-01');let hours=0,premium=0;
+for(let day=first-1;day<last;day++){const step=stepOnDate(pattern,day,s);if(!states[step]||!pattern.durations[step])continue;const segments=pattern.segments?pattern.segments[step]:[{start:pattern.weekdays?(states[step]===2?990:510):pattern.starts[step],duration:pattern.durations[step]}];for(const segment of segments){const start=segment.start,finish=start+segment.duration*60;const ownEnd=Math.min(finish,1440);if(day>=first){hours+=(ownEnd-start)/60;premium+=unsocialMinutes(day,start,ownEnd)/60;}if(finish>1440&&day+1>=first&&day+1<last){hours+=(finish-1440)/60;premium+=unsocialMinutes(day+1,0,finish-1440)/60;}}}
+return {hours,premium,wages:rate*(hours+settings.unsocial_premium*premium)};}
+const selections=new WeakMap();
+const customCycles=new WeakMap();
+const weekdayCycles=new WeakMap();
+function customDays(s){return patterns[Number(field(s,'pattern').value)].weekdayCustom?weekdayCycles.get(s):customCycles.get(s);}
+function timeMinutes(value){const parts=value.split(':').map(Number);return parts[0]*60+parts[1];}
+function customSegments(day,split=true){if(day.off)return [];const start=timeMinutes(day.start),duration=mod(timeMinutes(day.end)-start,1440)/60;const segments=[{start,duration}];if(split&&day.split&&day.start2&&day.end2){const second=timeMinutes(day.start2),hours=mod(timeMinutes(day.end2)-second,1440)/60;if(second>=start+duration*60&&hours>0)segments.push({start:second,duration:hours});}return segments;}
+function customDuration(day){return customSegments(day).reduce((total,segment)=>total+segment.duration,0);}
+function getPattern(s){const p=patterns[Number(field(s,'pattern').value)||0];if(!p.custom)return p;const days=customDays(s)||[],pts=field(s,'department').value==='Patient Transfer Services',segments=days.map(d=>customSegments(d,pts));return {...p,segments,durations:segments.map(parts=>parts.reduce((total,part)=>total+part.duration,0)),starts:days.map(d=>d.off?0:timeMinutes(d.start)),letters:days.map(d=>d.off?'O':'D').join('')};}
+function patternOptions(s){const select=field(s,'pattern'),previous=select.value;select.replaceChildren();const department=field(s,'department').value;patterns.forEach((p,i)=>{if(p.departments.includes(department))select.append(option(i,p.name));});if(Array.from(select.options).some(o=>o.value===previous))select.value=previous;renderShifts(s);}
+let pickerId=0;
+function timeControl(value,title,accessible,onChange){
+ const label=document.createElement('div');label.className='pc-time-control';const caption=document.createElement('span');caption.textContent=title;label.append(caption);
+ const native=document.createElement('input');native.type='time';native.step='60';native.value=value;native.className='pc-time-native';native.setAttribute('aria-label',accessible);native.addEventListener('click',()=>{if(typeof native.showPicker==='function'){try{native.showPicker();}catch{}}});native.addEventListener('change',()=>{if(native.value)onChange(native.value);});label.append(native);
+ const trigger=document.createElement('button');trigger.type='button';trigger.className='pc-time-trigger';trigger.textContent=value;trigger.setAttribute('aria-label',accessible+', '+value);trigger.setAttribute('aria-haspopup','dialog');trigger.setAttribute('aria-expanded','false');label.append(trigger);
+ const picker=document.createElement('div');picker.className='pc-clock-picker';picker.hidden=true;picker.setAttribute('role','dialog');picker.setAttribute('aria-label',title+' time');label.append(picker);
+ const heading=document.createElement('div');heading.className='pc-clock-title';heading.textContent=title+' time';picker.append(heading);
+ const wheels=document.createElement('div');wheels.className='pc-clock-wheels';picker.append(wheels);
+ const parts=value.split(':').map(Number);const values=[parts[0],parts[1]>=30?1:0];let pending=value;
+ function sync(){pending=String(values[0]).padStart(2,'0')+':'+String(values[1]*30).padStart(2,'0');}
+ const columns=[];
+ [24,2].forEach((count,index)=>{
+  const column=document.createElement('div');column.className='pc-clock-column';const text=document.createElement('span');text.className='pc-clock-caption';text.textContent=index===0?'Hour':'Minute';column.append(text);
+  const wheel=document.createElement('div');wheel.className='pc-clock-wheel';wheel.setAttribute('role','listbox');wheel.setAttribute('aria-label',index===0?'Hour':'Minute');wheel.tabIndex=0;column.append(wheel);wheels.append(column);
+  const id='pc-clock-'+(++pickerId),buttons=[];let timer;
+  function select(n,scroll){values[index]=Math.max(0,Math.min(count-1,n));buttons.forEach((b,i)=>b.setAttribute('aria-selected',String(i===values[index])));wheel.setAttribute('aria-activedescendant',id+'-'+values[index]);sync();if(scroll)wheel.scrollTo({top:values[index]*36,behavior:'smooth'});}
+  for(let n=0;n<count;n++){const b=document.createElement('button');b.type='button';b.className='pc-clock-number';b.id=id+'-'+n;b.tabIndex=-1;b.setAttribute('role','option');b.textContent=String(index===1?n*30:n).padStart(2,'0');b.addEventListener('click',()=>select(n,true));buttons.push(b);wheel.append(b);}
+  wheel.addEventListener('scroll',()=>{clearTimeout(timer);timer=setTimeout(()=>select(Math.round(wheel.scrollTop/36),true),120);});
+  wheel.addEventListener('keydown',e=>{let n=values[index];if(e.key==='ArrowDown')n++;else if(e.key==='ArrowUp')n--;else if(e.key==='Home')n=0;else if(e.key==='End')n=count-1;else return;e.preventDefault();select(n,true);});
+  select(values[index],false);columns.push(wheel);
+ });
+ const done=document.createElement('button');done.type='button';done.className='pc-clock-done';done.textContent='Done';picker.append(done);
+ function close(commit){picker.hidden=true;trigger.setAttribute('aria-expanded','false');if(commit)onChange(pending);else trigger.focus();}
+ done.addEventListener('click',()=>close(true));
+ picker.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();close(false);}else if(e.key==='Enter'){e.preventDefault();close(true);}});
+ label.addEventListener('focusout',()=>{setTimeout(()=>{if(!picker.hidden&&!label.contains(document.activeElement))close(true);},0);});
+ trigger.addEventListener('click',()=>{if(!picker.hidden){close(true);return;}picker.hidden=false;trigger.setAttribute('aria-expanded','true');columns.forEach((w,i)=>w.scrollTop=values[i]*36);columns[0].focus();});
+ return label;
+}
+function renderCustom(s){
+ const holder=output(s,'custom');holder.replaceChildren();const days=customDays(s),fixedWeek=!!patterns[Number(field(s,'pattern').value)].weekdayCustom;
+ const note=document.createElement('p');note.className='pc-small pc-instruction';note.textContent=fixedWeek?'Set your shifts for the full week. Saturday and Sunday start as days off and can be changed to shifts. The full seven-day week repeats.':'Add every day in order, including all days off, to complete the full repeating cycle. Overnight shifts end the following day.';holder.append(note);
+ const rows=document.createElement('div');holder.append(rows);
+ days.forEach((day,i)=>{
+  const row=document.createElement('div');row.className='pc-custom-row';row.dataset.kind=day.off?'off':timeMinutes(day.start)>=1080||timeMinutes(day.start)<360?'night':timeMinutes(day.start)>=600?'swing':'day';
+  const title=document.createElement('strong');title.textContent=fixedWeek?weekdays[i]:'Day '+(i+1);row.append(title);
+  const kind=document.createElement('select');kind.setAttribute('aria-label','Cycle day '+(i+1)+' type');kind.append(option('work','Shift'),option('off','Day off'));kind.value=day.off?'off':'work';row.append(kind);
+  kind.addEventListener('change',()=>{day.off=kind.value==='off';if(day.off){delete day.start;delete day.end;delete day.start2;delete day.end2;delete day.split;}else{day.start='06:00';day.end='18:00';}renderCustom(s);update();});
+  if(!day.off)['start','end'].forEach(key=>row.append(timeControl(day[key],key==='start'?'Start':'Finish','Cycle day '+(i+1)+' '+key,value=>{day[key]=value;renderCustom(s);update();})));
+  if(!day.off&&field(s,'department').value==='Patient Transfer Services'){
+   const splitLabel=document.createElement('label');splitLabel.className='pc-full pc-manual';const check=document.createElement('input');check.type='checkbox';check.checked=!!day.split;splitLabel.append(check,document.createTextNode('Split shift'));row.append(splitLabel);
+   check.addEventListener('change',()=>{day.split=check.checked;if(day.split){day.start2=day.start2||'19:00';day.end2=day.end2||'23:00';}renderCustom(s);update();});
+   if(day.split){['start2','end2'].forEach(key=>row.append(timeControl(day[key],key==='start2'?'Second start':'Second finish','Cycle day '+(i+1)+' '+key,value=>{day[key]=value;renderCustom(s);update();})));const note=document.createElement('p');note.className='pc-full pc-small pc-instruction';note.textContent='The gap between shifts is unpaid. The second shift must start after the first finishes on the same cycle day.';row.append(note);}
+  }
+  const remove=document.createElement('button');remove.type='button';remove.textContent='Remove';remove.hidden=fixedWeek;remove.setAttribute('aria-label','Remove cycle day '+(i+1));remove.addEventListener('click',()=>{days.splice(i,1);renderCustom(s);update();});row.append(remove);rows.append(row);
+ });
+ const actions=document.createElement('div');actions.className='pc-custom-actions';actions.hidden=fixedWeek;
+ [false,true].forEach(off=>{const b=document.createElement('button');b.type='button';b.textContent=off?'+ Add day off':'+ Add shift';b.addEventListener('click',()=>{days.push(off?{off:true}:{off:false,start:'06:00',end:'18:00'});renderCustom(s);update();});actions.append(b);});holder.append(actions);
+ const error=document.createElement('p');error.className='pc-custom-error pc-instruction';error.setAttribute('role','alert');error.textContent=days.length===0?'Add shifts and days off to create your cycle.':days.some(d=>!d.off&&mod(timeMinutes(d.end)-timeMinutes(d.start),1440)===0)?'Shift start and finish must be different.':field(s,'department').value==='Patient Transfer Services'&&days.some(d=>!d.off&&d.split&&customSegments(d).length!==2)?'Set a valid second shift after the first finishes. The second shift is excluded until corrected.':!days.some(d=>d.off)?'No days off added. Include every day off before using this estimate.':'';holder.append(error);
+ selections.set(s,days.map(d=>!d.off));
+}
+
+const committedIncreases=new WeakMap();
+const manualBases=new WeakMap();
+function selectedHours(s){const pattern=getPattern(s);const states=selections.get(s);return pattern.durations.reduce((sum,h,i)=>sum+(states&&states[i]?h:0),0);}
+function workFraction(s){const pattern=getPattern(s);const role=roles[Number(field(s,'role').value)];const fullWeek=pattern.weekdays||role&&role[0]==='Clinical Education'?40:42;const weekly=pattern.weekdays?selectedHours(s):selectedHours(s)*7/(pattern.durations.length||1);return Math.min(1,weekly/fullWeek);}
+function renderShifts(s){
+ const pattern=getPattern(s),holder=output(s,'shifts');holder.replaceChildren();holder.classList.toggle('pc-pts',!!pattern.pts);output(s,'patternNote').hidden=!pattern.pts;output(s,'patternNote').textContent=pattern.name==='2-3-2 mixed'?'Pay is calculated assuming 06:00–18:00 shifts one fortnight and 11:00–23:00 shifts the next, following the 2-3-2 on/off pattern. The full 28-day cycle repeats.':pattern.pts?'2 on → 3 off → 2 on → 2 off → 3 on → 2 off.':'';holder.hidden=!!pattern.custom;output(s,'custom').hidden=!pattern.custom;if(pattern.custom){output(s,'weekdayNote').hidden=true;renderCustom(s);update();return;}holder.classList.toggle('pc-weekdays',!!pattern.weekdays);output(s,'weekdayNote').hidden=!pattern.weekdays;
+ const states=pattern.durations.map(h=>pattern.weekdays?0:h>0);selections.set(s,states);
+ pattern.durations.forEach((h,i)=>{
+  const label=pattern.weekdays?weekdays[i]:pattern.letters[i];const b=document.createElement('button');b.type='button';b.className='pc-shift cursor-interaction';b.disabled=!pattern.weekdays&&h===0;b.title=pattern.names?.[i]||'';
+  const title=document.createElement('span');title.textContent=pattern.pts?(i+1)+' '+label:label;const name=document.createElement('span');name.className='pc-shiftname';name.hidden=!pattern.weekdays&&!pattern.pts;const mark=document.createElement('span');mark.className='pc-shiftmark';mark.setAttribute('aria-hidden','true');b.append(title,name,mark);
+  function refresh(){
+   b.dataset.kind=pattern.weekdays?(states[i]===1?'day':states[i]===2?'swing':'off'):(states[i]?({D:'day',E:'day',L:'swing',S:'swing',N:'night'}[label]):'off');
+   const shiftName=pattern.weekdays?(states[i]===1?'Awatea':states[i]===2?'Ahipo':'Off'):(states[i]?'worked':'not worked');name.textContent=pattern.pts?(h?(String(Math.floor(pattern.starts[i]/60)).padStart(2,'0')+':'+String(pattern.starts[i]%60).padStart(2,'0')):'Off'):shiftName;b.setAttribute('aria-pressed',String(!!states[i]));b.setAttribute('aria-label',(pattern.weekdays?label:'Cycle day '+(i+1)+', '+label)+', '+shiftName);mark.textContent=states[i]?'✓':'×';
+  }
+  refresh();b.addEventListener('click',()=>{states[i]=pattern.weekdays?(states[i]+1)%3:!states[i];refresh();update();});holder.append(b);
+ });update();
+}
+const money=(n,precision=2)=>'$'+n.toLocaleString('en-NZ',{minimumFractionDigits:precision,maximumFractionDigits:precision});
+const option=(value,label)=>{const e=document.createElement('option');e.value=value;e.textContent=label;return e;};
+const field=(s,key)=>s.querySelector('[data-field="'+key+'"]');
+const output=(s,key)=>s.querySelector('[data-output="'+key+'"]');
+function roleOptions(s){const select=field(s,'role');select.replaceChildren();roles.forEach((r,i)=>{if(r[0]===field(s,'department').value)select.append(option(i,r[1]));});stepOptions(s);}
+function stepOptions(s){const r=roles[Number(field(s,'role').value)];const select=field(s,'step');select.replaceChildren();r[2].forEach((rate,i)=>{if(rate!==null)select.append(option(i,steps[i]));});update();}
+function renderAllowances(s){const holder=output(s,'allowances');allowances.forEach((a,i)=>{if(!a.enabled||a[1]<=100)return;const row=document.createElement('div');row.className='pc-allowance';row.dataset.allowanceRow=i;const label=document.createElement('label');const check=document.createElement('input');check.type='checkbox';check.dataset.allowance=i;check.className='cursor-interaction';label.append(check,document.createTextNode(a[0]+' · '+money(a[1])+' / '+a[2]));row.append(label);const note=document.createElement('p');note.className='pc-small';note.textContent=a[5];row.append(note);if(a.max>1){const qty=document.createElement('label');qty.className='pc-quantity';qty.hidden=true;qty.append(document.createTextNode('Quantity'));const input=document.createElement('input');input.type='number';input.min='0';input.step='1';input.max=String(a.max);input.value='1';input.dataset.quantity=i;qty.append(input);row.append(qty);check.addEventListener('change',()=>{qty.hidden=!check.checked;});}holder.append(row);});const automatic=document.createElement('p');automatic.className='pc-small';automatic.textContent='Unsocial hours: calculated from roster.';holder.append(automatic);}
+function eligibleAllowance(department,index){return allowances[index].departments.includes(department);}
+function update(){
+ const values=[];
+ root.querySelectorAll('[data-scenario]').forEach(s=>{
+  const role=roles[Number(field(s,'role').value)];if(!role||!field(s,'step').value)return;
+  const automatic=role[2][Number(field(s,'step').value)],manual=field(s,'manual').checked;
+  const rateInput=field(s,'manualRate');rateInput.readOnly=!manual;
+  const factor=1+(committedIncreases.get(s)||0)/100;const base=manual?(manualBases.get(s)??automatic):automatic;const rate=positive(base)*factor;rateInput.value=Number(rate.toFixed(3));
+  const pattern=getPattern(s);output(s,'cycleDate').hidden=!!pattern.weekdays;
+  const selected=selectedHours(s);output(s,'hours').textContent=selected+' hours / cycle · '+(selected*7/(pattern.durations.length||1)).toFixed(1)+' average hours / week';
+  s.querySelectorAll('[data-allowance-row]').forEach(row=>{const allowed=eligibleAllowance(role[0],Number(row.dataset.allowanceRow));row.hidden=!allowed;const check=row.querySelector('input[type=checkbox]');if(!allowed)check.checked=false;const quantity=row.querySelector('.pc-quantity');if(quantity)quantity.hidden=!check.checked;});
+  let annual=0,count=0;const fte=workFraction(s);
+  s.querySelectorAll('[data-allowance]:checked').forEach(c=>{count++;const i=Number(c.dataset.allowance),a=allowances[i];const q=s.querySelector('[data-quantity="'+i+'"]');annual+=a[1]*(a[4]?fte:1)*(q?Math.min(a.max,Math.max(0,Math.floor(Number(q.value)||0))):1);});
+  output(s,'annual').textContent=money(annual);output(s,'selected').textContent=count?count+' selected':'None';
+  const year=rosterYear(s,rate),gross=year.wages+annual,net=takeHome(gross,s);
+  output(s,'gross').textContent=money(gross,0);output(s,'net').textContent=money(net,0);output(s,'weekly').textContent=money(Math.floor((net/52)/50)*50,0);values.push(net/52);
+ });
+ if(values.length===2){const d=values[1]-values[0];root.querySelector('#pc-difference').textContent=(d<0?'−':'+')+money(Math.abs(d),0);}
+}
+function commitIncrease(s){const enabled=field(s,'negotiation');const value=field(s,'increase');committedIncreases.set(s,enabled&&enabled.checked?positive(value.value):0);update();}
+root.querySelectorAll('[data-scenario]').forEach(s=>{
+ committedIncreases.set(s,0);departments.forEach(d=>field(s,'department').append(option(d,d)));customCycles.set(s,[]);weekdayCycles.set(s,Array.from({length:7},(_,i)=>i<5?{off:false,start:'06:00',end:'18:00'}:{off:true}));patternOptions(s);
+ renderShifts(s);field(s,'pattern').addEventListener('change',()=>renderShifts(s));renderAllowances(s);roleOptions(s);const defaultRole=roles.findIndex(r=>r[0]===field(s,'department').value&&r[1]==='Paramedic');if(defaultRole>=0)field(s,'role').value=String(defaultRole);stepOptions(s);if([...field(s,'step').options].some(o=>o.value==='3'))field(s,'step').value='3';
+ field(s,'department').addEventListener('change',()=>{patternOptions(s);roleOptions(s);});field(s,'role').addEventListener('change',()=>stepOptions(s));
+ field(s,'manual').addEventListener('change',()=>{if(field(s,'manual').checked)manualBases.set(s,positive(field(s,'manualRate').value)/(1+(committedIncreases.get(s)||0)/100));update();});
+ field(s,'manualRate').addEventListener('input',()=>{if(field(s,'manual').checked)manualBases.set(s,positive(field(s,'manualRate').value)/(1+(committedIncreases.get(s)||0)/100));});
+ const increase=field(s,'increase'),negotiation=field(s,'negotiation');
+ if(negotiation&&!settings.negotiation_enabled){negotiation.checked=false;negotiation.closest('label').hidden=true;}
+ if(increase){increase.addEventListener('blur',()=>commitIncrease(s));increase.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();commitIncrease(s);}});negotiation.addEventListener('change',()=>{output(s,'increaseControl').hidden=!negotiation.checked;commitIncrease(s);});}
+ s.addEventListener('input',e=>{if(e.target!==increase)update();});s.addEventListener('change',e=>{if(e.target!==increase)update();});
+});
+update();root.querySelector('.pc-difference').hidden=false;
+})();})();
+</script></body>
+</html>
