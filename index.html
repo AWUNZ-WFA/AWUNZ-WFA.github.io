@@ -198,7 +198,140 @@
   .copy-note p{font-size:12.5px; color:var(--ink-soft); line-height:1.55; margin:0 0 10px;}
   .copy-note a{color:var(--teal-600); font-weight:600;}
 </style>
-</head>
+<style>
+#union-pay-cea{--pc-bg:light-dark(#f5f7fa,#18202c);--pc-paper:light-dark(#fff,#242e3b);--pc-ink:light-dark(#172b4d,#eef2f8);--pc-muted:light-dark(#526078,#b4c0d0);--pc-line:light-dark(#dce2eb,#455166);--pc-blue:light-dark(#0055cc,#90bbff);--pc-tint:light-dark(#eaf2ff,#263e5d);font:14px/1.5 Arial,sans-serif;background:var(--pc-bg);color:var(--pc-ink)}
+#union-pay-cea *{box-sizing:border-box}
+#union-pay-cea .pc-header{padding:19px 30px;display:flex;gap:15px;justify-content:space-between;flex-wrap:wrap;background:var(--pc-paper);border-bottom:1px solid var(--pc-line)}
+#union-pay-cea .pc-header span:first-child{font-family:Georgia,serif;font-size:21px}
+#union-pay-cea .pc-main{max-width:960px;padding:28px;margin:auto}
+#union-pay-cea h1,#union-pay-cea h2,#union-pay-cea h3{font-family:Georgia,serif;font-weight:400;letter-spacing:-.3px}
+#union-pay-cea h1{font-size:34px;margin:0 0 7px}
+#union-pay-cea h2{font-size:24px;margin:0 0 18px}
+#union-pay-cea h3{font-size:21px}
+#union-pay-cea .pc-source{font-size:12px;color:var(--pc-muted);margin:0 0 25px}
+#union-pay-cea .pc-comparison{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+#union-pay-cea .pc-scenario{background:var(--pc-paper);border:1px solid var(--pc-line);border-radius:6px;padding:22px;min-width:0}
+#union-pay-cea .pc-proposed{border-top:3px solid var(--pc-blue);padding-top:20px}
+#union-pay-cea .pc-fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+#union-pay-cea .pc-fields label{font-size:12px;color:var(--pc-muted);min-width:0}
+#union-pay-cea .pc-full{grid-column:1/-1}
+#union-pay-cea .pc-shifts{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:5px}
+#union-pay-cea .pc-shifts.pc-weekdays{grid-template-columns:repeat(4,minmax(0,1fr))}
+#union-pay-cea .pc-shift{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:58px;padding:6px 2px;border:1px solid var(--pc-line);border-radius:4px;background:var(--pc-paper);color:var(--pc-ink);font:13px/1.3 Arial,sans-serif}
+#union-pay-cea .pc-shift[aria-pressed=true]{background:var(--pc-tint);color:var(--pc-blue);border-color:var(--pc-blue)}
+#union-pay-cea .pc-shift:disabled{background:var(--pc-bg);color:var(--pc-muted)}
+#union-pay-cea .pc-shiftmark{font-size:17px}
+#union-pay-cea .pc-shift[data-kind="day"]{background:light-dark(#e5f3df,#b7d6ab);color:#233d27;border-color:light-dark(#bad5b0,#b7d6ab)}
+#union-pay-cea .pc-shift[data-kind="swing"]{background:light-dark(#9bc78b,#7eae6d);color:#17351f;border-color:light-dark(#7cab6a,#7eae6d)}
+#union-pay-cea .pc-shift[data-kind="night"]{background:light-dark(#245833,#326541);color:#fff;border-color:light-dark(#245833,#326541)}
+#union-pay-cea .pc-shift[data-kind="off"]{background:light-dark(#e6e8eb,#444b56);color:light-dark(#525a66,#e0e4e9);border-color:var(--pc-line)}
+#union-pay-cea .pc-shift[aria-pressed="false"]:not(:disabled){border-style:dashed}
+#union-pay-cea .pc-rate{flex-direction:row!important;align-items:center;gap:12px;margin:0!important;min-height:36px;font:14px Arial,sans-serif}
+#union-pay-cea .pc-rate>span,#union-pay-cea .pc-rate>strong{font:14px Arial,sans-serif!important;letter-spacing:normal!important;color:var(--pc-ink)}
+#union-pay-cea .pc-total{padding-top:0!important}
+#union-pay-cea .pc-results{border-top:1px solid var(--pc-line);padding-top:12px;margin-top:18px}
+#union-pay-cea .pc-results>div{display:flex;justify-content:space-between;gap:12px;padding:9px 0;font-size:13px}
+#union-pay-cea .pc-results strong{font-weight:500;white-space:nowrap;font-variant-numeric:tabular-nums}
+#union-pay-cea .pc-results .pc-weekly{color:var(--pc-blue);border-top:1px solid var(--pc-line);margin-top:5px;padding-top:14px}
+#union-pay-cea .pc-disclaimer{font-size:12px;color:var(--pc-muted);background:var(--pc-paper);border-left:3px solid var(--pc-blue);padding:14px 18px;margin-bottom:24px}
+#union-pay-cea .pc-disclaimer strong{font-weight:600;color:var(--pc-ink)}
+#union-pay-cea .pc-personal{font-size:13px;margin:0 0 22px}
+#union-pay-cea .pc-toolfields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding:12px 0}
+#union-pay-cea .pc-toolfields label,#union-pay-cea .pc-toolscenario{font-size:12px;color:var(--pc-muted);min-width:0}
+#union-pay-cea input[type=date]{font:14px Arial,sans-serif;background:var(--pc-paper);color:var(--pc-ink);border:1px solid var(--pc-line);border-radius:4px;width:100%;padding:9px 8px;margin-top:5px;min-width:0}
+#union-pay-cea .pc-tools{margin:26px 0}
+#union-pay-cea .pc-tools>h2{margin-bottom:12px}
+#union-pay-cea .pc-toolscenario{display:block;max-width:300px;margin-bottom:18px}
+#union-pay-cea .pc-tool{background:var(--pc-paper);border:1px solid var(--pc-line);padding:13px 20px;border-radius:6px;margin-bottom:12px}
+#union-pay-cea .pc-tool>summary{font-family:Georgia,serif;font-size:19px}
+#union-pay-cea .pc-toolresult{font-size:14px;padding:12px 0;color:var(--pc-ink)}
+#union-pay-cea .pc-toolresult strong{font-weight:500;color:var(--pc-blue)}
+#union-pay-cea .pc-toolresult p{margin:5px 0}
+@media(max-width:640px){#union-pay-cea .pc-toolfields{grid-template-columns:1fr 1fr}#union-pay-cea .pc-tool{padding:12px 16px}#union-pay-cea input[type=date]{font-size:16px}}
+@media(max-width:380px){#union-pay-cea .pc-toolfields{grid-template-columns:1fr}}
+#union-pay-cea{--pc-bg:light-dark(#F7F6F2,#18221e);--pc-paper:light-dark(#FFFFFF,#24302b);--pc-ink:light-dark(#1A2421,#eef4f0);--pc-muted:light-dark(#52605C,#b8c8bf);--pc-line:light-dark(#E2E2DA,#43554b);--pc-blue:light-dark(#0F6E56,#9FE1CB);--pc-tint:light-dark(#E1F5EE,#294a3d);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+#union-pay-cea .pc-header{background:#085041;color:#fff;border:0;padding:16px 22px;box-shadow:0 2px 6px #0000001f}
+#union-pay-cea .pc-header span:first-child{font-family:inherit;font-size:16px;font-weight:600;letter-spacing:.2px}
+#union-pay-cea h1,#union-pay-cea h2,#union-pay-cea h3{font-family:inherit;font-weight:600;letter-spacing:normal}
+#union-pay-cea h1{font-size:24px}
+#union-pay-cea h2{font-size:19px}
+#union-pay-cea .pc-scenario{border-radius:14px;box-shadow:0 1px 3px #0000000f,0 1px 2px #0000000a}
+#union-pay-cea .pc-proposed{border-top:1px solid var(--pc-line);padding-top:22px}
+#union-pay-cea select,#union-pay-cea input[type=number],#union-pay-cea input[type=date]{font-family:inherit;border-radius:10px;padding:11px 10px}
+#union-pay-cea .pc-manual{display:flex;align-items:center;gap:7px;font-size:12px;margin-top:8px;min-height:22px;font-weight:400}
+#union-pay-cea .pc-manual input{accent-color:var(--pc-blue);margin:0}
+#union-pay-cea input[readonly]{background:var(--pc-bg)}
+#union-pay-cea .pc-difference{border-radius:14px}
+#union-pay-cea .pc-difference strong{font-family:inherit;font-size:21px;font-weight:600}
+#union-pay-cea .pc-disclaimer{border-radius:10px;background:light-dark(#FAEEDA,#403727);border-left-color:light-dark(#EF9F27,#c99950)}
+#union-pay-cea .pc-disclaimer{font-size:14px;line-height:1.65;padding:18px 20px}
+#union-pay-cea .pc-negotiation .pc-manual{margin-top:0;min-height:38px}
+#union-pay-cea .pc-weekdays .pc-shift{min-height:76px}
+#union-pay-cea .pc-shiftname{font-size:11px;line-height:1.2}
+#union-pay-cea .pc-shift{font-family:inherit;border-radius:8px}
+@media(pointer:coarse){#union-pay-cea .pc-manual{min-height:44px}}
+#union-pay-cea .pc-weekdays .pc-shift{font-size:12px}
+#union-pay-cea select,#union-pay-cea input[type=number]{font:14px Arial,sans-serif;background:var(--pc-paper);color:var(--pc-ink);border:1px solid var(--pc-line);border-radius:4px;width:100%;padding:10px 8px;min-width:0;margin-top:5px}
+#union-pay-cea .pc-rate{display:flex;flex-direction:column;margin:22px 0 18px;font-variant-numeric:tabular-nums}
+#union-pay-cea .pc-rate span{font-size:12px;color:var(--pc-muted)}
+#union-pay-cea .pc-rate strong{font-family:Georgia,serif;font-size:30px;font-weight:400;letter-spacing:-.5px}
+#union-pay-cea summary{min-height:35px;padding:7px 0}
+#union-pay-cea .pc-allowances{border-top:1px solid var(--pc-line);font-size:13px}
+#union-pay-cea .pc-allowances summary span{color:var(--pc-muted);margin-left:8px}
+#union-pay-cea .pc-allowance{padding:10px 0;border-bottom:1px solid var(--pc-line)}
+#union-pay-cea .pc-allowance>label{display:flex;gap:8px;align-items:flex-start;font-size:13px}
+#union-pay-cea .pc-allowance input[type=checkbox]{margin:4px 0 0;accent-color:var(--pc-blue);flex-shrink:0}
+#union-pay-cea .pc-small{font-size:12px;color:var(--pc-muted);margin:6px 0}
+#union-pay-cea .pc-quantity{display:flex;gap:10px;align-items:center;margin-left:23px;font-size:12px;color:var(--pc-muted)}
+#union-pay-cea .pc-quantity input{width:90px}
+#union-pay-cea [hidden]{display:none!important}
+#union-pay-cea .pc-total{display:flex;justify-content:space-between;gap:12px;padding-top:12px;font-size:12px}
+#union-pay-cea .pc-total strong{font-weight:500;white-space:nowrap}
+#union-pay-cea .pc-difference{background:var(--pc-tint);color:var(--pc-blue);display:flex;gap:15px;flex-wrap:wrap;align-items:center;padding:16px 22px;border-radius:5px;margin:18px 0}
+#union-pay-cea .pc-difference strong{font-family:Georgia,serif;font-size:25px;font-weight:400}
+#union-pay-cea .pc-difference span{font-size:13px}
+#union-pay-cea .pc-rules,#union-pay-cea .pc-library{border-bottom:1px solid var(--pc-line);padding:5px 0;font-size:13px}
+#union-pay-cea dl{margin:12px 0}
+#union-pay-cea dt{font-weight:600;margin-top:12px}
+#union-pay-cea dd{margin:3px 0;color:var(--pc-muted)}
+#union-pay-cea .pc-table-wrap{overflow-x:auto}
+#union-pay-cea table{width:100%;border-collapse:collapse;font-size:12px;margin:12px 0}
+#union-pay-cea th,#union-pay-cea td{text-align:left;padding:9px 6px;border-bottom:1px solid var(--pc-line);font-variant-numeric:tabular-nums}
+#union-pay-cea th{font-weight:600}
+#union-pay-cea footer{padding:22px 0;font-size:12px;color:var(--pc-muted)}
+#union-pay-cea footer strong{color:var(--pc-ink);font-weight:600}
+@media(max-width:640px){#union-pay-cea .pc-main{padding:22px 16px}#union-pay-cea .pc-header{padding:16px}#union-pay-cea .pc-comparison{grid-template-columns:1fr}#union-pay-cea select,#union-pay-cea input[type=number]{font-size:16px}#union-pay-cea summary{min-height:44px}#union-pay-cea .pc-scenario{padding:18px}#union-pay-cea .pc-shifts.pc-weekdays{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+#union-pay-cea .pc-custom-row{display:grid;grid-template-columns:1fr 1.5fr;gap:8px;align-items:center;padding:12px;margin:8px 0;border-radius:8px;background:#e5f3df;color:#233d27}
+#union-pay-cea .pc-custom-row[data-kind=off]{background:#e6e8eb;color:#525a66}
+#union-pay-cea .pc-custom-row[data-kind=swing]{background:#9bc78b;color:#17351f}
+#union-pay-cea .pc-custom-row[data-kind=night]{background:#245833;color:#fff}
+#union-pay-cea .pc-custom-row label{color:inherit}
+#union-pay-cea .pc-custom input[type=time]{width:100%;min-width:0;box-sizing:border-box;font:inherit;padding:10px 6px;border:1px solid var(--pc-line);border-radius:8px;margin-top:5px;background:var(--pc-paper);color:var(--pc-ink)}
+#union-pay-cea .pc-custom-actions{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+#union-pay-cea .pc-custom button{padding:10px 12px;border:1px solid var(--pc-line);border-radius:8px;background:var(--pc-paper);color:var(--pc-blue);font:inherit}
+#union-pay-cea .pc-custom-error{font-size:12px;color:#874b00;margin:8px 0}
+
+#union-pay-cea .pc-time-control{position:relative;min-width:0;font-size:12px}
+#union-pay-cea .pc-custom .pc-time-trigger{display:block;width:100%;text-align:left;margin-top:5px;background:var(--pc-paper);color:var(--pc-ink);font-variant-numeric:tabular-nums}
+#union-pay-cea .pc-time-native{display:none}
+#union-pay-cea .pc-clock-picker{position:absolute;z-index:20;top:100%;left:0;width:200px;padding:12px;background:#fff;color:#1a2421;border:1px solid #e2e2da;border-radius:16px;box-shadow:0 8px 30px #00000026;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+#union-pay-cea .pc-clock-title{text-align:center;font-size:13px;font-weight:600;margin-bottom:8px}
+#union-pay-cea .pc-clock-wheels{display:flex;gap:8px}
+#union-pay-cea .pc-clock-column{flex:1;min-width:0;text-align:center}
+#union-pay-cea .pc-clock-caption{font-size:11px;color:#52605c}
+#union-pay-cea .pc-clock-wheel{height:180px;overflow-y:auto;padding:72px 0;scroll-snap-type:y mandatory;scrollbar-width:none;overscroll-behavior:contain;border-radius:8px}
+#union-pay-cea .pc-clock-wheel::-webkit-scrollbar{display:none}
+#union-pay-cea .pc-custom .pc-clock-number{display:block;height:36px;width:100%;padding:0;border:0;border-radius:7px;background:transparent;color:#52605c;font-size:19px;line-height:36px;font-weight:400;scroll-snap-align:center;font-variant-numeric:tabular-nums}
+#union-pay-cea .pc-custom .pc-clock-number[aria-selected=true]{background:#f0f1f0;color:#1a2421;font-weight:600}
+#union-pay-cea .pc-custom .pc-clock-done{display:block;width:100%;margin-top:8px;border:0;background:#e1f5ee;color:#0f6e56;font-weight:600}
+#union-pay-cea .pc-custom-row .pc-time-control:last-of-type .pc-clock-picker{left:auto;right:0}
+@media(pointer:coarse){#union-pay-cea .pc-time-native{display:block}#union-pay-cea .pc-custom .pc-time-trigger,#union-pay-cea .pc-clock-picker{display:none}}
+#union-pay-cea .pc-instruction{font-weight:700}
+#union-pay-cea .pc-shifts.pc-pts{grid-template-columns:repeat(7,minmax(0,1fr))}
+
+#app-shell.calculator-open>main{max-width:1120px}#union-pay-cea{--pc-bg:var(--bg);--pc-paper:var(--card);--pc-ink:var(--ink);--pc-muted:var(--ink-soft);--pc-line:var(--line);--pc-blue:#0F6E56;--pc-tint:#E4F3ED;font-family:inherit}#union-pay-cea .pc-main{padding:0;max-width:none}#union-pay-cea .pc-title{font-size:30px;margin-top:0}#union-pay-cea .pc-scenario{border-radius:14px}#union-pay-cea .pc-config-disclaimer:empty,#union-pay-cea [role=status]:empty{display:none}
+</style></head>
 <body>
 
 <!-- AUTH GATE -->
@@ -346,6 +479,7 @@
   <!-- HOME -->
   <section class="view active" id="view-home">
     <div class="quick-grid">
+      <button class="quick-card" id="pay-calculator-card" onclick="showView('calculator')"><span class="ic">🧮</span><p class="t">Pay calculator</p><p class="d">Compare roster pay and take-home estimates</p></button>
       <button class="quick-card" onclick="showView('claims')">
         <span class="ic">💡</span>
         <p class="t">Submit a claim</p>
@@ -491,12 +625,100 @@
     <div class="card" id="claims-board-list"></div>
   </section>
 
+<section class="view" id="view-calculator"><button class="back-btn" onclick="showView('home')">← Home</button><div id="union-pay-cea">
+  <div class="pc-main">
+    <h2 class="pc-title">Pay calculator</h2>
+    <p class="pc-source">CEA rates effective 7 July 2025 · Agreement to 30 June 2026</p>
+    <p class="pc-config-disclaimer"></p><div class="pc-disclaimer"><strong>Not financial advice.</strong> This calculator provides estimates and averages only. Average weekly take-home pay is rounded down to the nearest $50. Actual pay will vary with your circumstances, payroll rules and individual deductions.</div>
+    <div class="pc-comparison">
+      <article class="pc-scenario" data-scenario="current">
+        <h2>Current</h2>
+        <div class="pc-fields">
+          <label class="pc-full">Department<select class="cursor-interaction" data-field="department" aria-label="Current department"></select></label>
+          <label>Role<select class="cursor-interaction" data-field="role" aria-label="Current role"></select></label>
+          <label>Pay step<select class="cursor-interaction" data-field="step" aria-label="Current pay step"></select></label>
+          <div class="pc-full"><label>Hourly rate ($)<input data-field="manualRate" type="number" min="0" step="0.001" readonly aria-label="Current hourly rate"></label><label class="pc-manual"><input data-field="manual" type="checkbox" class="cursor-interaction"> Set manually</label></div>
+          <label>KiwiSaver<select data-field="kiwisaver" class="cursor-interaction" aria-label="Current KiwiSaver rate"><option value="0">0%</option><option value="3">3%</option><option value="3.5">3.5%</option><option value="4">4%</option><option value="6">6%</option><option value="8">8%</option><option value="10">10%</option></select></label>
+          <label>Student loan<select data-field="loan" class="cursor-interaction" aria-label="Current student loan"><option value="no">No</option><option value="yes">Yes</option></select></label>
+          <details class="pc-full pc-allowances"><summary class="cursor-interaction">Allowances <span data-output="selected">None</span></summary><div data-output="allowances"></div><p class="pc-small pc-instruction">Select allowances you are eligible to receive.</p></details>
+          <div class="pc-full pc-total"><span>Annual allowances</span><strong data-output="annual"></strong></div>
+          <label class="pc-full">Shift pattern<select class="cursor-interaction" data-field="pattern" aria-label="Current shift pattern"></select></label>
+          <div class="pc-full pc-custom" data-output="custom" hidden></div>
+          <div class="pc-full pc-shifts" data-output="shifts" role="group" aria-label="Current worked shifts"></div>
+          <p class="pc-full pc-small pc-instruction" data-output="patternNote" hidden></p>
+          <p class="pc-full pc-small pc-instruction" data-output="weekdayNote" hidden>Tap: Awatea → Ahipo → Off.</p>
+          <p class="pc-full pc-small" data-output="hours" aria-live="polite"></p>
+          <label class="pc-full" data-output="cycleDate">Cycle day 1<input data-field="cycleStart" type="date" value="2026-01-05" aria-label="Current cycle day one"></label>
+        </div>
+        <div class="pc-results" aria-live="polite"><div><span>Gross annual</span><strong data-output="gross"></strong></div><div><span>Take-home annual</span><strong data-output="net"></strong></div><div class="pc-weekly"><span>Average take-home weekly</span><strong data-output="weekly"></strong></div></div>
+      </article>
+      <article class="pc-scenario pc-proposed" data-scenario="proposed">
+        <h2>Comparison</h2>
+        <div class="pc-fields">
+          <label class="pc-full">Department<select class="cursor-interaction" data-field="department" aria-label="Comparison department"></select></label>
+          <label>Role<select class="cursor-interaction" data-field="role" aria-label="Comparison role"></select></label>
+          <label>Pay step<select class="cursor-interaction" data-field="step" aria-label="Comparison pay step"></select></label>
+          <div><label>Hourly rate ($)<input data-field="manualRate" type="number" min="0" step="0.001" readonly aria-label="Comparison hourly rate"></label><label class="pc-manual"><input data-field="manual" type="checkbox" class="cursor-interaction"> Set manually</label></div>
+          <div class="pc-negotiation"><label class="pc-manual"><input data-field="negotiation" type="checkbox" class="cursor-interaction"> Negotiation increase</label><label data-output="increaseControl" hidden>Increase (%)<input data-field="increase" type="number" min="0" step="0.1" value="0" aria-label="Comparison rate increase percent"></label></div>
+          <label>KiwiSaver<select data-field="kiwisaver" class="cursor-interaction" aria-label="Comparison KiwiSaver rate"><option value="0">0%</option><option value="3">3%</option><option value="3.5">3.5%</option><option value="4">4%</option><option value="6">6%</option><option value="8">8%</option><option value="10">10%</option></select></label>
+          <label>Student loan<select data-field="loan" class="cursor-interaction" aria-label="Comparison student loan"><option value="no">No</option><option value="yes">Yes</option></select></label>
+          <details class="pc-full pc-allowances"><summary class="cursor-interaction">Allowances <span data-output="selected">None</span></summary><div data-output="allowances"></div><p class="pc-small pc-instruction">Select allowances you are eligible to receive.</p></details>
+          <div class="pc-full pc-total"><span>Annual allowances</span><strong data-output="annual"></strong></div>
+          <label class="pc-full">Shift pattern<select class="cursor-interaction" data-field="pattern" aria-label="Comparison shift pattern"></select></label>
+          <div class="pc-full pc-custom" data-output="custom" hidden></div>
+          <div class="pc-full pc-shifts" data-output="shifts" role="group" aria-label="Comparison worked shifts"></div>
+          <p class="pc-full pc-small pc-instruction" data-output="patternNote" hidden></p>
+          <p class="pc-full pc-small pc-instruction" data-output="weekdayNote" hidden>Tap: Awatea → Ahipo → Off.</p>
+          <p class="pc-full pc-small" data-output="hours" aria-live="polite"></p>
+          <label class="pc-full" data-output="cycleDate">Cycle day 1<input data-field="cycleStart" type="date" value="2026-01-05" aria-label="Comparison cycle day one"></label>
+        </div>
+        <div class="pc-results" aria-live="polite"><div><span>Gross annual</span><strong data-output="gross"></strong></div><div><span>Take-home annual</span><strong data-output="net"></strong></div><div class="pc-weekly"><span>Average take-home weekly</span><strong data-output="weekly"></strong></div></div>
+      </article>
+    </div>
+    <div class="pc-difference" aria-live="polite"><strong id="pc-difference"></strong><span>Average take-home weekly difference</span></div>
+    <p class="pc-small">Annual estimate uses the calendar year and deductions in the control sheet. Weekly average: annual ÷ 52.</p>
+    <div class="pc-disclaimer"><strong>Estimated averages, not payslip amounts.</strong> Average weekly take-home pay is rounded down to the nearest $50. Other figures are not rounded to $50. Actual pay will vary. Tax and ACC are included. KiwiSaver and student loan are included only if selected. Other income, tax-code differences, union fees and individual deductions are excluded. Public-holiday premiums, run-on, one-off payments and leave-pay uplifts are excluded. Paid leave is estimated as if rostered work continued. <strong>Not financial advice.</strong></div>
+    <footer><strong>Not financial advice.</strong> Estimates only. Actual pay depends on your circumstances and payroll rules.</footer>
+  </div>
+</div>
+</section>
 </main>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
+const UNION_CONTROL_FEED_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQWz984XZGd-rki6rI4axc3Ui39Yl4ADqxcvj6gkeeNAU5tc1hZq2Pf_i7KY-y9hYc9D3V3RgnXXkv3/pub?gid=273470308&single=true&output=csv"; // Connect once with connect.html.
+let unionRowsPromise;
+async function unionControlRows(){
+ if(!unionRowsPromise)unionRowsPromise=(async()=>{const u=new URL(UNION_CONTROL_FEED_URL);if(u.protocol!=='https:'||u.hostname!=='docs.google.com'||!u.pathname.startsWith('/spreadsheets/'))throw Error('Use a published Google Sheets CSV link.');const res=await fetch(u.href,{cache:'no-store',signal:AbortSignal.timeout(15000)});if(!res.ok)throw Error('Control sheet could not be loaded.');const rows=csvRows((await res.text()).replace(/^\uFEFF/,''));if(rows.shift()?.[0]!=='type')throw Error('Publish the Website feed tab as CSV.');return rows;})();return unionRowsPromise;
+}
+function csvRows(text){const rows=[];let row=[],cell='',quote=false;for(let i=0;i<text.length;i++){const c=text[i];if(c==='"'){if(quote&&text[i+1]==='"'){cell+='"';i++;}else quote=!quote;}else if(c===','&&!quote){row.push(cell);cell='';}else if((c==='\n'||c==='\r')&&!quote){if(c==='\r'&&text[i+1]==='\n')i++;row.push(cell);rows.push(row);row=[];cell='';}else cell+=c;}if(quote)throw Error('Incomplete CSV.');if(cell||row.length){row.push(cell);rows.push(row);}return rows;}
+function parseCalculatorControl(rowsInput){
+ const rows=rowsInput.map(r=>r.slice()),settings={},roles=[],allowances=[],patterns=[],tax=[],days=[];
+
+ const number=(x,name,min=0,max=Infinity)=>{if(x===undefined||String(x).trim()===''||!Number.isFinite(Number(x))||Number(x)<min||Number(x)>max)throw Error('Invalid '+name);return Number(x);};
+ const bool=x=>{if(!/^(TRUE|FALSE|1|0)$/i.test(String(x)))throw Error('Use TRUE or FALSE.');return /^(TRUE|1)$/i.test(String(x));};
+ const departmentNames={EAS:'Emergency Ambulance Services',CCC:'Clinical Communications Centre',PTS:'Patient Transfer Services',EDU:'Clinical Education'};const depts=x=>String(x||'').split(';').map(v=>departmentNames[v.trim()]||v.trim()).filter(Boolean);
+ for(const [type,...r] of rows){if(!type)continue;if(type==='setting'){if(Object.hasOwn(settings,r[0]))throw Error('Duplicate setting '+r[0]);settings[r[0]]=r[1];}
+ else if(type==='role'){r[0]=depts(r[0])[0];if(!r[0]||!r[1])throw Error('Role needs a department and title.');const rates=r.slice(2,7).map(x=>x===''||x===undefined?null:number(x,'hourly rate',.01,1000));if(!rates.some(x=>x!==null))throw Error('Role needs a pay step.');roles.push([r[0],r[1],rates]);}
+ else if(type==='allowance'){const a=[r[0],number(r[1],'allowance'),r[2],'',bool(r[3]),r[4]];if(a[2]!=='year')throw Error('Controlled allowances must be annual amounts.');a.departments=depts(r[5]);a.max=number(r[6],'quantity',1,100);a.enabled=bool(r[7]);allowances.push(a);}
+ else if(type==='pattern'){if(patterns.some(p=>p.id===r[0]))throw Error('Duplicate pattern ID.');patterns.push({id:r[0],name:r[1],departments:depts(r[2]),custom:r[3]==='custom'||r[3]==='weekCustom',weekdayCustom:r[3]==='weekCustom',weekdays:r[3]==='weekdays'||r[3]==='weekCustom',pts:depts(r[2]).length===1&&depts(r[2])[0]==='Patient Transfer Services',letters:'',durations:[],starts:[]});if(!['fixed','weekdays','custom','weekCustom'].includes(r[3]))throw Error('Invalid pattern type.');}
+ else if(type==='day')days.push(r);
+ else if(type==='tax')tax.push([number(r[0],'tax threshold'),number(r[1],'tax rate',0,1)]);
+ else if(type.startsWith('site_'))continue;else throw Error('Unknown feed row '+type);}
+ for(const key of ['title','rates_label','financial_disclaimer','negotiation_enabled','year','acc_rate','acc_cap','loan_threshold','loan_rate','unsocial_premium'])if(settings[key]===undefined||settings[key]==='')throw Error('Missing setting '+key);
+ settings.year=number(settings.year,'year',2020,2100);if(!Number.isInteger(settings.year))throw Error('Year must be a whole number.');for(const key of ['acc_rate','loan_rate','unsocial_premium'])settings[key]=number(settings[key],key,0,1);for(const key of ['acc_cap','loan_threshold'])settings[key]=number(settings[key],key);settings.negotiation_enabled=bool(settings.negotiation_enabled);
+ const departments=new Set(roles.map(r=>r[0]));for(const a of allowances)for(const dep of a.departments)if(!departments.has(dep))throw Error('Unknown allowance department '+dep);for(const p of patterns)for(const d of p.departments)if(!departments.has(d))throw Error('Unknown pattern department '+d);
+ for(const r of days){const p=patterns.find(p=>p.id===r[0]);if(!p)throw Error('Unknown pattern ID in Pattern days.');const i=number(r[1],'day number',1,366)-1;if(!Number.isInteger(i)||p.durations[i]!==undefined)throw Error('Duplicate or invalid cycle day.');const duration=Math.round(number(r[4],'shift hours',0,24)*1e6)/1e6;if(!/^[A-Z]$/.test(r[2])||!/^([01]\d|2[0-3]):[0-5]\d$/.test(r[3]))throw Error('Invalid shift code or time.');if((r[2]==='O')!==(duration===0))throw Error('Off days need O and zero hours.');p.names??=[];p.names[i]=r[5]||'';p.durations[i]=duration;p.starts[i]=Number(r[3].slice(0,2))*60+Number(r[3].slice(3));p.letters=p.letters.padEnd(i+1,'?');p.letters=p.letters.slice(0,i)+r[2]+p.letters.slice(i+1);}
+ for(const p of patterns){if(!p.custom&&(!p.durations.length||p.letters.includes('?')))throw Error('Complete every day of '+p.name);if(p.weekdays&&!p.custom&&(p.durations.length!==7||p.durations.some(h=>h!==8)))throw Error('Day-of-week patterns require seven 8-hour days.');}
+ if(!roles.length||!patterns.length||!tax.length||tax[0][0]!==0||tax.some((t,i)=>i&&t[0]<=tax[i-1][0]))throw Error('Missing roles, patterns or ordered tax bands.');
+ for(const d of departments)if(!patterns.some(p=>p.departments.includes(d)))throw Error('No pattern for '+d);
+ if(new Set(roles.map(r=>r[0]+'|'+r[1])).size!==roles.length)throw Error('Duplicate role.');
+ return {settings,roles,allowances,patterns,tax};
+}
+
+
 /* =========================================================================
    SITE CONFIG — everything below is pulled live from a Google Sheet, so
    NOTHING in this file needs to be edited to change the passcode, the
@@ -613,6 +835,8 @@ function parseCSVLine(line){
 // rows (header row already stripped), or null if the URL isn't set yet or
 // the fetch failed — callers fall back to their hardcoded defaults on null.
 async function fetchSheetRows(url){
+  if(UNION_CONTROL_FEED_URL){try{const rows=await unionControlRows();const type=new Map([[CONFIG_SHEET_CSV_URL,'site_config'],[EVENTS_SHEET_CSV_URL,'site_event'],[DOCUMENTS_SHEET_CSV_URL,'site_document'],[REPS_SHEET_CSV_URL,'site_rep'],[DELEGATES_SHEET_CSV_URL,'site_delegate'],[CLAIMSBOARD_SHEET_CSV_URL,'site_claim']]).get(url);return rows.filter(r=>r[0]===type).map(r=>r.slice(1));}catch{ return null; }}
+
   if(!url || url.startsWith('PASTE_')) return null;
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 6000);
@@ -643,7 +867,7 @@ async function loadEvents(){
   const rows = await fetchSheetRows(EVENTS_SHEET_CSV_URL);
   if(!rows) return;
   const valid = rows.filter(r => r[0] && r[1]);
-  if(valid.length) UNION_EVENTS = valid.map(r => ({date: r[0], text: r[1]}));
+  if(UNION_CONTROL_FEED_URL||valid.length) UNION_EVENTS = valid.map(r => ({date: r[0], text: r[1]}));
 }
 
 async function loadDocuments(){
@@ -656,7 +880,7 @@ async function loadPeopleSheet(url){
   const rows = await fetchSheetRows(url);
   if(!rows) return null;
   const valid = rows.filter(r => r[0]);
-  if(!valid.length) return null;
+  if(!valid.length) return UNION_CONTROL_FEED_URL?[]:null;
   return valid.map(r => ({
     name: r[0] || '',
     business_unit: r[1] || '',
@@ -689,7 +913,7 @@ async function loadClaimsBoard(){
       implementation_considerations: r[5] || ''
     }))
     .filter(c => c.title || c.tag || c.problem || c.service_impact || c.proposed_clause || c.implementation_considerations);
-  if(valid.length) UNION_CLAIMS = valid;
+  if(UNION_CONTROL_FEED_URL||valid.length) UNION_CLAIMS = valid;
 }
 
 const configPromise = loadConfig();
@@ -836,6 +1060,7 @@ function renderEvents(){
 }
 
 function showView(name){
+  document.getElementById('app-shell').classList.toggle('calculator-open',name==='calculator');if(name==='calculator')window.initUnionCalculator();
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('view-'+name).classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
@@ -1180,5 +1405,148 @@ Submitted via the WFA Union member portal.`;
 });
 
 </script>
-</body>
+<script>
+window.initUnionCalculator = (() => {let initialized;return ()=>initialized??=(async () => {
+const root=document.getElementById('union-pay-cea');
+const status=document.createElement('p');status.className='pc-source';status.setAttribute('role','status');root.querySelector('.pc-main').prepend(status);
+root.querySelectorAll('[data-scenario]').forEach(s=>s.hidden=true);root.querySelector('.pc-difference').hidden=true;
+let config;
+try {if(UNION_CONTROL_FEED_URL){const rows=await unionControlRows();config=parseCalculatorControl(rows);}else{config={"roles":[["Emergency Ambulance Services","Emergency Medical Technician",[31.71,32.11,32.67,33.8,34.99]],["Emergency Ambulance Services","Graduate Paramedic",[35.06]],["Emergency Ambulance Services","Emergency Medical Technician (grandparented)",[null,35.76,36.48,37.2,37.95]],["Emergency Ambulance Services","Supervised Paramedic",[39.79]],["Emergency Ambulance Services","Paramedic",[41.86,42.28,43.13,44.64,46.2]],["Emergency Ambulance Services","Clinical Paramedic Advisor",[49.047,50.46,51.46,52.49,53.55]],["Emergency Ambulance Services","Intensive Care Paramedic",[51.64,52.45,53.25,54.05,54.84]],["Emergency Ambulance Services","Extended Care Paramedic",[55.71,56.26,57.39,59.4,61.48]],["Emergency Ambulance Services","Critical Care Paramedic",[55.71,56.26,57.39,59.4,61.48]],["Clinical Communications Centre","Trainee Call Taker",[29.25]],["Clinical Communications Centre","Emergency Support Call Taker",[30.11,30.41,30.72,31.02,31.33]],["Clinical Communications Centre","Call Taker",[32.59]],["Clinical Communications Centre","Senior Call Taker",[35.06,35.76,36.48,37.2,37.95]],["Clinical Communications Centre","Call Taking Supervisor",[36.56,36.81,37.06,38.63,39.8]],["Clinical Communications Centre","Dispatcher",[36.56,36.81,37.06,38.63,39.8]],["Patient Transfer Services","PTO (First Aider)",[30.11,30.41,30.72,31.02,31.33]],["Patient Transfer Services","PTO (First Responder)",[31.19,31.43,31.67,31.91,32.23]],["Patient Transfer Services","PTO (EMT)",[31.71,32.11,32.67,33.8,34.99]],["Patient Transfer Services","PTO (EMT, grandparented)",[null,35.76,36.48,37.2,37.95]],["Clinical Education","Clinical Educator",[49.47,50.46,51.46,52.49,53.55]],["Clinical Education","Senior Clinical Educator",[53.44,54.52,55.61,56.71,57.86]]],"patterns":[{"name":"4:4 DDNN","letters":"DDNNOOOO","durations":[12,12,12,12,0,0,0,0],"id":"pattern_0","departments":["Emergency Ambulance Services","Clinical Communications Centre"],"starts":[360,360,1080,1080,0,0,0,0]},{"name":"3:3 DSN","letters":"DSNOOO","durations":[12,12,10,0,0,0],"id":"pattern_1","departments":["Emergency Ambulance Services"],"starts":[360,600,1260,0,0,0]},{"name":"6:4","hidden":true,"letters":"EELLNNOOOO","durations":[8,8,8,8,8,8,0,0,0,0],"id":"pattern_2","departments":[],"starts":[420,420,900,900,1380,1380,0,0,0,0]},{"name":"DDSN","hidden":true,"letters":"DDSNOOOO","durations":[12,12,12,6,0,0,0,0],"id":"pattern_3","departments":[],"starts":[360,360,720,1080,0,0,0,0]},{"name":"5-5 DDNN","hidden":true,"letters":"DDNNOOOO","durations":[12,12,12,12,0,0,0,0],"id":"pattern_4","departments":[],"starts":[300,300,1020,1020,0,0,0,0]},{"name":"Day of the week","weekdays":true,"durations":[8,8,8,8,8,8,8],"id":"pattern_5","departments":["Emergency Ambulance Services","Clinical Education"],"starts":[510,510,510,510,510,510,510]},{"name":"Ahipo","hidden":true,"weekdays":true,"durations":[8,8,8,8,8,8,8],"id":"pattern_6","departments":[],"starts":[990,990,990,990,990,990,990]},{"name":"4:4 DDLL","letters":"DDLLOOOO","durations":[12,12,12,12,0,0,0,0],"starts":[390,390,660,660,0,0,0,0],"id":"pattern_7","departments":["Clinical Communications Centre"]},{"name":"Custom cycle","custom":true,"id":"pattern_8","departments":["Emergency Ambulance Services","Clinical Communications Centre","Patient Transfer Services"],"starts":[]},{"name":"2-3-2 (6-6)","pts":true,"letters":"DDOOODDOODDDOO","durations":[12,12,0,0,0,12,12,0,0,12,12,12,0,0],"starts":[360,360,0,0,0,360,360,0,0,360,360,360,0,0],"id":"pattern_9","departments":["Patient Transfer Services"]},{"name":"2-3-2 (11-2300)","pts":true,"letters":"LLOOOLLOOLLLOO","durations":[12,12,0,0,0,12,12,0,0,12,12,12,0,0],"starts":[660,660,0,0,0,660,660,0,0,660,660,660,0,0],"id":"pattern_10","departments":["Patient Transfer Services"]},{"name":"2-3-2 mixed","pts":true,"letters":"DDOOODDOODDDOOLLOOOLLOOLLLOO","durations":[12,12,0,0,0,12,12,0,0,12,12,12,0,0,12,12,0,0,0,12,12,0,0,12,12,12,0,0],"starts":[360,360,0,0,0,360,360,0,0,360,360,360,0,0,660,660,0,0,0,660,660,0,0,660,660,660,0,0],"id":"pattern_11","departments":["Patient Transfer Services"]},{"name":"Monday to Friday","custom":true,"weekdayCustom":true,"weekdays":true,"id":"pattern_12","departments":["Patient Transfer Services"],"starts":[]}],"settings":{"title":"Pay calculator","rates_label":"CEA rates effective 7 July 2025 · Agreement to 30 June 2026 · Bundled calculator values","year":2026,"acc_rate":0.0175,"acc_cap":156641,"loan_threshold":24128,"loan_rate":0.12,"unsocial_premium":0.25,"negotiation_enabled":true,"financial_disclaimer":"Estimated averages only. Not financial advice."},"tax":[[0,0.105],[15600,0.175],[53500,0.3],[78100,0.33],[180000,0.39]],"allowances":[{"row":["Additional channel",5843.1,"year","Quarterly",true,"Up to two additional channels."],"enabled":true,"max":2,"departments":["Clinical Communications Centre"]},{"row":["Dispatcher call taking",5843.1,"year","Quarterly",true,"Can be paid with additional-channel allowance."],"enabled":true,"max":1,"departments":["Clinical Communications Centre"]},{"row":["Dual ATP",3546.26,"year","Each pay period",true,"ICP/ECP, CCP/ECP, ICP/CPA, ECP/CPA or CCP/CPA."],"enabled":true,"max":1,"departments":["Emergency Ambulance Services","Clinical Education"]},{"row":["Peer supporters",2399.64,"year","Quarterly",true,"Appointed peer supporter meeting requirements."],"enabled":true,"max":1,"departments":["Emergency Ambulance Services","Clinical Communications Centre","Patient Transfer Services","Clinical Education"]},{"row":["Rescue squad",1021.5,"year","Quarterly",false,"Fitness eligibility; not pro-rated for part-time hours."],"enabled":true,"max":1,"departments":["Emergency Ambulance Services","Clinical Education"]}]};config.allowances=config.allowances.map(a=>Object.assign(a.row,{enabled:a.enabled,max:a.max,departments:a.departments}));status.textContent='Using bundled calculator values. Connect the control workbook to load edits.';}}catch(error){status.textContent='Calculator unavailable: '+error.message;return;}
+const {roles,allowances,patterns,settings,tax}=config;const departments=[...new Set(roles.map(r=>r[0]))];const steps=['0','+1','+2','+3','+4'];
+root.querySelector('.pc-title').textContent=settings.title;root.querySelector('.pc-source:not([role])').textContent=settings.rates_label;
+if(UNION_CONTROL_FEED_URL)status.textContent='';root.querySelector('.pc-config-disclaimer').textContent=settings.financial_disclaimer;
+root.querySelectorAll('[data-scenario]').forEach(s=>s.hidden=false);
+const weekdays=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+const dayMs=86400000;
+const positive=(n)=>Math.max(0,Number(n)||0);
+const mod=(a,b)=>(a%b+b)%b;
+const dateNumber=(value)=>{const n=Date.parse(value+'T00:00:00Z');return Number.isFinite(n)?Math.floor(n/dayMs):null;};
+const cycleStart=(s)=>dateNumber(field(s,'cycleStart').value)??dateNumber('2026-01-05');
+const estimates=new Map();
+function incomeTax(gross){const t=tax.map(v=>v[0]),r=tax.map(v=>v[1]);return t.reduce((sum,lower,i)=>sum+Math.max(0,Math.min(gross,i===t.length-1?Infinity:t[i+1])-lower)*r[i],0);}
+function takeHome(gross,s){gross=positive(gross);const ks=positive(field(s,'kiwisaver').value)/100;const loan=field(s,'loan').value==='yes'?Math.max(0,gross-settings.loan_threshold)*settings.loan_rate:0;return gross-incomeTax(gross)-Math.min(gross,settings.acc_cap)*settings.acc_rate-gross*ks-loan;}
+function stepOnDate(pattern,day,s){return pattern.weekdays?mod(day+3,7):mod(day-cycleStart(s),pattern.durations.length);}
+function unsocialMinutes(day,start,end){const weekday=new Date(day*dayMs).getUTCDay();if(weekday===0||weekday===6)return end-start;return Math.max(0,Math.min(end,360)-start)+Math.max(0,end-Math.max(start,1200));}
+function rosterYear(s,rate){const pi=Number(field(s,'pattern').value)||0,pattern=getPattern(s),states=selections.get(s)||[];const first=dateNumber(settings.year+'-01-01'),last=dateNumber((settings.year+1)+'-01-01');let hours=0,premium=0;
+for(let day=first-1;day<last;day++){const step=stepOnDate(pattern,day,s);if(!states[step]||!pattern.durations[step])continue;const segments=pattern.segments?pattern.segments[step]:[{start:pattern.weekdays?(states[step]===2?990:510):pattern.starts[step],duration:pattern.durations[step]}];for(const segment of segments){const start=segment.start,finish=start+segment.duration*60;const ownEnd=Math.min(finish,1440);if(day>=first){hours+=(ownEnd-start)/60;premium+=unsocialMinutes(day,start,ownEnd)/60;}if(finish>1440&&day+1>=first&&day+1<last){hours+=(finish-1440)/60;premium+=unsocialMinutes(day+1,0,finish-1440)/60;}}}
+return {hours,premium,wages:rate*(hours+settings.unsocial_premium*premium)};}
+const selections=new WeakMap();
+const customCycles=new WeakMap();
+const weekdayCycles=new WeakMap();
+function customDays(s){return patterns[Number(field(s,'pattern').value)].weekdayCustom?weekdayCycles.get(s):customCycles.get(s);}
+function timeMinutes(value){const parts=value.split(':').map(Number);return parts[0]*60+parts[1];}
+function customSegments(day,split=true){if(day.off)return [];const start=timeMinutes(day.start),duration=mod(timeMinutes(day.end)-start,1440)/60;const segments=[{start,duration}];if(split&&day.split&&day.start2&&day.end2){const second=timeMinutes(day.start2),hours=mod(timeMinutes(day.end2)-second,1440)/60;if(second>=start+duration*60&&hours>0)segments.push({start:second,duration:hours});}return segments;}
+function customDuration(day){return customSegments(day).reduce((total,segment)=>total+segment.duration,0);}
+function getPattern(s){const p=patterns[Number(field(s,'pattern').value)||0];if(!p.custom)return p;const days=customDays(s)||[],pts=field(s,'department').value==='Patient Transfer Services',segments=days.map(d=>customSegments(d,pts));return {...p,segments,durations:segments.map(parts=>parts.reduce((total,part)=>total+part.duration,0)),starts:days.map(d=>d.off?0:timeMinutes(d.start)),letters:days.map(d=>d.off?'O':'D').join('')};}
+function patternOptions(s){const select=field(s,'pattern'),previous=select.value;select.replaceChildren();const department=field(s,'department').value;patterns.forEach((p,i)=>{if(p.departments.includes(department))select.append(option(i,p.name));});if(Array.from(select.options).some(o=>o.value===previous))select.value=previous;renderShifts(s);}
+let pickerId=0;
+function timeControl(value,title,accessible,onChange){
+ const label=document.createElement('div');label.className='pc-time-control';const caption=document.createElement('span');caption.textContent=title;label.append(caption);
+ const native=document.createElement('input');native.type='time';native.step='60';native.value=value;native.className='pc-time-native';native.setAttribute('aria-label',accessible);native.addEventListener('click',()=>{if(typeof native.showPicker==='function'){try{native.showPicker();}catch{}}});native.addEventListener('change',()=>{if(native.value)onChange(native.value);});label.append(native);
+ const trigger=document.createElement('button');trigger.type='button';trigger.className='pc-time-trigger';trigger.textContent=value;trigger.setAttribute('aria-label',accessible+', '+value);trigger.setAttribute('aria-haspopup','dialog');trigger.setAttribute('aria-expanded','false');label.append(trigger);
+ const picker=document.createElement('div');picker.className='pc-clock-picker';picker.hidden=true;picker.setAttribute('role','dialog');picker.setAttribute('aria-label',title+' time');label.append(picker);
+ const heading=document.createElement('div');heading.className='pc-clock-title';heading.textContent=title+' time';picker.append(heading);
+ const wheels=document.createElement('div');wheels.className='pc-clock-wheels';picker.append(wheels);
+ const parts=value.split(':').map(Number);const values=[parts[0],parts[1]>=30?1:0];let pending=value;
+ function sync(){pending=String(values[0]).padStart(2,'0')+':'+String(values[1]*30).padStart(2,'0');}
+ const columns=[];
+ [24,2].forEach((count,index)=>{
+  const column=document.createElement('div');column.className='pc-clock-column';const text=document.createElement('span');text.className='pc-clock-caption';text.textContent=index===0?'Hour':'Minute';column.append(text);
+  const wheel=document.createElement('div');wheel.className='pc-clock-wheel';wheel.setAttribute('role','listbox');wheel.setAttribute('aria-label',index===0?'Hour':'Minute');wheel.tabIndex=0;column.append(wheel);wheels.append(column);
+  const id='pc-clock-'+(++pickerId),buttons=[];let timer;
+  function select(n,scroll){values[index]=Math.max(0,Math.min(count-1,n));buttons.forEach((b,i)=>b.setAttribute('aria-selected',String(i===values[index])));wheel.setAttribute('aria-activedescendant',id+'-'+values[index]);sync();if(scroll)wheel.scrollTo({top:values[index]*36,behavior:'smooth'});}
+  for(let n=0;n<count;n++){const b=document.createElement('button');b.type='button';b.className='pc-clock-number';b.id=id+'-'+n;b.tabIndex=-1;b.setAttribute('role','option');b.textContent=String(index===1?n*30:n).padStart(2,'0');b.addEventListener('click',()=>select(n,true));buttons.push(b);wheel.append(b);}
+  wheel.addEventListener('scroll',()=>{clearTimeout(timer);timer=setTimeout(()=>select(Math.round(wheel.scrollTop/36),true),120);});
+  wheel.addEventListener('keydown',e=>{let n=values[index];if(e.key==='ArrowDown')n++;else if(e.key==='ArrowUp')n--;else if(e.key==='Home')n=0;else if(e.key==='End')n=count-1;else return;e.preventDefault();select(n,true);});
+  select(values[index],false);columns.push(wheel);
+ });
+ const done=document.createElement('button');done.type='button';done.className='pc-clock-done';done.textContent='Done';picker.append(done);
+ function close(commit){picker.hidden=true;trigger.setAttribute('aria-expanded','false');if(commit)onChange(pending);else trigger.focus();}
+ done.addEventListener('click',()=>close(true));
+ picker.addEventListener('keydown',e=>{if(e.key==='Escape'){e.preventDefault();close(false);}else if(e.key==='Enter'){e.preventDefault();close(true);}});
+ label.addEventListener('focusout',()=>{setTimeout(()=>{if(!picker.hidden&&!label.contains(document.activeElement))close(true);},0);});
+ trigger.addEventListener('click',()=>{if(!picker.hidden){close(true);return;}picker.hidden=false;trigger.setAttribute('aria-expanded','true');columns.forEach((w,i)=>w.scrollTop=values[i]*36);columns[0].focus();});
+ return label;
+}
+function renderCustom(s){
+ const holder=output(s,'custom');holder.replaceChildren();const days=customDays(s),fixedWeek=!!patterns[Number(field(s,'pattern').value)].weekdayCustom;
+ const note=document.createElement('p');note.className='pc-small pc-instruction';note.textContent=fixedWeek?'Set your shifts for the full week. Saturday and Sunday start as days off and can be changed to shifts. The full seven-day week repeats.':'Add every day in order, including all days off, to complete the full repeating cycle. Overnight shifts end the following day.';holder.append(note);
+ const rows=document.createElement('div');holder.append(rows);
+ days.forEach((day,i)=>{
+  const row=document.createElement('div');row.className='pc-custom-row';row.dataset.kind=day.off?'off':timeMinutes(day.start)>=1080||timeMinutes(day.start)<360?'night':timeMinutes(day.start)>=600?'swing':'day';
+  const title=document.createElement('strong');title.textContent=fixedWeek?weekdays[i]:'Day '+(i+1);row.append(title);
+  const kind=document.createElement('select');kind.setAttribute('aria-label','Cycle day '+(i+1)+' type');kind.append(option('work','Shift'),option('off','Day off'));kind.value=day.off?'off':'work';row.append(kind);
+  kind.addEventListener('change',()=>{day.off=kind.value==='off';if(day.off){delete day.start;delete day.end;delete day.start2;delete day.end2;delete day.split;}else{day.start='06:00';day.end='18:00';}renderCustom(s);update();});
+  if(!day.off)['start','end'].forEach(key=>row.append(timeControl(day[key],key==='start'?'Start':'Finish','Cycle day '+(i+1)+' '+key,value=>{day[key]=value;renderCustom(s);update();})));
+  if(!day.off&&field(s,'department').value==='Patient Transfer Services'){
+   const splitLabel=document.createElement('label');splitLabel.className='pc-full pc-manual';const check=document.createElement('input');check.type='checkbox';check.checked=!!day.split;splitLabel.append(check,document.createTextNode('Split shift'));row.append(splitLabel);
+   check.addEventListener('change',()=>{day.split=check.checked;if(day.split){day.start2=day.start2||'19:00';day.end2=day.end2||'23:00';}renderCustom(s);update();});
+   if(day.split){['start2','end2'].forEach(key=>row.append(timeControl(day[key],key==='start2'?'Second start':'Second finish','Cycle day '+(i+1)+' '+key,value=>{day[key]=value;renderCustom(s);update();})));const note=document.createElement('p');note.className='pc-full pc-small pc-instruction';note.textContent='The gap between shifts is unpaid. The second shift must start after the first finishes on the same cycle day.';row.append(note);}
+  }
+  const remove=document.createElement('button');remove.type='button';remove.textContent='Remove';remove.hidden=fixedWeek;remove.setAttribute('aria-label','Remove cycle day '+(i+1));remove.addEventListener('click',()=>{days.splice(i,1);renderCustom(s);update();});row.append(remove);rows.append(row);
+ });
+ const actions=document.createElement('div');actions.className='pc-custom-actions';actions.hidden=fixedWeek;
+ [false,true].forEach(off=>{const b=document.createElement('button');b.type='button';b.textContent=off?'+ Add day off':'+ Add shift';b.addEventListener('click',()=>{days.push(off?{off:true}:{off:false,start:'06:00',end:'18:00'});renderCustom(s);update();});actions.append(b);});holder.append(actions);
+ const error=document.createElement('p');error.className='pc-custom-error pc-instruction';error.setAttribute('role','alert');error.textContent=days.length===0?'Add shifts and days off to create your cycle.':days.some(d=>!d.off&&mod(timeMinutes(d.end)-timeMinutes(d.start),1440)===0)?'Shift start and finish must be different.':field(s,'department').value==='Patient Transfer Services'&&days.some(d=>!d.off&&d.split&&customSegments(d).length!==2)?'Set a valid second shift after the first finishes. The second shift is excluded until corrected.':!days.some(d=>d.off)?'No days off added. Include every day off before using this estimate.':'';holder.append(error);
+ selections.set(s,days.map(d=>!d.off));
+}
+
+const committedIncreases=new WeakMap();
+const manualBases=new WeakMap();
+function selectedHours(s){const pattern=getPattern(s);const states=selections.get(s);return pattern.durations.reduce((sum,h,i)=>sum+(states&&states[i]?h:0),0);}
+function workFraction(s){const pattern=getPattern(s);const role=roles[Number(field(s,'role').value)];const fullWeek=pattern.weekdays||role&&role[0]==='Clinical Education'?40:42;const weekly=pattern.weekdays?selectedHours(s):selectedHours(s)*7/(pattern.durations.length||1);return Math.min(1,weekly/fullWeek);}
+function renderShifts(s){
+ const pattern=getPattern(s),holder=output(s,'shifts');holder.replaceChildren();holder.classList.toggle('pc-pts',!!pattern.pts);output(s,'patternNote').hidden=!pattern.pts;output(s,'patternNote').textContent=pattern.name==='2-3-2 mixed'?'Pay is calculated assuming 06:00–18:00 shifts one fortnight and 11:00–23:00 shifts the next, following the 2-3-2 on/off pattern. The full 28-day cycle repeats.':pattern.pts?'2 on → 3 off → 2 on → 2 off → 3 on → 2 off.':'';holder.hidden=!!pattern.custom;output(s,'custom').hidden=!pattern.custom;if(pattern.custom){output(s,'weekdayNote').hidden=true;renderCustom(s);update();return;}holder.classList.toggle('pc-weekdays',!!pattern.weekdays);output(s,'weekdayNote').hidden=!pattern.weekdays;
+ const states=pattern.durations.map(h=>pattern.weekdays?0:h>0);selections.set(s,states);
+ pattern.durations.forEach((h,i)=>{
+  const label=pattern.weekdays?weekdays[i]:pattern.letters[i];const b=document.createElement('button');b.type='button';b.className='pc-shift cursor-interaction';b.disabled=!pattern.weekdays&&h===0;b.title=pattern.names?.[i]||'';
+  const title=document.createElement('span');title.textContent=pattern.pts?(i+1)+' '+label:label;const name=document.createElement('span');name.className='pc-shiftname';name.hidden=!pattern.weekdays&&!pattern.pts;const mark=document.createElement('span');mark.className='pc-shiftmark';mark.setAttribute('aria-hidden','true');b.append(title,name,mark);
+  function refresh(){
+   b.dataset.kind=pattern.weekdays?(states[i]===1?'day':states[i]===2?'swing':'off'):(states[i]?({D:'day',E:'day',L:'swing',S:'swing',N:'night'}[label]):'off');
+   const shiftName=pattern.weekdays?(states[i]===1?'Awatea':states[i]===2?'Ahipo':'Off'):(states[i]?'worked':'not worked');name.textContent=pattern.pts?(h?(String(Math.floor(pattern.starts[i]/60)).padStart(2,'0')+':'+String(pattern.starts[i]%60).padStart(2,'0')):'Off'):shiftName;b.setAttribute('aria-pressed',String(!!states[i]));b.setAttribute('aria-label',(pattern.weekdays?label:'Cycle day '+(i+1)+', '+label)+', '+shiftName);mark.textContent=states[i]?'✓':'×';
+  }
+  refresh();b.addEventListener('click',()=>{states[i]=pattern.weekdays?(states[i]+1)%3:!states[i];refresh();update();});holder.append(b);
+ });update();
+}
+const money=(n,precision=2)=>'$'+n.toLocaleString('en-NZ',{minimumFractionDigits:precision,maximumFractionDigits:precision});
+const option=(value,label)=>{const e=document.createElement('option');e.value=value;e.textContent=label;return e;};
+const field=(s,key)=>s.querySelector('[data-field="'+key+'"]');
+const output=(s,key)=>s.querySelector('[data-output="'+key+'"]');
+function roleOptions(s){const select=field(s,'role');select.replaceChildren();roles.forEach((r,i)=>{if(r[0]===field(s,'department').value)select.append(option(i,r[1]));});stepOptions(s);}
+function stepOptions(s){const r=roles[Number(field(s,'role').value)];const select=field(s,'step');select.replaceChildren();r[2].forEach((rate,i)=>{if(rate!==null)select.append(option(i,steps[i]));});update();}
+function renderAllowances(s){const holder=output(s,'allowances');allowances.forEach((a,i)=>{if(!a.enabled||a[1]<=100)return;const row=document.createElement('div');row.className='pc-allowance';row.dataset.allowanceRow=i;const label=document.createElement('label');const check=document.createElement('input');check.type='checkbox';check.dataset.allowance=i;check.className='cursor-interaction';label.append(check,document.createTextNode(a[0]+' · '+money(a[1])+' / '+a[2]));row.append(label);const note=document.createElement('p');note.className='pc-small';note.textContent=a[5];row.append(note);if(a.max>1){const qty=document.createElement('label');qty.className='pc-quantity';qty.hidden=true;qty.append(document.createTextNode('Quantity'));const input=document.createElement('input');input.type='number';input.min='0';input.step='1';input.max=String(a.max);input.value='1';input.dataset.quantity=i;qty.append(input);row.append(qty);check.addEventListener('change',()=>{qty.hidden=!check.checked;});}holder.append(row);});const automatic=document.createElement('p');automatic.className='pc-small';automatic.textContent='Unsocial hours: calculated from roster.';holder.append(automatic);}
+function eligibleAllowance(department,index){return allowances[index].departments.includes(department);}
+function update(){
+ const values=[];
+ root.querySelectorAll('[data-scenario]').forEach(s=>{
+  const role=roles[Number(field(s,'role').value)];if(!role||!field(s,'step').value)return;
+  const automatic=role[2][Number(field(s,'step').value)],manual=field(s,'manual').checked;
+  const rateInput=field(s,'manualRate');rateInput.readOnly=!manual;
+  const factor=1+(committedIncreases.get(s)||0)/100;const base=manual?(manualBases.get(s)??automatic):automatic;const rate=positive(base)*factor;rateInput.value=Number(rate.toFixed(3));
+  const pattern=getPattern(s);output(s,'cycleDate').hidden=!!pattern.weekdays;
+  const selected=selectedHours(s);output(s,'hours').textContent=selected+' hours / cycle · '+(selected*7/(pattern.durations.length||1)).toFixed(1)+' average hours / week';
+  s.querySelectorAll('[data-allowance-row]').forEach(row=>{const allowed=eligibleAllowance(role[0],Number(row.dataset.allowanceRow));row.hidden=!allowed;const check=row.querySelector('input[type=checkbox]');if(!allowed)check.checked=false;const quantity=row.querySelector('.pc-quantity');if(quantity)quantity.hidden=!check.checked;});
+  let annual=0,count=0;const fte=workFraction(s);
+  s.querySelectorAll('[data-allowance]:checked').forEach(c=>{count++;const i=Number(c.dataset.allowance),a=allowances[i];const q=s.querySelector('[data-quantity="'+i+'"]');annual+=a[1]*(a[4]?fte:1)*(q?Math.min(a.max,Math.max(0,Math.floor(Number(q.value)||0))):1);});
+  output(s,'annual').textContent=money(annual);output(s,'selected').textContent=count?count+' selected':'None';
+  const year=rosterYear(s,rate),gross=year.wages+annual,net=takeHome(gross,s);
+  output(s,'gross').textContent=money(gross,0);output(s,'net').textContent=money(net,0);output(s,'weekly').textContent=money(Math.floor((net/52)/50)*50,0);values.push(net/52);
+ });
+ if(values.length===2){const d=values[1]-values[0];root.querySelector('#pc-difference').textContent=(d<0?'−':'+')+money(Math.abs(d),0);}
+}
+function commitIncrease(s){const enabled=field(s,'negotiation');const value=field(s,'increase');committedIncreases.set(s,enabled&&enabled.checked?positive(value.value):0);update();}
+root.querySelectorAll('[data-scenario]').forEach(s=>{
+ committedIncreases.set(s,0);departments.forEach(d=>field(s,'department').append(option(d,d)));customCycles.set(s,[]);weekdayCycles.set(s,Array.from({length:7},(_,i)=>i<5?{off:false,start:'06:00',end:'18:00'}:{off:true}));patternOptions(s);
+ renderShifts(s);field(s,'pattern').addEventListener('change',()=>renderShifts(s));renderAllowances(s);roleOptions(s);const defaultRole=roles.findIndex(r=>r[0]===field(s,'department').value&&r[1]==='Paramedic');if(defaultRole>=0)field(s,'role').value=String(defaultRole);stepOptions(s);if([...field(s,'step').options].some(o=>o.value==='3'))field(s,'step').value='3';
+ field(s,'department').addEventListener('change',()=>{patternOptions(s);roleOptions(s);});field(s,'role').addEventListener('change',()=>stepOptions(s));
+ field(s,'manual').addEventListener('change',()=>{if(field(s,'manual').checked)manualBases.set(s,positive(field(s,'manualRate').value)/(1+(committedIncreases.get(s)||0)/100));update();});
+ field(s,'manualRate').addEventListener('input',()=>{if(field(s,'manual').checked)manualBases.set(s,positive(field(s,'manualRate').value)/(1+(committedIncreases.get(s)||0)/100));});
+ const increase=field(s,'increase'),negotiation=field(s,'negotiation');
+ if(negotiation&&!settings.negotiation_enabled){negotiation.checked=false;negotiation.closest('label').hidden=true;}
+ if(increase){increase.addEventListener('blur',()=>commitIncrease(s));increase.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();commitIncrease(s);}});negotiation.addEventListener('change',()=>{output(s,'increaseControl').hidden=!negotiation.checked;commitIncrease(s);});}
+ s.addEventListener('input',e=>{if(e.target!==increase)update();});s.addEventListener('change',e=>{if(e.target!==increase)update();});
+});
+update();root.querySelector('.pc-difference').hidden=false;
+})();})();
+</script></body>
 </html>
