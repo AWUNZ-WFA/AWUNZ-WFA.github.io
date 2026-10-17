@@ -331,6 +331,16 @@
 #union-pay-cea .pc-shifts.pc-pts{grid-template-columns:repeat(7,minmax(0,1fr))}
 
 #app-shell.calculator-open>main{max-width:1120px}#union-pay-cea{--pc-bg:var(--bg);--pc-paper:var(--card);--pc-ink:var(--ink);--pc-muted:var(--ink-soft);--pc-line:var(--line);--pc-blue:#0F6E56;--pc-tint:#E4F3ED;font-family:inherit}#union-pay-cea .pc-main{padding:0;max-width:none}#union-pay-cea .pc-title{font-size:30px;margin-top:0}#union-pay-cea .pc-scenario{border-radius:14px}#union-pay-cea .pc-config-disclaimer:empty,#union-pay-cea [role=status]:empty{display:none}
+</style><style>
+#union-pay-cea .pc-profile{background:var(--pc-paper);border:1px solid var(--pc-line);border-radius:14px;padding:22px;margin-bottom:20px}
+#union-pay-cea .pc-profile h3{margin:0 0 4px;font-size:22px}
+#union-pay-cea .pc-profile>.pc-small{margin:0 0 18px}
+#union-pay-cea .pc-profile .pc-fields{grid-template-columns:repeat(4,minmax(0,1fr))}
+#union-pay-cea .pc-profile .pc-role,#union-pay-cea .pc-profile .pc-rate{grid-column:span 2}
+@media(max-width:640px){#union-pay-cea .pc-profile{padding:18px}#union-pay-cea .pc-profile .pc-fields{grid-template-columns:repeat(2,minmax(0,1fr))}#union-pay-cea .pc-profile .pc-dept{grid-column:span 2}#union-pay-cea .pc-profile .pc-role{grid-column:auto}}
+</style><style>
+#union-pay-cea .pc-retry{padding:10px 18px;border:0;border-radius:8px;background:#0F6E56;color:#fff;font:inherit;cursor:pointer;margin:0 0 18px}
+#union-pay-cea .pc-retry:focus-visible{outline:3px solid #91BBA9;outline-offset:3px}
 </style></head>
 <body>
 
@@ -376,7 +386,6 @@
           <button type="submit" class="btn" style="margin-top:16px;">Log in</button>
         </form>
       </div>
-      <p class="section-sub" style="text-align:center;">This is a prototype — the passcode is set in the site code and can be changed there.</p>
     </div>
 
     <!-- JOIN THE UNION (new members, full AWUNZ form) -->
@@ -627,21 +636,23 @@
 
 <section class="view" id="view-calculator"><button class="back-btn" onclick="showView('home')">← Home</button><div id="union-pay-cea">
   <div class="pc-main">
-    <h2 class="pc-title">Pay calculator</h2>
+    <h2 class="pc-title">Roster comparison tool</h2>
     <p class="pc-source">CEA rates effective 7 July 2025 · Agreement to 30 June 2026</p>
     <p class="pc-config-disclaimer"></p><div class="pc-disclaimer"><strong>Not financial advice.</strong> This calculator provides estimates and averages only. Average weekly take-home pay is rounded down to the nearest $50. Actual pay will vary with your circumstances, payroll rules and individual deductions.</div>
-    <div class="pc-comparison">
-      <article class="pc-scenario" data-scenario="current">
-        <h2>Current</h2>
-        <div class="pc-fields">
-          <label class="pc-full">Department<select class="cursor-interaction" data-field="department" aria-label="Current department"></select></label>
-          <label>Role<select class="cursor-interaction" data-field="role" aria-label="Current role"></select></label>
-          <label>Pay step<select class="cursor-interaction" data-field="step" aria-label="Current pay step"></select></label>
-          <div class="pc-full"><label>Hourly rate ($)<input data-field="manualRate" type="number" min="0" step="0.001" readonly aria-label="Current hourly rate"></label><label class="pc-manual"><input data-field="manual" type="checkbox" class="cursor-interaction"> Set manually</label></div>
-          <label>KiwiSaver<select data-field="kiwisaver" class="cursor-interaction" aria-label="Current KiwiSaver rate"><option value="0">0%</option><option value="3">3%</option><option value="3.5">3.5%</option><option value="4">4%</option><option value="6">6%</option><option value="8">8%</option><option value="10">10%</option></select></label>
-          <label>Student loan<select data-field="loan" class="cursor-interaction" aria-label="Current student loan"><option value="no">No</option><option value="yes">Yes</option></select></label>
+    <section class="pc-profile" data-shared hidden aria-label="Shared employment details"><h3>Your employment details</h3><p class="pc-small">These details apply to both rosters. Allowances are pro-rated for each roster where required.</p><div class="pc-fields">
+          <label class="pc-dept">Department<select class="cursor-interaction" data-field="department" aria-label="Shared department"></select></label>
+          <label class="pc-role">Role<select class="cursor-interaction" data-field="role" aria-label="Shared role"></select></label>
+          <label>Pay step<select class="cursor-interaction" data-field="step" aria-label="Shared pay step"></select></label>
+          <div class="pc-full pc-rate"><label>Hourly rate ($)<input data-field="manualRate" type="number" min="0" step="0.001" readonly aria-label="Shared hourly rate"></label><label class="pc-manual"><input data-field="manual" type="checkbox" class="cursor-interaction"> Set manually</label></div>
+          <label>KiwiSaver<select data-field="kiwisaver" class="cursor-interaction" aria-label="Shared KiwiSaver rate"><option value="0">0%</option><option value="3">3%</option><option value="3.5">3.5%</option><option value="4">4%</option><option value="6">6%</option><option value="8">8%</option><option value="10">10%</option></select></label>
+          <label>Student loan<select data-field="loan" class="cursor-interaction" aria-label="Shared student loan"><option value="no">No</option><option value="yes">Yes</option></select></label>
           <details class="pc-full pc-allowances"><summary class="cursor-interaction">Allowances <span data-output="selected">None</span></summary><div data-output="allowances"></div><p class="pc-small pc-instruction">Select allowances you are eligible to receive.</p></details>
-          <div class="pc-full pc-total"><span>Annual allowances</span><strong data-output="annual"></strong></div>
+</div></section>
+        <div class="pc-comparison">
+      <article class="pc-scenario" data-scenario="current">
+        <h2>Current roster</h2>
+        <div class="pc-fields">
+          <div class="pc-full pc-total"><span>Annual allowances for this roster</span><strong data-output="annual"></strong></div>
           <label class="pc-full">Shift pattern<select class="cursor-interaction" data-field="pattern" aria-label="Current shift pattern"></select></label>
           <div class="pc-full pc-custom" data-output="custom" hidden></div>
           <div class="pc-full pc-shifts" data-output="shifts" role="group" aria-label="Current worked shifts"></div>
@@ -653,17 +664,9 @@
         <div class="pc-results" aria-live="polite"><div><span>Gross annual</span><strong data-output="gross"></strong></div><div><span>Take-home annual</span><strong data-output="net"></strong></div><div class="pc-weekly"><span>Average take-home weekly</span><strong data-output="weekly"></strong></div></div>
       </article>
       <article class="pc-scenario pc-proposed" data-scenario="proposed">
-        <h2>Comparison</h2>
+        <h2>Comparison roster</h2>
         <div class="pc-fields">
-          <label class="pc-full">Department<select class="cursor-interaction" data-field="department" aria-label="Comparison department"></select></label>
-          <label>Role<select class="cursor-interaction" data-field="role" aria-label="Comparison role"></select></label>
-          <label>Pay step<select class="cursor-interaction" data-field="step" aria-label="Comparison pay step"></select></label>
-          <div><label>Hourly rate ($)<input data-field="manualRate" type="number" min="0" step="0.001" readonly aria-label="Comparison hourly rate"></label><label class="pc-manual"><input data-field="manual" type="checkbox" class="cursor-interaction"> Set manually</label></div>
-          <div class="pc-negotiation"><label class="pc-manual"><input data-field="negotiation" type="checkbox" class="cursor-interaction"> Negotiation increase</label><label data-output="increaseControl" hidden>Increase (%)<input data-field="increase" type="number" min="0" step="0.1" value="0" aria-label="Comparison rate increase percent"></label></div>
-          <label>KiwiSaver<select data-field="kiwisaver" class="cursor-interaction" aria-label="Comparison KiwiSaver rate"><option value="0">0%</option><option value="3">3%</option><option value="3.5">3.5%</option><option value="4">4%</option><option value="6">6%</option><option value="8">8%</option><option value="10">10%</option></select></label>
-          <label>Student loan<select data-field="loan" class="cursor-interaction" aria-label="Comparison student loan"><option value="no">No</option><option value="yes">Yes</option></select></label>
-          <details class="pc-full pc-allowances"><summary class="cursor-interaction">Allowances <span data-output="selected">None</span></summary><div data-output="allowances"></div><p class="pc-small pc-instruction">Select allowances you are eligible to receive.</p></details>
-          <div class="pc-full pc-total"><span>Annual allowances</span><strong data-output="annual"></strong></div>
+          <div class="pc-full pc-total"><span>Annual allowances for this roster</span><strong data-output="annual"></strong></div>
           <label class="pc-full">Shift pattern<select class="cursor-interaction" data-field="pattern" aria-label="Comparison shift pattern"></select></label>
           <div class="pc-full pc-custom" data-output="custom" hidden></div>
           <div class="pc-full pc-shifts" data-output="shifts" role="group" aria-label="Comparison worked shifts"></div>
@@ -688,10 +691,31 @@
 <div class="toast" id="toast"></div>
 
 <script>
-const UNION_CONTROL_FEED_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQWz984XZGd-rki6rI4axc3Ui39Yl4ADqxcvj6gkeeNAU5tc1hZq2Pf_i7KY-y9hYc9D3V3RgnXXkv3/pub?gid=273470308&single=true&output=csv"; // Connect once with connect.html.
+const UNION_CONTROL_FEED_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQWz984XZGd-rki6rI4axc3Ui39Yl4ADqxcvj6gkeeNAU5tc1hZq2Pf_i7KY-y9hYc9D3V3RgnXXkv3/pub?gid=273470308&single=true&output=csv'; // Connect once with connect.html.
 let unionRowsPromise;
-async function unionControlRows(){
- if(!unionRowsPromise)unionRowsPromise=(async()=>{const u=new URL(UNION_CONTROL_FEED_URL);if(u.protocol!=='https:'||u.hostname!=='docs.google.com'||!u.pathname.startsWith('/spreadsheets/'))throw Error('Use a published Google Sheets CSV link.');const res=await fetch(u.href,{cache:'no-store',signal:AbortSignal.timeout(15000)});if(!res.ok)throw Error('Control sheet could not be loaded.');const rows=csvRows((await res.text()).replace(/^\uFEFF/,''));if(rows.shift()?.[0]!=='type')throw Error('Publish the Website feed tab as CSV.');return rows;})();return unionRowsPromise;
+function unionControlRows(){
+ if(!unionRowsPromise){
+  const request=(async()=>{
+   const u=new URL(UNION_CONTROL_FEED_URL);
+   if(u.protocol!=='https:'||u.hostname!=='docs.google.com'||!u.pathname.startsWith('/spreadsheets/'))throw Error('Use a published Google Sheets CSV link.');
+   for(let attempt=0;attempt<3;attempt++){
+    try{
+     const response=await fetch(u.href,{cache:'no-store',signal:AbortSignal.timeout(15000)});
+     if(!response.ok){const error=new Error('Control sheet could not be loaded (HTTP '+response.status+').');error.retryable=[408,429].includes(response.status)||response.status>=500;throw error;}
+     const rows=csvRows((await response.text()).replace(/^\uFEFF/,''));
+     if(rows.shift()?.[0]!=='type')throw Error('Publish the Website feed tab as CSV.');
+     return rows;
+    }catch(error){
+     const transient=error.retryable===true||['TypeError','AbortError','TimeoutError'].includes(error.name);
+     if(!transient||attempt===2)throw error;
+     await new Promise(resolve=>setTimeout(resolve,(attempt+1)*1000));
+    }
+   }
+  })();
+  unionRowsPromise=request;
+  request.catch(()=>{if(unionRowsPromise===request)unionRowsPromise=undefined;});
+ }
+ return unionRowsPromise;
 }
 function csvRows(text){const rows=[];let row=[],cell='',quote=false;for(let i=0;i<text.length;i++){const c=text[i];if(c==='"'){if(quote&&text[i+1]==='"'){cell+='"';i++;}else quote=!quote;}else if(c===','&&!quote){row.push(cell);cell='';}else if((c==='\n'||c==='\r')&&!quote){if(c==='\r'&&text[i+1]==='\n')i++;row.push(cell);rows.push(row);row=[];cell='';}else cell+=c;}if(quote)throw Error('Incomplete CSV.');if(cell||row.length){row.push(cell);rows.push(row);}return rows;}
 function parseCalculatorControl(rowsInput){
@@ -881,6 +905,11 @@ async function loadClaimsBoard(){
     }))
     .filter(c => c.title || c.tag || c.problem || c.service_impact || c.proposed_clause || c.implementation_considerations);
   if(UNION_CONTROL_FEED_URL||valid.length) UNION_CLAIMS = valid;
+}
+
+async function refreshUnionWebsiteData(){
+ await Promise.all([loadConfig(),loadEvents(),loadDocuments(),loadReps(),loadDelegates(),loadClaimsBoard()]);
+ renderEvents();renderDocuments();renderReps();renderDelegates();renderClaimsBoard();
 }
 
 const configPromise = loadConfig();
@@ -1373,16 +1402,29 @@ Submitted via the WFA Union member portal.`;
 
 </script>
 <script>
-window.initUnionCalculator = (() => {let initialized;return ()=>initialized??=(async () => {
+window.initUnionCalculator = (() => {
+let initialized;
+return ()=>{
+ if(initialized)return initialized;
+ const attempt=(async () => {
 const root=document.getElementById('union-pay-cea');
-const status=document.createElement('p');status.className='pc-source';status.setAttribute('role','status');root.querySelector('.pc-main').prepend(status);
+const shared=root.querySelector('[data-shared]');
+const sharedKeys=new Set(['department','role','step','kiwisaver','loan','manual','manualRate']);
+let ready=false,manualBase=null;
+let status=root.querySelector('[data-load-status]');
+if(!status){status=document.createElement('p');status.dataset.loadStatus='';status.className='pc-source';status.setAttribute('role','status');root.querySelector('.pc-main').prepend(status);}
+let retry=root.querySelector('[data-action="retryFeed"]');
+if(!retry){retry=document.createElement('button');retry.type='button';retry.dataset.action='retryFeed';retry.className='pc-retry';retry.textContent='Retry';status.after(retry);}
+retry.hidden=true;retry.disabled=true;retry.onclick=()=>window.initUnionCalculator();
+status.textContent='Loading roster comparison tool…';shared.hidden=true;
 root.querySelectorAll('[data-scenario]').forEach(s=>s.hidden=true);root.querySelector('.pc-difference').hidden=true;
 let config;
-try {if(UNION_CONTROL_FEED_URL){const rows=await unionControlRows();config=parseCalculatorControl(rows);}else{config={"roles":[["Emergency Ambulance Services","Emergency Medical Technician",[31.71,32.11,32.67,33.8,34.99]],["Emergency Ambulance Services","Graduate Paramedic",[35.06]],["Emergency Ambulance Services","Emergency Medical Technician (grandparented)",[null,35.76,36.48,37.2,37.95]],["Emergency Ambulance Services","Supervised Paramedic",[39.79]],["Emergency Ambulance Services","Paramedic",[41.86,42.28,43.13,44.64,46.2]],["Emergency Ambulance Services","Clinical Paramedic Advisor",[49.047,50.46,51.46,52.49,53.55]],["Emergency Ambulance Services","Intensive Care Paramedic",[51.64,52.45,53.25,54.05,54.84]],["Emergency Ambulance Services","Extended Care Paramedic",[55.71,56.26,57.39,59.4,61.48]],["Emergency Ambulance Services","Critical Care Paramedic",[55.71,56.26,57.39,59.4,61.48]],["Clinical Communications Centre","Trainee Call Taker",[29.25]],["Clinical Communications Centre","Emergency Support Call Taker",[30.11,30.41,30.72,31.02,31.33]],["Clinical Communications Centre","Call Taker",[32.59]],["Clinical Communications Centre","Senior Call Taker",[35.06,35.76,36.48,37.2,37.95]],["Clinical Communications Centre","Call Taking Supervisor",[36.56,36.81,37.06,38.63,39.8]],["Clinical Communications Centre","Dispatcher",[36.56,36.81,37.06,38.63,39.8]],["Patient Transfer Services","PTO (First Aider)",[30.11,30.41,30.72,31.02,31.33]],["Patient Transfer Services","PTO (First Responder)",[31.19,31.43,31.67,31.91,32.23]],["Patient Transfer Services","PTO (EMT)",[31.71,32.11,32.67,33.8,34.99]],["Patient Transfer Services","PTO (EMT, grandparented)",[null,35.76,36.48,37.2,37.95]],["Clinical Education","Clinical Educator",[49.47,50.46,51.46,52.49,53.55]],["Clinical Education","Senior Clinical Educator",[53.44,54.52,55.61,56.71,57.86]]],"patterns":[{"name":"4:4 DDNN","letters":"DDNNOOOO","durations":[12,12,12,12,0,0,0,0],"id":"pattern_0","departments":["Emergency Ambulance Services","Clinical Communications Centre"],"starts":[360,360,1080,1080,0,0,0,0]},{"name":"3:3 DSN","letters":"DSNOOO","durations":[12,12,10,0,0,0],"id":"pattern_1","departments":["Emergency Ambulance Services"],"starts":[360,600,1260,0,0,0]},{"name":"6:4","hidden":true,"letters":"EELLNNOOOO","durations":[8,8,8,8,8,8,0,0,0,0],"id":"pattern_2","departments":[],"starts":[420,420,900,900,1380,1380,0,0,0,0]},{"name":"DDSN","hidden":true,"letters":"DDSNOOOO","durations":[12,12,12,6,0,0,0,0],"id":"pattern_3","departments":[],"starts":[360,360,720,1080,0,0,0,0]},{"name":"5-5 DDNN","hidden":true,"letters":"DDNNOOOO","durations":[12,12,12,12,0,0,0,0],"id":"pattern_4","departments":[],"starts":[300,300,1020,1020,0,0,0,0]},{"name":"Day of the week","weekdays":true,"durations":[8,8,8,8,8,8,8],"id":"pattern_5","departments":["Emergency Ambulance Services","Clinical Education"],"starts":[510,510,510,510,510,510,510]},{"name":"Ahipo","hidden":true,"weekdays":true,"durations":[8,8,8,8,8,8,8],"id":"pattern_6","departments":[],"starts":[990,990,990,990,990,990,990]},{"name":"4:4 DDLL","letters":"DDLLOOOO","durations":[12,12,12,12,0,0,0,0],"starts":[390,390,660,660,0,0,0,0],"id":"pattern_7","departments":["Clinical Communications Centre"]},{"name":"Custom cycle","custom":true,"id":"pattern_8","departments":["Emergency Ambulance Services","Clinical Communications Centre","Patient Transfer Services"],"starts":[]},{"name":"2-3-2 (6-6)","pts":true,"letters":"DDOOODDOODDDOO","durations":[12,12,0,0,0,12,12,0,0,12,12,12,0,0],"starts":[360,360,0,0,0,360,360,0,0,360,360,360,0,0],"id":"pattern_9","departments":["Patient Transfer Services"]},{"name":"2-3-2 (11-2300)","pts":true,"letters":"LLOOOLLOOLLLOO","durations":[12,12,0,0,0,12,12,0,0,12,12,12,0,0],"starts":[660,660,0,0,0,660,660,0,0,660,660,660,0,0],"id":"pattern_10","departments":["Patient Transfer Services"]},{"name":"2-3-2 mixed","pts":true,"letters":"DDOOODDOODDDOOLLOOOLLOOLLLOO","durations":[12,12,0,0,0,12,12,0,0,12,12,12,0,0,12,12,0,0,0,12,12,0,0,12,12,12,0,0],"starts":[360,360,0,0,0,360,360,0,0,360,360,360,0,0,660,660,0,0,0,660,660,0,0,660,660,660,0,0],"id":"pattern_11","departments":["Patient Transfer Services"]},{"name":"Monday to Friday","custom":true,"weekdayCustom":true,"weekdays":true,"id":"pattern_12","departments":["Patient Transfer Services"],"starts":[]}],"settings":{"title":"Pay calculator","rates_label":"CEA rates effective 7 July 2025 · Agreement to 30 June 2026 · Bundled calculator values","year":2026,"acc_rate":0.0175,"acc_cap":156641,"loan_threshold":24128,"loan_rate":0.12,"unsocial_premium":0.25,"negotiation_enabled":true,"financial_disclaimer":"Estimated averages only. Not financial advice."},"tax":[[0,0.105],[15600,0.175],[53500,0.3],[78100,0.33],[180000,0.39]],"allowances":[{"row":["Additional channel",5843.1,"year","Quarterly",true,"Up to two additional channels."],"enabled":true,"max":2,"departments":["Clinical Communications Centre"]},{"row":["Dispatcher call taking",5843.1,"year","Quarterly",true,"Can be paid with additional-channel allowance."],"enabled":true,"max":1,"departments":["Clinical Communications Centre"]},{"row":["Dual ATP",3546.26,"year","Each pay period",true,"ICP/ECP, CCP/ECP, ICP/CPA, ECP/CPA or CCP/CPA."],"enabled":true,"max":1,"departments":["Emergency Ambulance Services","Clinical Education"]},{"row":["Peer supporters",2399.64,"year","Quarterly",true,"Appointed peer supporter meeting requirements."],"enabled":true,"max":1,"departments":["Emergency Ambulance Services","Clinical Communications Centre","Patient Transfer Services","Clinical Education"]},{"row":["Rescue squad",1021.5,"year","Quarterly",false,"Fitness eligibility; not pro-rated for part-time hours."],"enabled":true,"max":1,"departments":["Emergency Ambulance Services","Clinical Education"]}]};config.allowances=config.allowances.map(a=>Object.assign(a.row,{enabled:a.enabled,max:a.max,departments:a.departments}));status.textContent='Using bundled calculator values. Connect the control workbook to load edits.';}}catch(error){status.textContent='Calculator unavailable: '+error.message;return;}
+try {if(UNION_CONTROL_FEED_URL){const rows=await unionControlRows();config=parseCalculatorControl(rows);}else{config={"roles":[["Emergency Ambulance Services","Emergency Medical Technician",[31.71,32.11,32.67,33.8,34.99]],["Emergency Ambulance Services","Graduate Paramedic",[35.06]],["Emergency Ambulance Services","Emergency Medical Technician (grandparented)",[null,35.76,36.48,37.2,37.95]],["Emergency Ambulance Services","Supervised Paramedic",[39.79]],["Emergency Ambulance Services","Paramedic",[41.86,42.28,43.13,44.64,46.2]],["Emergency Ambulance Services","Clinical Paramedic Advisor",[49.047,50.46,51.46,52.49,53.55]],["Emergency Ambulance Services","Intensive Care Paramedic",[51.64,52.45,53.25,54.05,54.84]],["Emergency Ambulance Services","Extended Care Paramedic",[55.71,56.26,57.39,59.4,61.48]],["Emergency Ambulance Services","Critical Care Paramedic",[55.71,56.26,57.39,59.4,61.48]],["Clinical Communications Centre","Trainee Call Taker",[29.25]],["Clinical Communications Centre","Emergency Support Call Taker",[30.11,30.41,30.72,31.02,31.33]],["Clinical Communications Centre","Call Taker",[32.59]],["Clinical Communications Centre","Senior Call Taker",[35.06,35.76,36.48,37.2,37.95]],["Clinical Communications Centre","Call Taking Supervisor",[36.56,36.81,37.06,38.63,39.8]],["Clinical Communications Centre","Dispatcher",[36.56,36.81,37.06,38.63,39.8]],["Patient Transfer Services","PTO (First Aider)",[30.11,30.41,30.72,31.02,31.33]],["Patient Transfer Services","PTO (First Responder)",[31.19,31.43,31.67,31.91,32.23]],["Patient Transfer Services","PTO (EMT)",[31.71,32.11,32.67,33.8,34.99]],["Patient Transfer Services","PTO (EMT, grandparented)",[null,35.76,36.48,37.2,37.95]],["Clinical Education","Clinical Educator",[49.47,50.46,51.46,52.49,53.55]],["Clinical Education","Senior Clinical Educator",[53.44,54.52,55.61,56.71,57.86]]],"patterns":[{"name":"4:4 DDNN","letters":"DDNNOOOO","durations":[12,12,12,12,0,0,0,0],"id":"pattern_0","departments":["Emergency Ambulance Services","Clinical Communications Centre"],"starts":[360,360,1080,1080,0,0,0,0]},{"name":"3:3 DSN","letters":"DSNOOO","durations":[12,12,10,0,0,0],"id":"pattern_1","departments":["Emergency Ambulance Services"],"starts":[360,600,1260,0,0,0]},{"name":"6:4","hidden":true,"letters":"EELLNNOOOO","durations":[8,8,8,8,8,8,0,0,0,0],"id":"pattern_2","departments":[],"starts":[420,420,900,900,1380,1380,0,0,0,0]},{"name":"DDSN","hidden":true,"letters":"DDSNOOOO","durations":[12,12,12,6,0,0,0,0],"id":"pattern_3","departments":[],"starts":[360,360,720,1080,0,0,0,0]},{"name":"5-5 DDNN","hidden":true,"letters":"DDNNOOOO","durations":[12,12,12,12,0,0,0,0],"id":"pattern_4","departments":[],"starts":[300,300,1020,1020,0,0,0,0]},{"name":"Day of the week","weekdays":true,"durations":[8,8,8,8,8,8,8],"id":"pattern_5","departments":["Emergency Ambulance Services","Clinical Education"],"starts":[510,510,510,510,510,510,510]},{"name":"Ahipo","hidden":true,"weekdays":true,"durations":[8,8,8,8,8,8,8],"id":"pattern_6","departments":[],"starts":[990,990,990,990,990,990,990]},{"name":"4:4 DDLL","letters":"DDLLOOOO","durations":[12,12,12,12,0,0,0,0],"starts":[390,390,660,660,0,0,0,0],"id":"pattern_7","departments":["Clinical Communications Centre"]},{"name":"Custom cycle","custom":true,"id":"pattern_8","departments":["Emergency Ambulance Services","Clinical Communications Centre","Patient Transfer Services"],"starts":[]},{"name":"2-3-2 (6-6)","pts":true,"letters":"DDOOODDOODDDOO","durations":[12,12,0,0,0,12,12,0,0,12,12,12,0,0],"starts":[360,360,0,0,0,360,360,0,0,360,360,360,0,0],"id":"pattern_9","departments":["Patient Transfer Services"]},{"name":"2-3-2 (11-2300)","pts":true,"letters":"LLOOOLLOOLLLOO","durations":[12,12,0,0,0,12,12,0,0,12,12,12,0,0],"starts":[660,660,0,0,0,660,660,0,0,660,660,660,0,0],"id":"pattern_10","departments":["Patient Transfer Services"]},{"name":"2-3-2 mixed","pts":true,"letters":"DDOOODDOODDDOOLLOOOLLOOLLLOO","durations":[12,12,0,0,0,12,12,0,0,12,12,12,0,0,12,12,0,0,0,12,12,0,0,12,12,12,0,0],"starts":[360,360,0,0,0,360,360,0,0,360,360,360,0,0,660,660,0,0,0,660,660,0,0,660,660,660,0,0],"id":"pattern_11","departments":["Patient Transfer Services"]},{"name":"Monday to Friday","custom":true,"weekdayCustom":true,"weekdays":true,"id":"pattern_12","departments":["Patient Transfer Services"],"starts":[]}],"settings":{"title":"Pay calculator","rates_label":"CEA rates effective 7 July 2025 · Agreement to 30 June 2026 · Bundled calculator values","year":2026,"acc_rate":0.0175,"acc_cap":156641,"loan_threshold":24128,"loan_rate":0.12,"unsocial_premium":0.25,"negotiation_enabled":true,"financial_disclaimer":"Estimated averages only. Not financial advice."},"tax":[[0,0.105],[15600,0.175],[53500,0.3],[78100,0.33],[180000,0.39]],"allowances":[{"row":["Additional channel",5843.1,"year","Quarterly",true,"Up to two additional channels."],"enabled":true,"max":2,"departments":["Clinical Communications Centre"]},{"row":["Dispatcher call taking",5843.1,"year","Quarterly",true,"Can be paid with additional-channel allowance."],"enabled":true,"max":1,"departments":["Clinical Communications Centre"]},{"row":["Dual ATP",3546.26,"year","Each pay period",true,"ICP/ECP, CCP/ECP, ICP/CPA, ECP/CPA or CCP/CPA."],"enabled":true,"max":1,"departments":["Emergency Ambulance Services","Clinical Education"]},{"row":["Peer supporters",2399.64,"year","Quarterly",true,"Appointed peer supporter meeting requirements."],"enabled":true,"max":1,"departments":["Emergency Ambulance Services","Clinical Communications Centre","Patient Transfer Services","Clinical Education"]},{"row":["Rescue squad",1021.5,"year","Quarterly",false,"Fitness eligibility; not pro-rated for part-time hours."],"enabled":true,"max":1,"departments":["Emergency Ambulance Services","Clinical Education"]}]};config.allowances=config.allowances.map(a=>Object.assign(a.row,{enabled:a.enabled,max:a.max,departments:a.departments}));status.textContent='Using bundled calculator values. Connect the control workbook to load edits.';}}catch(error){status.textContent='Unable to load the roster comparison tool. '+error.message;retry.hidden=false;retry.disabled=false;unionRowsPromise=undefined;return false;}
+if(UNION_CONTROL_FEED_URL&&typeof refreshUnionWebsiteData==='function')await refreshUnionWebsiteData();
 const {roles,allowances,patterns,settings,tax}=config;const departments=[...new Set(roles.map(r=>r[0]))];const steps=['0','+1','+2','+3','+4'];
-root.querySelector('.pc-title').textContent=settings.title;root.querySelector('.pc-source:not([role])').textContent=settings.rates_label;
+root.querySelector('.pc-title').textContent='Roster comparison tool';root.querySelector('.pc-source:not([role])').textContent=settings.rates_label;
 if(UNION_CONTROL_FEED_URL)status.textContent='';root.querySelector('.pc-config-disclaimer').textContent=settings.financial_disclaimer;
-root.querySelectorAll('[data-scenario]').forEach(s=>s.hidden=false);
+shared.hidden=false;root.querySelectorAll('[data-scenario]').forEach(s=>s.hidden=false);
 const weekdays=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
 const dayMs=86400000;
 const positive=(n)=>Math.max(0,Number(n)||0);
@@ -1458,8 +1500,7 @@ function renderCustom(s){
  selections.set(s,days.map(d=>!d.off));
 }
 
-const committedIncreases=new WeakMap();
-const manualBases=new WeakMap();
+
 function selectedHours(s){const pattern=getPattern(s);const states=selections.get(s);return pattern.durations.reduce((sum,h,i)=>sum+(states&&states[i]?h:0),0);}
 function workFraction(s){const pattern=getPattern(s);const role=roles[Number(field(s,'role').value)];const fullWeek=pattern.weekdays||role&&role[0]==='Clinical Education'?40:42;const weekly=pattern.weekdays?selectedHours(s):selectedHours(s)*7/(pattern.durations.length||1);return Math.min(1,weekly/fullWeek);}
 function renderShifts(s){
@@ -1477,43 +1518,59 @@ function renderShifts(s){
 }
 const money=(n,precision=2)=>'$'+n.toLocaleString('en-NZ',{minimumFractionDigits:precision,maximumFractionDigits:precision});
 const option=(value,label)=>{const e=document.createElement('option');e.value=value;e.textContent=label;return e;};
-const field=(s,key)=>s.querySelector('[data-field="'+key+'"]');
+const field=(s,key)=>(sharedKeys.has(key)?shared:s).querySelector('[data-field="'+key+'"]');
 const output=(s,key)=>s.querySelector('[data-output="'+key+'"]');
 function roleOptions(s){const select=field(s,'role');select.replaceChildren();roles.forEach((r,i)=>{if(r[0]===field(s,'department').value)select.append(option(i,r[1]));});stepOptions(s);}
 function stepOptions(s){const r=roles[Number(field(s,'role').value)];const select=field(s,'step');select.replaceChildren();r[2].forEach((rate,i)=>{if(rate!==null)select.append(option(i,steps[i]));});update();}
 function renderAllowances(s){const holder=output(s,'allowances');allowances.forEach((a,i)=>{if(!a.enabled||a[1]<=100)return;const row=document.createElement('div');row.className='pc-allowance';row.dataset.allowanceRow=i;const label=document.createElement('label');const check=document.createElement('input');check.type='checkbox';check.dataset.allowance=i;check.className='cursor-interaction';label.append(check,document.createTextNode(a[0]+' · '+money(a[1])+' / '+a[2]));row.append(label);const note=document.createElement('p');note.className='pc-small';note.textContent=a[5];row.append(note);if(a.max>1){const qty=document.createElement('label');qty.className='pc-quantity';qty.hidden=true;qty.append(document.createTextNode('Quantity'));const input=document.createElement('input');input.type='number';input.min='0';input.step='1';input.max=String(a.max);input.value='1';input.dataset.quantity=i;qty.append(input);row.append(qty);check.addEventListener('change',()=>{qty.hidden=!check.checked;});}holder.append(row);});const automatic=document.createElement('p');automatic.className='pc-small';automatic.textContent='Unsocial hours: calculated from roster.';holder.append(automatic);}
 function eligibleAllowance(department,index){return allowances[index].departments.includes(department);}
 function update(){
+ if(!ready)return;
+ const role=roles[Number(field(shared,'role').value)],step=field(shared,'step').value;
+ if(!role||step==='')return;
+ const automatic=role[2][Number(step)],manual=field(shared,'manual').checked;
+ const rateInput=field(shared,'manualRate');rateInput.readOnly=!manual;
+ const rate=positive(manual?(manualBase??automatic):automatic);rateInput.value=Number(rate.toFixed(3));
+ shared.querySelectorAll('[data-allowance-row]').forEach(row=>{const allowed=eligibleAllowance(role[0],Number(row.dataset.allowanceRow));row.hidden=!allowed;const check=row.querySelector('input[type=checkbox]');if(!allowed)check.checked=false;const quantity=row.querySelector('.pc-quantity');if(quantity)quantity.hidden=!check.checked;});
+ const selectedAllowances=Array.from(shared.querySelectorAll('[data-allowance]:checked'));
+ output(shared,'selected').textContent=selectedAllowances.length?selectedAllowances.length+' selected':'None';
  const values=[];
  root.querySelectorAll('[data-scenario]').forEach(s=>{
-  const role=roles[Number(field(s,'role').value)];if(!role||!field(s,'step').value)return;
-  const automatic=role[2][Number(field(s,'step').value)],manual=field(s,'manual').checked;
-  const rateInput=field(s,'manualRate');rateInput.readOnly=!manual;
-  const factor=1+(committedIncreases.get(s)||0)/100;const base=manual?(manualBases.get(s)??automatic):automatic;const rate=positive(base)*factor;rateInput.value=Number(rate.toFixed(3));
   const pattern=getPattern(s);output(s,'cycleDate').hidden=!!pattern.weekdays;
-  const selected=selectedHours(s);output(s,'hours').textContent=selected+' hours / cycle · '+(selected*7/(pattern.durations.length||1)).toFixed(1)+' average hours / week';
-  s.querySelectorAll('[data-allowance-row]').forEach(row=>{const allowed=eligibleAllowance(role[0],Number(row.dataset.allowanceRow));row.hidden=!allowed;const check=row.querySelector('input[type=checkbox]');if(!allowed)check.checked=false;const quantity=row.querySelector('.pc-quantity');if(quantity)quantity.hidden=!check.checked;});
-  let annual=0,count=0;const fte=workFraction(s);
-  s.querySelectorAll('[data-allowance]:checked').forEach(c=>{count++;const i=Number(c.dataset.allowance),a=allowances[i];const q=s.querySelector('[data-quantity="'+i+'"]');annual+=a[1]*(a[4]?fte:1)*(q?Math.min(a.max,Math.max(0,Math.floor(Number(q.value)||0))):1);});
-  output(s,'annual').textContent=money(annual);output(s,'selected').textContent=count?count+' selected':'None';
+  const selected=selectedHours(s);output(s,'hours').textContent=Number(selected.toFixed(4))+' hours / cycle · '+(selected*7/(pattern.durations.length||1)).toFixed(1)+' average hours / week';
+  const fte=workFraction(s);let annual=0;
+  selectedAllowances.forEach(c=>{const i=Number(c.dataset.allowance),a=allowances[i],q=shared.querySelector('[data-quantity="'+i+'"]');annual+=a[1]*(a[4]?fte:1)*(q?Math.min(a.max,Math.max(0,Math.floor(Number(q.value)||0))):1);});
+  output(s,'annual').textContent=money(annual);
   const year=rosterYear(s,rate),gross=year.wages+annual,net=takeHome(gross,s);
   output(s,'gross').textContent=money(gross,0);output(s,'net').textContent=money(net,0);output(s,'weekly').textContent=money(Math.floor((net/52)/50)*50,0);values.push(net/52);
  });
- if(values.length===2){const d=values[1]-values[0];root.querySelector('#pc-difference').textContent=(d<0?'−':'+')+money(Math.abs(d),0);}
+ if(values.length===2){const difference=values[1]-values[0];root.querySelector('#pc-difference').textContent=(difference<0?'−':'+')+money(Math.abs(difference),0);}
 }
-function commitIncrease(s){const enabled=field(s,'negotiation');const value=field(s,'increase');committedIncreases.set(s,enabled&&enabled.checked?positive(value.value):0);update();}
-root.querySelectorAll('[data-scenario]').forEach(s=>{
- committedIncreases.set(s,0);departments.forEach(d=>field(s,'department').append(option(d,d)));customCycles.set(s,[]);weekdayCycles.set(s,Array.from({length:7},(_,i)=>i<5?{off:false,start:'06:00',end:'18:00'}:{off:true}));patternOptions(s);
- renderShifts(s);field(s,'pattern').addEventListener('change',()=>renderShifts(s));renderAllowances(s);roleOptions(s);const defaultRole=roles.findIndex(r=>r[0]===field(s,'department').value&&r[1]==='Paramedic');if(defaultRole>=0)field(s,'role').value=String(defaultRole);stepOptions(s);if([...field(s,'step').options].some(o=>o.value==='3'))field(s,'step').value='3';
- field(s,'department').addEventListener('change',()=>{patternOptions(s);roleOptions(s);});field(s,'role').addEventListener('change',()=>stepOptions(s));
- field(s,'manual').addEventListener('change',()=>{if(field(s,'manual').checked)manualBases.set(s,positive(field(s,'manualRate').value)/(1+(committedIncreases.get(s)||0)/100));update();});
- field(s,'manualRate').addEventListener('input',()=>{if(field(s,'manual').checked)manualBases.set(s,positive(field(s,'manualRate').value)/(1+(committedIncreases.get(s)||0)/100));});
- const increase=field(s,'increase'),negotiation=field(s,'negotiation');
- if(negotiation&&!settings.negotiation_enabled){negotiation.checked=false;negotiation.closest('label').hidden=true;}
- if(increase){increase.addEventListener('blur',()=>commitIncrease(s));increase.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();commitIncrease(s);}});negotiation.addEventListener('change',()=>{output(s,'increaseControl').hidden=!negotiation.checked;commitIncrease(s);});}
- s.addEventListener('input',e=>{if(e.target!==increase)update();});s.addEventListener('change',e=>{if(e.target!==increase)update();});
+const scenarios=Array.from(root.querySelectorAll('[data-scenario]'));
+departments.forEach(d=>field(shared,'department').append(option(d,d)));
+renderAllowances(shared);roleOptions(shared);
+const defaultRole=roles.findIndex(r=>r[0]===field(shared,'department').value&&r[1]==='Paramedic');
+if(defaultRole>=0)field(shared,'role').value=String(defaultRole);
+stepOptions(shared);if([...field(shared,'step').options].some(o=>o.value==='3'))field(shared,'step').value='3';
+scenarios.forEach(s=>{
+ customCycles.set(s,[]);weekdayCycles.set(s,Array.from({length:7},(_,i)=>i<5?{off:false,start:'06:00',end:'18:00'}:{off:true}));patternOptions(s);
+ field(s,'pattern').addEventListener('change',()=>renderShifts(s));
+ s.addEventListener('input',()=>update());s.addEventListener('change',()=>update());
 });
-update();root.querySelector('.pc-difference').hidden=false;
-})();})();
+shared.addEventListener('change',e=>{
+ if(e.target===field(shared,'department')){roleOptions(shared);scenarios.forEach(s=>patternOptions(s));}
+ else if(e.target===field(shared,'role'))stepOptions(shared);
+ else if(e.target===field(shared,'manual'))manualBase=e.target.checked?positive(field(shared,'manualRate').value):null;
+ update();
+});
+shared.addEventListener('input',e=>{if(e.target===field(shared,'manualRate')&&field(shared,'manual').checked)manualBase=positive(e.target.value);update();});
+ready=true;
+update();root.querySelector('.pc-difference').hidden=false;return true;
+})();
+initialized=attempt;
+attempt.then(success=>{if(!success&&initialized===attempt)initialized=undefined;},()=>{if(initialized===attempt)initialized=undefined;});
+return attempt;
+};
+})();
 </script></body>
 </html>
